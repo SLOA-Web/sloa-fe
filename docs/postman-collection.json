@@ -1,0 +1,2279 @@
+{
+	"info": {
+		"_postman_id": "sloa-api-collection",
+		"name": "SLOA Membership & Event Portal API",
+		"description": "Complete API collection for the Sri Lanka Orthopaedic Association (SLOA) Portal. This collection includes all endpoints for authentication, guest approval, membership management, events with agenda support, payments, user synchronization, webhooks, analytics, and file uploads.\n\n## New Features:\n- **Guest Approval Workflow**: Users can request guest access for event registration without payment\n- **Enhanced Event Management**: Events now support structured agenda with time/topic/speaker\n- **User Synchronization**: Admin tools for managing sync between Supabase Auth and database\n- **Webhook Integration**: Automatic user sync via Supabase webhooks\n\n## User Flow:\n1. **Guest Path**: Register → Request Guest Approval → Admin Approval → Event Access\n2. **Member Path**: Register → Apply for Membership → Admin Approval → Payment → Full Access\n\n## Setup Instructions:\n1. Import this collection into Postman\n2. Set up environment variables (see Variables tab)\n3. Use the Auth endpoints to get access tokens\n4. Copy the token to Authorization header for protected endpoints\n5. Configure Supabase webhooks pointing to /api/v1/webhooks/auth/* endpoints\n\n## Base URL: {{baseUrl}}/api/v1\n\nContact: dev@axleglobal.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Dr. John Doe\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.session && response.session.access_token) {",
+									"        pm.environment.set('accessToken', response.session.access_token);",
+									"        console.log('Access token saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Login with email and password. Automatically saves access token to environment."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Current User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get current user profile and metadata"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/reset-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"reset-password"
+							]
+						},
+						"description": "Send password reset email"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Logout user (clear token on client side)"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user registration, login, and profile management"
+		},
+		{
+			"name": "Membership",
+			"item": [
+				{
+					"name": "Submit Application",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Dr. John Doe\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Orthopedic Surgery\",\n  \"hospital\": \"National Hospital of Sri Lanka\",\n  \"role\": \"consultant\",\n  \"cv\": \"Dr. John Doe is a senior orthopedic surgeon with 15 years of experience in joint replacement procedures. He graduated from University of Colombo Faculty of Medicine and completed his specialized training in orthopedics at the National Hospital. He has published multiple research papers on knee replacement techniques and has been involved in training junior doctors.\",\n  \"documents\": [\n    \"https://example.com/document1.pdf\",\n    \"https://example.com/document2.pdf\"\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/apply",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"apply"
+							]
+						},
+						"description": "Submit membership application with documents"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Membership Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"status"
+							]
+						},
+						"description": "Get current user's membership status and details"
+					},
+					"response": []
+				},
+				{
+					"name": "Renew Membership",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentMethod\": \"card\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/renew",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"renew"
+							]
+						},
+						"description": "Renew expired membership"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Members (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/members?status=pending&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"members"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "Filter by status: pending, active, expired, rejected"
+								},
+								{
+									"key": "role",
+									"value": "consultant",
+									"description": "Filter by role: guest, trainee, consultant, admin",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "john",
+									"description": "Search by name, email, or membership ID",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all members with filtering and pagination (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Application (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"approved\",\n  \"membershipId\": \"SLOA-2024-001\",\n  \"expiryDate\": \"2025-12-31\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/members/{{applicationId}}/process",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"members",
+								"{{applicationId}}",
+								"process"
+							]
+						},
+						"description": "Approve or reject membership application (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Membership management endpoints for applications, renewals, and admin operations"
+		},
+		{
+			"name": "Guests",
+			"item": [
+				{
+					"name": "Request Guest Approval",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"Dr. Jane Smith\",\n  \"reason\": \"I am a medical professional interested in attending SLOA events to stay updated with latest orthopedic developments.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/guests/request-approval",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"guests",
+								"request-approval"
+							]
+						},
+						"description": "Request guest approval for event registration access"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Guest Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/guests/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"guests",
+								"status"
+							]
+						},
+						"description": "Get current guest status and permissions"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Pending Guest Requests (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/guests/pending?search=&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"guests",
+								"pending"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "",
+									"description": "Search by name or email"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get list of pending guest approval requests (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Process Guest Request (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"approved\",\n  \"note\": \"Welcome to SLOA events! You now have access to register for our events.\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/guests/{{guestUserId}}/process",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"guests",
+								"{{guestUserId}}",
+								"process"
+							]
+						},
+						"description": "Approve or reject guest request (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Guest Statistics (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/guests/statistics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"guests",
+								"statistics"
+							]
+						},
+						"description": "Get guest approval statistics (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Guest management endpoints for approval workflow and event access"
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get All Events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events?upcoming=true&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							],
+							"query": [
+								{
+									"key": "upcoming",
+									"value": "true",
+									"description": "Filter for upcoming events only"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all public events with pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Get detailed information about a specific event"
+					},
+					"response": []
+				},
+				{
+					"name": "Register for Event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}",
+								"register"
+							]
+						},
+						"description": "Register for an event (requires active membership)"
+					},
+					"response": []
+				},
+				{
+					"name": "Unregister from Event",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}",
+								"register"
+							]
+						},
+						"description": "Unregister from an event"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Registrations",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/user/registrations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"user",
+								"registrations"
+							]
+						},
+						"description": "Get current user's event registrations"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Event (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Annual SLOA Conference 2024\",\n  \"description\": \"Join us for the annual conference featuring the latest in orthopedic surgery\",\n  \"date\": \"2024-12-15\",\n  \"time\": \"09:00\",\n  \"location\": \"Colombo Convention Centre\",\n  \"posterUrl\": \"https://example.com/poster.jpg\",\n  \"programUrl\": \"https://example.com/program.pdf\",\n  \"agenda\": [\n    {\n      \"time\": \"09:00 AM\",\n      \"topic\": \"Registration & Welcome Coffee\",\n      \"speaker\": \"Event Team\"\n    },\n    {\n      \"time\": \"10:00 AM\",\n      \"topic\": \"Keynote: Advances in Orthopedic Surgery\",\n      \"speaker\": \"Dr. Rajesh Kumar\"\n    },\n    {\n      \"time\": \"11:30 AM\",\n      \"topic\": \"Coffee Break\",\n      \"speaker\": \"N/A\"\n    },\n    {\n      \"time\": \"12:00 PM\",\n      \"topic\": \"Panel Discussion: Future of Orthopedics\",\n      \"speaker\": \"Multiple Speakers\"\n    }\n  ],\n  \"isRegistrationOpen\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events"
+							]
+						},
+						"description": "Create a new event (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Event (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Event Title\",\n  \"isRegistrationOpen\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Update event details (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Event (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Delete an event (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event Attendees (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}/attendees",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"events",
+								"{{eventId}}",
+								"attendees"
+							]
+						},
+						"description": "Get list of event attendees (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Event management endpoints for viewing, registration, and admin operations"
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Create Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"membership\",\n  \"amount\": 10000,\n  \"eventId\": \"optional-for-event-payments\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/payments/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"create"
+							]
+						},
+						"description": "Create a payment session for membership, renewal, or event"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Payment History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/payments/history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"history"
+							]
+						},
+						"description": "Get current user's payment history"
+					},
+					"response": []
+				},
+				{
+					"name": "Payment Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentId\": \"payment-id-from-gateway\",\n  \"status\": \"success\",\n  \"gatewayRef\": \"gateway-reference-id\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/payments/webhook",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"webhook"
+							]
+						},
+						"description": "Webhook endpoint for payment gateway notifications"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Payments (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/payments/all?status=success&type=membership&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"payments",
+								"all"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "success",
+									"description": "Filter by status: success, failed"
+								},
+								{
+									"key": "type",
+									"value": "membership",
+									"description": "Filter by type: membership, renewal, event"
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all payments with filtering (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Payment processing endpoints for membership fees, renewals, and event payments"
+		},
+		{
+			"name": "Analytics (Admin)",
+			"item": [
+				{
+					"name": "Dashboard Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/dashboard",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"dashboard"
+							]
+						},
+						"description": "Get overview statistics for admin dashboard"
+					},
+					"response": []
+				},
+				{
+					"name": "Membership Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/membership/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"membership",
+								"stats"
+							]
+						},
+						"description": "Get membership statistics by role and status"
+					},
+					"response": []
+				},
+				{
+					"name": "Registration Trends",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/membership/trends?months=12",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"membership",
+								"trends"
+							],
+							"query": [
+								{
+									"key": "months",
+									"value": "12",
+									"description": "Number of months to include in trends"
+								}
+							]
+						},
+						"description": "Get monthly registration trends"
+					},
+					"response": []
+				},
+				{
+					"name": "Event Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/events/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"events",
+								"stats"
+							]
+						},
+						"description": "Get event statistics and attendance data"
+					},
+					"response": []
+				},
+				{
+					"name": "Top Events",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/events/top?limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"events",
+								"top"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of top events to return"
+								}
+							]
+						},
+						"description": "Get top events by registration count"
+					},
+					"response": []
+				},
+				{
+					"name": "Revenue Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/revenue",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"revenue"
+							]
+						},
+						"description": "Get revenue statistics and monthly trends"
+					},
+					"response": []
+				},
+				{
+					"name": "Member Activity",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/analytics/activity",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"analytics",
+								"activity"
+							]
+						},
+						"description": "Get member activity summary"
+					},
+					"response": []
+				}
+			],
+			"description": "Analytics endpoints for dashboard statistics and reporting (Admin only)"
+		},
+		{
+			"name": "File Upload & Compression",
+			"item": [
+				{
+					"name": "Upload Membership Documents",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "documents",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "documents",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/upload/documents/membership",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"documents",
+								"membership"
+							]
+						},
+						"description": "Upload membership documents (PDF, DOC, images). Max 5 files, 10MB each."
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Event Poster (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "poster",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/upload/events/{{eventId}}/poster",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"events",
+								"{{eventId}}",
+								"poster"
+							]
+						},
+						"description": "Upload event poster image (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Event Program (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "program",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/upload/events/{{eventId}}/program",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"events",
+								"{{eventId}}",
+								"program"
+							]
+						},
+						"description": "Upload event program document (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Signed URL",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/upload/signed-url/{{bucket}}/{{filePath}}?expiresIn=3600",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"signed-url",
+								"{{bucket}}",
+								"{{filePath}}"
+							],
+							"query": [
+								{
+									"key": "expiresIn",
+									"value": "3600",
+									"description": "URL expiration time in seconds"
+								}
+							]
+						},
+						"description": "Get signed URL for private file access"
+					},
+					"response": []
+				},
+				{
+					"name": "Compress Single File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "quality",
+									"value": "85",
+									"description": "Compression quality (1-100)"
+								},
+								{
+									"key": "maxWidth",
+									"value": "1920",
+									"description": "Maximum width for images"
+								},
+								{
+									"key": "maxHeight",
+									"value": "1080",
+									"description": "Maximum height for images"
+								},
+								{
+									"key": "format",
+									"value": "jpeg",
+									"description": "Output format (jpeg, png, webp)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/files/compress",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"compress"
+							]
+						},
+						"description": "Compress and optimize a single file"
+					},
+					"response": []
+				},
+				{
+					"name": "Get File Information",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/files/info",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"info"
+							]
+						},
+						"description": "Get detailed file information and metadata"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Image Variants",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/files/image/variants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"image",
+								"variants"
+							]
+						},
+						"description": "Create multiple image sizes (thumbnail, medium, large, original)"
+					},
+					"response": []
+				},
+				{
+					"name": "Batch Compress Files",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/files/batch/compress",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"batch",
+								"compress"
+							]
+						},
+						"description": "Compress multiple files in batch (max 10 files)"
+					},
+					"response": []
+				},
+				{
+					"name": "Validate File",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/files/validate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"validate"
+							]
+						},
+						"description": "Validate file type, size, and get security hash"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Compression Statistics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/files/batch/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"files",
+								"batch",
+								"stats"
+							]
+						},
+						"description": "Get compression statistics for multiple files"
+					},
+					"response": []
+				}
+			],
+			"description": "File upload endpoints for documents, images, and other media"
+		},
+		{
+			"name": "Data Export (Admin)",
+			"item": [
+				{
+					"name": "Export Members",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/export/members?status=active&role=consultant",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"export",
+								"members"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "active",
+									"description": "Filter by status"
+								},
+								{
+									"key": "role",
+									"value": "consultant",
+									"description": "Filter by role"
+								},
+								{
+									"key": "search",
+									"value": "john",
+									"description": "Search term",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Export members list to CSV"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Events",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/export/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"export",
+								"events"
+							]
+						},
+						"description": "Export events list to CSV"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Event Attendees",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/export/events/{{eventId}}/attendees",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"export",
+								"events",
+								"{{eventId}}",
+								"attendees"
+							]
+						},
+						"description": "Export event attendees to CSV"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Payments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/export/payments?status=success&type=membership",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"export",
+								"payments"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "success",
+									"description": "Filter by status"
+								},
+								{
+									"key": "type",
+									"value": "membership",
+									"description": "Filter by type"
+								},
+								{
+									"key": "startDate",
+									"value": "2024-01-01",
+									"description": "Start date filter",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "2024-12-31",
+									"description": "End date filter",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Export payments data to CSV"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Analytics",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/export/analytics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"export",
+								"analytics"
+							]
+						},
+						"description": "Export analytics summary to CSV"
+					},
+					"response": []
+				}
+			],
+			"description": "Data export endpoints for generating CSV reports (Admin only)"
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check API health status"
+					},
+					"response": []
+				},
+				{
+					"name": "API Information",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								""
+							]
+						},
+						"description": "Get API information and available endpoints"
+					},
+					"response": []
+				}
+			],
+			"description": "System endpoints for health checks and API information"
+		},
+		{
+			"name": "User Sync (Admin)",
+			"item": [
+				{
+					"name": "Get Sync Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/sync/status",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sync",
+								"status"
+							]
+						},
+						"description": "Get overall user synchronization status and health check"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify User Sync",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/sync/users/verify",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sync",
+								"users",
+								"verify"
+							]
+						},
+						"description": "Verify user synchronization between Supabase Auth and users table"
+					},
+					"response": []
+				},
+				{
+					"name": "Sync All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/sync/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sync",
+								"users"
+							]
+						},
+						"description": "Synchronize all users from Supabase Auth to users table"
+					},
+					"response": []
+				},
+				{
+					"name": "Cleanup Orphaned Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/sync/users/orphaned",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"sync",
+								"users",
+								"orphaned"
+							]
+						},
+						"description": "Clean up orphaned users (users in DB but not in Supabase Auth) - Use with caution"
+					},
+					"response": []
+				}
+			],
+			"description": "User synchronization endpoints for managing sync between Supabase Auth and users table (Admin only)"
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "User Created Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"INSERT\",\n  \"table\": \"auth.users\",\n  \"record\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"newuser@example.com\",\n    \"raw_user_meta_data\": {\n      \"full_name\": \"John Doe\",\n      \"role\": \"guest\",\n      \"status\": \"pending\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/webhooks/auth/user-created",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								"auth",
+								"user-created"
+							]
+						},
+						"description": "Webhook endpoint for Supabase Auth user creation events"
+					},
+					"response": []
+				},
+				{
+					"name": "User Updated Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"type\": \"UPDATE\",\n  \"table\": \"auth.users\",\n  \"record\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"user@example.com\",\n    \"raw_user_meta_data\": {\n      \"full_name\": \"John Doe Updated\",\n      \"role\": \"guest\",\n      \"status\": \"approved_guest\"\n    }\n  }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/webhooks/auth/user-updated",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"webhooks",
+								"auth",
+								"user-updated"
+							]
+						},
+						"description": "Webhook endpoint for Supabase Auth user update events"
+					},
+					"response": []
+				}
+			],
+			"description": "Webhook endpoints for Supabase Auth integration and automatic user synchronization"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"description": "Base URL for the SLOA API"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"description": "Access token for authenticated requests (auto-populated by login)"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"description": "Admin access token for admin-only endpoints"
+		},
+		{
+			"key": "eventId",
+			"value": "",
+			"description": "Sample event ID for testing"
+		},
+						{
+					"key": "applicationId",
+					"value": "",
+					"description": "Sample application ID for testing"
+				},
+				{
+					"key": "guestUserId",
+					"value": "",
+					"description": "Sample guest user ID for testing guest approval"
+				},
+				{
+					"key": "userToken",
+					"value": "",
+					"description": "User access token for member/guest endpoints"
+				},
+		{
+			"key": "bucket",
+			"value": "documents",
+			"description": "Supabase storage bucket name"
+		},
+		{
+			"key": "filePath",
+			"value": "memberships/user-id/document.pdf",
+			"description": "Sample file path for signed URL"
+		}
+	]
+}
