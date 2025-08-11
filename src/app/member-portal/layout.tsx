@@ -79,7 +79,7 @@ export default function MemberPortalLayout({
         ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         sidebar
       `}>
-        <div className="flex h-full flex-col">
+        <div className="flex h-auto flex-col">
           {/* User Info */}
           <div className="border-b p-4">
             <div className="flex items-center space-x-3">
