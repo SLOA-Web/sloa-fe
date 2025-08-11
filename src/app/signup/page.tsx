@@ -2,32 +2,17 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import api from '@/utils/api';
 
-const MemberRegistrationPage = () => {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    password: '',
-    nic: '',
-    specialization: '',
-    hospital: '',
-    role: '',
-    cv: '',
-  });
-  const [files, setFiles] = useState<FileList | null>(null);
+const SignupPage = () => {
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFiles(e.target.files);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,109 +20,91 @@ const MemberRegistrationPage = () => {
     setError(null);
 
     try {
-      // Step 1: Register the user and get the access token
-      const registrationData = await api.post('/api/v1/auth/register', {
-        fullName: formData.fullName,
-        email: formData.email,
-        password: formData.password,
-      });
-      
-      const accessToken = registrationData.session?.access_token;
-      if (!accessToken) {
-        throw new Error('Registration succeeded, but failed to log in automatically.');
-      }
-      localStorage.setItem('accessToken', accessToken);
-
-      // Step 2: Upload documents if they exist
-      let documentUrls: string[] = [];
-      if (files && files.length > 0) {
-        const uploadFormData = new FormData();
-        for (let i = 0; i < files.length; i++) {
-          uploadFormData.append('documents', files[i]);
-        }
-        const uploadData = await api.postFormData('/api/v1/upload/documents/membership', uploadFormData, accessToken);
-        documentUrls = uploadData.urls;
-      }
-
-      // Step 3: Submit the membership application
-      const { email, password, ...applicationData } = formData;
-      await api.post('/api/v1/membership/apply', { ...applicationData, documents: documentUrls }, accessToken);
-
-      // Step 4: Redirect to status page
-      router.push('/application-status');
-
+      await api.post('/api/v1/auth/register', { fullName, email, password });
+      router.push('/login?registered=true'); // Redirect to login with a success message
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message || 'An unexpected error occurred.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen py-12 bg-gray-100">
-      <div className="w-full max-w-3xl p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-3xl font-bold text-center text-gray-900">Member Registration</h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg">
+        <div className="text-center">
+          <h2 className="text-3xl font-extrabold text-gray-900">Create Your Account</h2>
+          <p className="mt-2 text-sm text-gray-600">Join our community of medical professionals</p>
+        </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && <p className="text-sm text-center text-red-500">{error}</p>}
-          
-          <div className="p-4 border rounded-md">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Account Details</h3>
-            <div className="grid grid-cols-1 gap-6 mt-4 md:grid-cols-2">
-              <div>
-                <label htmlFor="fullName" className="text-sm font-medium text-gray-700">Full Name</label>
-                <input id="fullName" name="fullName" type="text" required value={formData.fullName} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-              <div>
-                <label htmlFor="email" className="text-sm font-medium text-gray-700">Email Address</label>
-                <input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-              </div>
-              <div>
-                <label htmlFor="password" className="text-sm font-medium text-gray-700">Password</label>
-                <input id="password" name="password" type="password" required value={formData.password} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-              </div>
+          {error && (
+            <div className="p-3 text-sm text-center text-red-800 bg-red-100 border border-red-200 rounded-lg">
+              {error}
             </div>
+          )}
+          <div className="relative">
+            <User className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
+            <input
+              id="fullName"
+              name="fullName"
+              type="text"
+              autoComplete="name"
+              required
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              placeholder="Full Name"
+              className="w-full py-3 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
-
-          <div className="p-4 border rounded-md">
-            <h3 className="text-lg font-medium leading-6 text-gray-900">Professional Information</h3>
-            <div className="grid grid-cols-1 gap-6 mt-4 md:grid-cols-2">
-                <div>
-                    <label htmlFor="nic" className="text-sm font-medium text-gray-700">NIC</label>
-                    <input id="nic" name="nic" type="text" required value={formData.nic} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-                <div>
-                    <label htmlFor="specialization" className="text-sm font-medium text-gray-700">Specialization</label>
-                    <input id="specialization" name="specialization" type="text" required value={formData.specialization} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-                <div>
-                    <label htmlFor="hospital" className="text-sm font-medium text-gray-700">Hospital</label>
-                    <input id="hospital" name="hospital" type="text" required value={formData.hospital} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-                <div>
-                    <label htmlFor="role" className="text-sm font-medium text-gray-700">Role</label>
-                    <input id="role" name="role" type="text" required value={formData.role} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
-                </div>
-            </div>
-            <div className="mt-6">
-                <label htmlFor="cv" className="text-sm font-medium text-gray-700">CV (Optional)</label>
-                <textarea id="cv" name="cv" rows={4} value={formData.cv} onChange={handleChange} className="w-full px-3 py-2 mt-1 text-black border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"></textarea>
-            </div>
-             <div className="mt-6">
-                <label htmlFor="documents" className="text-sm font-medium text-gray-700">Upload Supporting Documents (Optional)</label>
-                <input id="documents" name="documents" type="file" multiple onChange={handleFileChange} className="w-full px-3 py-2 mt-1 text-sm text-black border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
-            </div>
+          <div className="relative">
+            <Mail className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email address"
+              className="w-full py-3 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
           </div>
-
+          <div className="relative">
+            <Lock className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? 'text' : 'password'}
+              autoComplete="new-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password"
+              className="w-full py-3 pl-10 pr-10 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute text-gray-500 top-3 right-3"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           <div>
-            <button type="submit" disabled={loading} className="w-full px-4 py-3 font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50">
-              {loading ? 'Submitting Registration...' : 'Submit Registration'}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60 transition-transform transform hover:scale-105"
+            >
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </div>
         </form>
         <p className="text-sm text-center text-gray-600">
           Already have an account?{' '}
-          <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-            Login
+          <Link href="/login" passHref className="font-medium text-blue-600 hover:text-blue-500">
+            Sign In
           </Link>
         </p>
       </div>
@@ -145,4 +112,4 @@ const MemberRegistrationPage = () => {
   );
 };
 
-export default MemberRegistrationPage;
+export default SignupPage;

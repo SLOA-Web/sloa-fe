@@ -5,18 +5,14 @@ const getApiBaseUrl = () => {
 };
 
 const api = {
-  async post(endpoint: string, body: any, token?: string | null) {
-    const headers: HeadersInit = {
-      'Content-Type': 'application/json',
-    };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
+  async post(endpoint: string, body: any) {
     const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
       method: 'POST',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(body),
+      credentials: 'include', // Send cookies with requests
     });
 
     if (!response.ok) {
@@ -26,15 +22,10 @@ const api = {
     return response.json();
   },
 
-  async get(endpoint: string, token: string | null) {
-    const headers: HeadersInit = {};
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
+  async get(endpoint: string) {
     const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
       method: 'GET',
-      headers,
+      credentials: 'include', // Send cookies with requests
     });
 
     if (!response.ok) {
