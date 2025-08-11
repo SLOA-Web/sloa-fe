@@ -45,7 +45,7 @@ const MembershipApplicationPage = () => {
         documentUrls = uploadData.urls;
       }
 
-      await api.post('/api/v1/membership/apply', { membership: { ...formData }, documents: documentUrls });
+      await api.post('/api/v1/membership/apply', { ...formData, documents: documentUrls });
 
       router.push('/application-status');
     } catch (err: any) {
