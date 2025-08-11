@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "sloa-api-collection",
 		"name": "SLOA Membership & Event Portal API",
-		"description": "Complete API collection for the Sri Lanka Orthopaedic Association (SLOA) Portal. This collection includes all endpoints for authentication, guest approval, membership management, events with agenda support, payments, user synchronization, webhooks, analytics, and file uploads.\n\n## New Features:\n- **Guest Approval Workflow**: Users can request guest access for event registration without payment\n- **Enhanced Event Management**: Events now support structured agenda with time/topic/speaker\n- **User Synchronization**: Admin tools for managing sync between Supabase Auth and database\n- **Webhook Integration**: Automatic user sync via Supabase webhooks\n\n## User Flow:\n1. **Guest Path**: Register → Request Guest Approval → Admin Approval → Event Access\n2. **Member Path**: Register → Apply for Membership → Admin Approval → Payment → Full Access\n\n## Setup Instructions:\n1. Import this collection into Postman\n2. Set up environment variables (see Variables tab)\n3. Use the Auth endpoints to get access tokens\n4. Copy the token to Authorization header for protected endpoints\n5. Configure Supabase webhooks pointing to /api/v1/webhooks/auth/* endpoints\n\n## Base URL: {{baseUrl}}/api/v1\n\nContact: dev@axleglobal.com",
+		"description": "Complete API collection for the Sri Lanka Orthopaedic Association (SLOA) Portal. This collection includes all endpoints for authentication, guest approval, membership management, events with agenda support, payments, user synchronization, webhooks, analytics, and file uploads.\n\n## New Features:\n- **Cookie-Based Authentication**: Secure HTTP-only cookies for better security (with Bearer token fallback)\n- **Enhanced Membership Management**: New endpoints for viewing applications (user & admin)\n- **Guest Approval Workflow**: Users can request guest access for event registration without payment\n- **Enhanced Event Management**: Events now support structured agenda with time/topic/speaker\n- **User Synchronization**: Admin tools for managing sync between Supabase Auth and database\n- **Webhook Integration**: Automatic user sync via Supabase webhooks\n- **Comprehensive Testing**: Health check endpoints and database connectivity tests\n\n## Authentication Methods:\n1. **Cookie-Based (Recommended)**: Login sets HTTP-only cookie automatically\n2. **Bearer Token**: Traditional Authorization header method (backward compatible)\n\n## User Flow:\n1. **Guest Path**: Register → Request Guest Approval → Admin Approval → Event Access\n2. **Member Path**: Register → Apply for Membership → Admin Approval → Payment → Full Access\n\n## Setup Instructions:\n1. Import this collection into Postman\n2. Set up environment variables (see Variables tab)\n3. Use the Auth endpoints to login (cookie auth works automatically)\n4. For Bearer token auth, copy token to Authorization header for protected endpoints\n5. Configure Supabase webhooks pointing to /api/v1/webhooks/auth/* endpoints\n\n## New Membership Endpoints:\n- `GET /membership/my-application` - View your own application\n- `GET /membership/applications` - Admin: View all applications with filtering\n- `GET /membership/applications/:id` - Admin: View specific application\n\n## Base URL: {{baseUrl}}/api/v1\n\nContact: dev@axleglobal.com",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -48,9 +48,17 @@
 								"exec": [
 									"if (pm.response.code === 200) {",
 									"    const response = pm.response.json();",
+									"    console.log('Login successful - Authentication cookie set automatically');",
+									"    console.log('User:', response.user);",
+									"    ",
+									"    // Note: With cookie-based auth, token is set as HTTP-only cookie",
+									"    // For testing purposes, you can still use Bearer token if needed",
+									"    // Check if session token is still provided for backward compatibility",
 									"    if (response.session && response.session.access_token) {",
 									"        pm.environment.set('accessToken', response.session.access_token);",
-									"        console.log('Access token saved to environment');",
+									"        console.log('Access token also saved to environment for header-based auth');",
+									"    } else {",
+									"        console.log('Using cookie-based authentication - no manual token handling needed');",
 									"    }",
 									"}"
 								],
@@ -82,7 +90,7 @@
 								"login"
 							]
 						},
-						"description": "Login with email and password. Automatically saves access token to environment."
+						"description": "Login with email and password. Sets secure HTTP-only authentication cookie automatically. Also provides backward compatibility with Bearer token auth. Cookie-based auth offers better security by preventing XSS attacks and handling token management automatically."
 					},
 					"response": []
 				},
@@ -174,7 +182,7 @@
 								"logout"
 							]
 						},
-						"description": "Logout user (clear token on client side)"
+						"description": "Logout user and clear authentication cookie. For cookie-based auth, this automatically clears the HTTP-only cookie. For Bearer token auth, you should also clear the token on client side."
 					},
 					"response": []
 				}
@@ -394,6 +402,129 @@
 							]
 						},
 						"description": "Approve or reject membership application (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Application",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/my-application",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"my-application"
+							]
+						},
+						"description": "Get current user's membership application details"
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Applications (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/applications?status=pending&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"applications"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "pending",
+									"description": "Filter by status: pending, approved, rejected"
+								},
+								{
+									"key": "role",
+									"value": "consultant",
+									"description": "Filter by role: consultant, trainee",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "john",
+									"description": "Search by name, email, or membership ID",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all membership applications with filtering and pagination (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Application by ID (Admin)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/applications/{{applicationId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"applications",
+								"{{applicationId}}"
+							]
+						},
+						"description": "Get specific membership application by ID (Admin only)"
 					},
 					"response": []
 				}
