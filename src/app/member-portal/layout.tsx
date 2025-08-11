@@ -91,7 +91,7 @@ export default function MemberPortalLayout({
                   {user?.fullName || 'User'}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {user?.email}
+                  {user?.email} 
                 </p>
                 <div className="flex items-center mt-1">
                   <div className="h-2 w-2 rounded-full bg-green-500"></div>
