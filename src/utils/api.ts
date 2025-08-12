@@ -10,7 +10,7 @@ const getCookie = (name: string): string | null => {
 const getApiBaseUrl = () => {
   // The API base URL is read from the `NEXT_PUBLIC_API_URL` environment variable.
   // This is configured in the `.env.local` file for local development.
-  return process.env.NEXT_PUBLIC_API_URL || '';
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 };
 
 const getAuthHeaders = () => {
