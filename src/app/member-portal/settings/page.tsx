@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import api from '@/utils/api';
 import { 
   User, 
   Shield, 
@@ -30,6 +31,14 @@ const SettingsPage = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('account');
+  
+  // Password update state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const [settings, setSettings] = useState({
     // Account settings
@@ -65,6 +74,66 @@ const SettingsPage = () => {
       ...prev,
       [key]: value
     }));
+  };
+
+  const handlePasswordUpdate = async () => {
+    // Clear previous messages
+    setPasswordError(null);
+    setPasswordSuccess(null);
+
+    // Validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError('All password fields are required');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters long');
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New password and confirm password do not match');
+      return;
+    }
+
+    if (!user?.email) {
+      setPasswordError('User email not found. Please log in again.');
+      return;
+    }
+
+    setIsUpdatingPassword(true);
+
+    try {
+      // Call the API to update password
+      const requestBody = {
+        currentPassword,
+        newPassword
+      };
+      
+      console.log('Sending password update request:', requestBody);
+      
+      await api.post('/api/v1/auth/change-password', requestBody);
+
+      setPasswordSuccess('Password updated successfully!');
+      
+      // Clear the form
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      
+    } catch (err: any) {
+      // Handle specific error cases
+      if (err.message.includes('404') || err.message.includes('Not Found')) {
+        setPasswordError('Password update endpoint not available yet. Please contact support.');
+      } else if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        setPasswordError('Current password is incorrect. Please try again.');
+      } else {
+        setPasswordError(err.message || 'Failed to update password. Please try again.');
+      }
+    } finally {
+      setIsUpdatingPassword(false);
+    }
   };
 
   const tabs = [
@@ -151,6 +220,18 @@ const SettingsPage = () => {
           <p className="card-description">Update your password to keep your account secure</p>
         </div>
         <div className="card-content space-y-4">
+          {/* Error and Success Messages */}
+          {passwordError && (
+            <div className="p-3 text-sm text-center text-red-800 bg-red-100 border border-red-200 rounded-lg">
+              {passwordError}
+            </div>
+          )}
+          {passwordSuccess && (
+            <div className="p-3 text-sm text-center text-green-800 bg-green-100 border border-green-200 rounded-lg">
+              {passwordSuccess}
+            </div>
+          )}
+          
           <div>
             <label className="text-sm font-medium text-foreground">Current Password</label>
             <div className="relative mt-1">
@@ -158,6 +239,12 @@ const SettingsPage = () => {
                 type={showCurrentPassword ? 'text' : 'password'}
                 className="input pr-10"
                 placeholder="Enter current password"
+                value={currentPassword}
+                onChange={(e) => {
+                  setCurrentPassword(e.target.value);
+                  setPasswordError(null);
+                  setPasswordSuccess(null);
+                }}
               />
               <button
                 type="button"
@@ -175,6 +262,12 @@ const SettingsPage = () => {
                 type={showNewPassword ? 'text' : 'password'}
                 className="input pr-10"
                 placeholder="Enter new password"
+                value={newPassword}
+                onChange={(e) => {
+                  setNewPassword(e.target.value);
+                  setPasswordError(null);
+                  setPasswordSuccess(null);
+                }}
               />
               <button
                 type="button"
@@ -192,6 +285,12 @@ const SettingsPage = () => {
                 type={showConfirmPassword ? 'text' : 'password'}
                 className="input pr-10"
                 placeholder="Confirm new password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value);
+                  setPasswordError(null);
+                  setPasswordSuccess(null);
+                }}
               />
               <button
                 type="button"
@@ -202,9 +301,22 @@ const SettingsPage = () => {
               </button>
             </div>
           </div>
-          <button className="btn btn-primary">
-            <Save className="h-4 w-4 mr-2" />
-            Update Password
+          <button 
+            className="btn btn-primary"
+            onClick={handlePasswordUpdate}
+            disabled={isUpdatingPassword}
+          >
+            {isUpdatingPassword ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Updating...
+              </>
+            ) : (
+              <>
+                <Save className="h-4 w-4 mr-2" />
+                Update Password
+              </>
+            )}
           </button>
         </div>
       </div>

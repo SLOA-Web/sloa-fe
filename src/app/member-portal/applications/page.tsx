@@ -17,24 +17,40 @@ import {
 } from 'lucide-react';
 import api from '@/utils/api';
 
-interface Application {
+interface UserProfile {
   id: string;
   userId: string;
-  fullName: string;
   nic: string;
   specialization: string;
   hospital: string;
-  role: 'consultant' | 'trainee';
-  location: 'local' | 'foreign';
   cv?: string;
+  guestReason?: string;
+  documents: string[];
+}
+
+interface User {
+  id: string;
+  email: string;
+  fullName: string;
+  role: string;
+  status: string;
+  location: 'local' | 'foreign';
+  membershipId?: string;
+  profile: UserProfile;
+}
+
+interface Application {
+  id: string;
+  userId: string;
+  role: 'consultant' | 'trainee';
   documents: string[];
   status: 'pending' | 'approved' | 'rejected';
   appliedAt: string;
   approvedAt?: string;
   rejectedAt?: string;
-  membershipId?: string;
   expiryDate?: string;
-  rejectionReason?: string;
+  lastRenewalReminderAt?: string;
+  user: User;
 }
 
 const ApplicationsPage = () => {
@@ -46,8 +62,8 @@ const ApplicationsPage = () => {
 
   const fetchApplication = async () => {
     try {
-      const data = await api.get('/api/v1/membership/my-application');
-      setApplication(data);
+      const response = await api.get('/api/v1/membership/my-application');
+      setApplication(response.application);
       setError(null);
     } catch (err: any) {
       if (err.message.includes('401')) {
@@ -138,10 +154,13 @@ const ApplicationsPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading application details...</p>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <RefreshCw className="h-12 w-12 animate-spin text-primary mx-auto mb-6" />
+            <h2 className="text-xl font-semibold mb-2">Loading Application</h2>
+            <p className="text-muted-foreground">Please wait while we fetch your application details...</p>
+          </div>
         </div>
       </div>
     );
@@ -149,16 +168,20 @@ const ApplicationsPage = () => {
 
   if (error) {
     return (
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <AlertCircle className="h-6 w-6 text-red-500" />
-            <h2 className="text-lg font-semibold text-red-800">Error Loading Application</h2>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="card p-8 bg-red-50 border-red-200">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-2 bg-red-500/10 rounded-lg">
+              <AlertCircle className="h-6 w-6 text-red-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-red-900 mb-2">Error Loading Application</h2>
+              <p className="text-red-800">{error}</p>
+            </div>
           </div>
-          <p className="text-red-700 mb-4">{error}</p>
           <button
             onClick={handleRefresh}
-            className="btn btn-outline btn-sm"
+            className="btn btn-outline btn-md"
             disabled={refreshing}
           >
             <RefreshCw className={`h-4 w-4 mr-2 ${refreshing ? 'animate-spin' : ''}`} />
@@ -171,19 +194,23 @@ const ApplicationsPage = () => {
 
   if (!application) {
     return (
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <FileText className="h-6 w-6 text-blue-500" />
-            <h2 className="text-lg font-semibold text-blue-800">No Application Found</h2>
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="card p-8 bg-blue-50 border-blue-200">
+          <div className="flex items-start gap-4 mb-6">
+            <div className="p-2 bg-blue-500/10 rounded-lg">
+              <FileText className="h-6 w-6 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-blue-900 mb-2">No Application Found</h2>
+              <p className="text-blue-800">
+                You haven't submitted a membership application yet. 
+                Click the button below to start your application process.
+              </p>
+            </div>
           </div>
-          <p className="text-blue-700 mb-4">
-            You haven't submitted a membership application yet. 
-            Click the button below to start your application process.
-          </p>
           <button
             onClick={() => router.push('/apply')}
-            className="btn btn-primary"
+            className="btn btn-primary btn-lg"
           >
             Apply for Membership
           </button>
@@ -243,11 +270,11 @@ const ApplicationsPage = () => {
             </div>
           )}
           
-          {application.membershipId && (
+          {application.user.membershipId && (
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-blue-500" />
               <span className="text-muted-foreground">Membership ID:</span>
-              <span className="font-medium font-mono">{application.membershipId}</span>
+              <span className="font-medium font-mono">{application.user.membershipId}</span>
             </div>
           )}
           
@@ -260,12 +287,7 @@ const ApplicationsPage = () => {
           )}
         </div>
 
-        {application.rejectionReason && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <h3 className="text-sm font-semibold text-red-800 mb-2">Rejection Reason</h3>
-            <p className="text-red-700 text-sm">{application.rejectionReason}</p>
-          </div>
-        )}
+
       </div>
 
       {/* Personal Information */}
@@ -276,7 +298,7 @@ const ApplicationsPage = () => {
             <User className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Full Name</p>
-              <p className="font-medium">{application.fullName}</p>
+              <p className="font-medium">{application.user.fullName}</p>
             </div>
           </div>
           
@@ -284,7 +306,7 @@ const ApplicationsPage = () => {
             <FileText className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">NIC Number</p>
-              <p className="font-medium font-mono">{application.nic}</p>
+              <p className="font-medium font-mono">{application.user.profile.nic}</p>
             </div>
           </div>
           
@@ -292,7 +314,7 @@ const ApplicationsPage = () => {
             <GraduationCap className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Specialization</p>
-              <p className="font-medium">{application.specialization}</p>
+              <p className="font-medium">{application.user.profile.specialization}</p>
             </div>
           </div>
           
@@ -300,7 +322,7 @@ const ApplicationsPage = () => {
             <Building className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Hospital</p>
-              <p className="font-medium">{application.hospital}</p>
+              <p className="font-medium">{application.user.profile.hospital}</p>
             </div>
           </div>
           
@@ -316,38 +338,40 @@ const ApplicationsPage = () => {
             <MapPin className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="text-sm text-muted-foreground">Location</p>
-              <p className="font-medium capitalize">{application.location}</p>
+              <p className="font-medium capitalize">{application.user.location}</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* CV Section */}
-      {application.cv && (
-        <div className="bg-card border rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Curriculum Vitae</h2>
-          <div className="bg-muted/50 rounded-lg p-4">
-            <p className="text-sm whitespace-pre-wrap">{application.cv}</p>
+      {application.user.profile.cv && (
+        <div className="card p-8">
+          <h2 className="text-xl font-semibold mb-6">Curriculum Vitae</h2>
+          <div className="bg-muted/30 rounded-lg p-6">
+            <p className="text-base leading-relaxed whitespace-pre-wrap">{application.user.profile.cv}</p>
           </div>
         </div>
       )}
 
       {/* Documents Section */}
       {application.documents && application.documents.length > 0 && (
-        <div className="bg-card border rounded-lg p-6">
-          <h2 className="text-lg font-semibold mb-4">Supporting Documents</h2>
-          <div className="space-y-2">
+        <div className="card p-8">
+          <h2 className="text-xl font-semibold mb-6">Supporting Documents</h2>
+          <div className="space-y-4">
             {application.documents.map((doc, index) => (
-              <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                <div className="flex items-center gap-3">
-                  <FileText className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm font-medium">
+              <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                <div className="flex items-center gap-4">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <FileText className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <span className="font-medium">
                     Document {index + 1}
                   </span>
                 </div>
                 <button
                   onClick={() => downloadDocument(doc, `document-${index + 1}.pdf`)}
-                  className="btn btn-outline btn-sm"
+                  className="btn btn-outline btn-md"
                 >
                   <Download className="h-4 w-4 mr-2" />
                   Download
@@ -359,26 +383,38 @@ const ApplicationsPage = () => {
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      <div className="space-y-6">
         {application.status === 'rejected' && (
-          <button
-            onClick={() => router.push('/apply')}
-            className="btn btn-primary"
-          >
-            Reapply for Membership
-          </button>
+          <div className="card p-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Application Rejected</h3>
+                <p className="text-muted-foreground">Your application was not approved. You can reapply for membership.</p>
+              </div>
+              <button
+                onClick={() => router.push('/apply')}
+                className="btn btn-primary btn-lg"
+              >
+                Reapply for Membership
+              </button>
+            </div>
+          </div>
         )}
         
         {application.status === 'pending' && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-2">
-              <Clock className="h-4 w-4 text-blue-500" />
-              <span className="text-sm font-medium text-blue-800">Application Under Review</span>
+          <div className="card p-6 bg-blue-50 border-blue-200">
+            <div className="flex items-start gap-4">
+              <div className="p-2 bg-blue-500/10 rounded-lg">
+                <Clock className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">Application Under Review</h3>
+                <p className="text-blue-800">
+                  Your application is currently being reviewed by our team. 
+                  You will be notified once a decision has been made.
+                </p>
+              </div>
             </div>
-            <p className="text-sm text-blue-700">
-              Your application is currently being reviewed by our team. 
-              You will be notified once a decision has been made.
-            </p>
           </div>
         )}
       </div>
