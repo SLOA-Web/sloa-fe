@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 
 const Header = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -26,13 +26,6 @@ const Header = () => {
     logout();
     setIsUserMenuOpen(false);
   };
-
-  const memberPortalLinks = [
-    { name: 'Dashboard', href: '/member-portal', icon: LayoutDashboard },
-    { name: 'Profile', href: '/member-portal/profile', icon: User },
-    { name: 'Applications', href: '/member-portal/applications', icon: FileText },
-    { name: 'Settings', href: '/member-portal/settings', icon: Settings },
-  ];
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -63,33 +56,6 @@ const Header = () => {
             <FileText className="h-4 w-4" />
             Apply
           </Link>
-          <Link 
-            href="/about" 
-            className="nav-item text-sm font-medium transition-colors hover:text-foreground"
-          >
-            <Users className="h-4 w-4" />
-            About
-          </Link>
-          
-          {/* Member Portal Navigation - Only show when logged in */}
-          {user && (
-            <>
-              <div className="h-4 w-px bg-border"></div>
-              {memberPortalLinks.map((link) => {
-                const Icon = link.icon;
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className="nav-item text-sm font-medium transition-colors hover:text-foreground"
-                  >
-                    <Icon className="h-4 w-4" />
-                    {link.name}
-                  </Link>
-                );
-              })}
-            </>
-          )}
         </nav>
 
         {/* Right side - Search, Notifications, User */}
@@ -111,75 +77,87 @@ const Header = () => {
           </button>
 
           {/* User Menu */}
-          {user ? (
-            <div className="relative">
-              <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="btn btn-ghost btn-sm flex items-center space-x-2"
-              >
-                <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center">
-                  <User className="h-4 w-4 text-primary" />
-                </div>
-                <span className="hidden sm:block text-sm font-medium">
-                  {user.fullName || user.email}
-                </span>
-                <ChevronDown className="h-4 w-4" />
-              </button>
+          {!isLoading && (
+            <>
+              {user ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                    className="btn btn-ghost btn-sm flex items-center space-x-2"
+                  >
+                    <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center">
+                      <User className="h-4 w-4 text-primary" />
+                    </div>
+                    <span className="hidden sm:block text-sm font-medium">
+                      {user.fullName || user.email || 'User'}
+                    </span>
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
 
-              {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-md border bg-background shadow-lg animate-in slide-in-from-top">
-                  <div className="p-2">
-                    <div className="px-3 py-2 text-sm text-muted-foreground">
-                      Signed in as
+                  {isUserMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 rounded-md border bg-background shadow-lg animate-in slide-in-from-top">
+                      <div className="p-2">
+                        <div className="px-3 py-2 text-sm text-muted-foreground">
+                          Signed in as
+                        </div>
+                        <div className="px-3 py-1 text-sm font-medium">
+                          {user.email || user.id || 'User'}
+                        </div>
+                        <div className="mt-2 border-t pt-2">
+                          <Link
+                            href="/member-portal"
+                            className="nav-item w-full"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <LayoutDashboard className="h-4 w-4" />
+                            Dashboard
+                          </Link>
+                          <Link
+                            href="/member-portal/profile"
+                            className="nav-item w-full"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <User className="h-4 w-4" />
+                            Profile
+                          </Link>
+                          <Link
+                            href="/member-portal/settings"
+                            className="nav-item w-full"
+                            onClick={() => setIsUserMenuOpen(false)}
+                          >
+                            <Settings className="h-4 w-4" />
+                            Settings
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="nav-item w-full text-destructive hover:text-destructive"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            Sign out
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="px-3 py-1 text-sm font-medium">
-                      {user.email}
-                    </div>
-                    <div className="mt-2 border-t pt-2">
-                      <Link
-                        href="/member-portal"
-                        className="nav-item w-full"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <LayoutDashboard className="h-4 w-4" />
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/member-portal/profile"
-                        className="nav-item w-full"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <User className="h-4 w-4" />
-                        Profile
-                      </Link>
-                      <Link
-                        href="/member-portal/settings"
-                        className="nav-item w-full"
-                        onClick={() => setIsUserMenuOpen(false)}
-                      >
-                        <Settings className="h-4 w-4" />
-                        Settings
-                      </Link>
-                      <button
-                        onClick={handleLogout}
-                        className="nav-item w-full text-destructive hover:text-destructive"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        Sign out
-                      </button>
-                    </div>
-                  </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link href="/login" className="btn btn-outline btn-sm">
+                    Sign in
+                  </Link>
+                  <Link href="/signup" className="btn btn-primary btn-sm">
+                    Sign up
+                  </Link>
                 </div>
               )}
-            </div>
-          ) : (
+            </>
+          )}
+
+          {/* Loading state */}
+          {isLoading && (
             <div className="flex items-center space-x-2">
-              <Link href="/login" className="btn btn-outline btn-sm">
-                Sign in
-              </Link>
-              <Link href="/signup" className="btn btn-primary btn-sm">
-                Sign up
-              </Link>
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+              <span className="text-sm text-muted-foreground">Loading...</span>
             </div>
           )}
 
@@ -222,37 +200,8 @@ const Header = () => {
                 <FileText className="h-4 w-4" />
                 Apply
               </Link>
-              <Link 
-                href="/about" 
-                className="nav-item"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Users className="h-4 w-4" />
-                About
-              </Link>
-              
-              {/* Member Portal Links for Mobile */}
-              {user && (
-                <>
-                  <div className="h-px bg-border my-2"></div>
-                  {memberPortalLinks.map((link) => {
-                    const Icon = link.icon;
-                    return (
-                      <Link
-                        key={link.name}
-                        href={link.href}
-                        className="nav-item"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        <Icon className="h-4 w-4" />
-                        {link.name}
-                      </Link>
-                    );
-                  })}
-                </>
-              )}
             </nav>
-            {!user && (
+            {!isLoading && !user && (
               <div className="flex flex-col space-y-2 pt-4 border-t">
                 <Link 
                   href="/login" 

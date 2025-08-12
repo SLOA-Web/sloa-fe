@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Hourglass, CheckCircle, XCircle, HelpCircle, RefreshCw, Mail } from 'lucide-react';
 import api from '@/utils/api';
+import { handleApiError, isAuthError } from '@/utils/errorHandler';
 
 const ApplicationStatusPage = () => {
   const [status, setStatus] = useState<any>(null);
@@ -16,11 +17,8 @@ const ApplicationStatusPage = () => {
         const data = await api.get('/api/v1/membership/status');
         setStatus(data);
       } catch (err: any) {
-        if (err.message.includes('401')) {
-          router.push('/login');
-        } else {
-          setError(err.message || 'Failed to fetch application status.');
-        }
+        const errorMessage = handleApiError(err, router);
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

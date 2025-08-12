@@ -16,6 +16,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import api from '@/utils/api';
+import { handleApiError, isAuthError } from '@/utils/errorHandler';
 
 interface UserProfile {
   id: string;
@@ -66,11 +67,8 @@ const ApplicationsPage = () => {
       setApplication(response.application);
       setError(null);
     } catch (err: any) {
-      if (err.message.includes('401')) {
-        router.push('/login');
-        return;
-      }
-      setError(err.message || 'Failed to fetch application details.');
+      const errorMessage = handleApiError(err, router);
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);

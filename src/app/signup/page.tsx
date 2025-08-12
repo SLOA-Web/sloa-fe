@@ -2,8 +2,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
 import api from '@/utils/api';
+import AuthRedirect from '@/components/AuthRedirect';
 
 const SignupPage = () => {
   const [fullName, setFullName] = useState('');
@@ -30,85 +31,161 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Create Your Account</h2>
-          <p className="mt-2 text-sm text-gray-600">Join our community of medical professionals</p>
-        </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {error && (
-            <div className="p-3 text-sm text-center text-red-800 bg-red-100 border border-red-200 rounded-lg">
-              {error}
+    <AuthRedirect>
+      <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
+        <div className="w-full max-w-md space-y-8">
+          {/* Header */}
+          <div className="text-center space-y-2">
+            <div className="flex justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                <Shield className="h-6 w-6" />
+              </div>
             </div>
-          )}
-          <div className="relative">
-            <User className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
-            <input
-              id="fullName"
-              name="fullName"
-              type="text"
-              autoComplete="name"
-              required
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Full Name"
-              className="w-full py-3 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+            <h1 className="text-2xl font-bold text-foreground">Create your account</h1>
+            <p className="text-muted-foreground">
+              Join our community of medical professionals
+            </p>
           </div>
-          <div className="relative">
-            <Mail className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email address"
-              className="w-full py-3 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
+
+          {/* Signup Form */}
+          <div className="card">
+            <div className="card-content">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="p-4 text-sm text-destructive-foreground bg-destructive/10 border border-destructive/20 rounded-lg flex items-center space-x-2">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span>{error}</span>
+                  </div>
+                )}
+
+                {/* Full Name Field */}
+                <div className="space-y-2">
+                  <label htmlFor="fullName" className="text-sm font-medium text-foreground">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      id="fullName"
+                      name="fullName"
+                      type="text"
+                      autoComplete="name"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="input pl-10"
+                    />
+                  </div>
+                </div>
+
+                {/* Email Field */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="text-sm font-medium text-foreground">
+                    Email address
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      className="input pl-10"
+                    />
+                  </div>
+                </div>
+
+                {/* Password Field */}
+                <div className="space-y-2">
+                  <label htmlFor="password" className="text-sm font-medium text-foreground">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? 'text' : 'password'}
+                      autoComplete="new-password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="Create a password"
+                      className="input pl-10 pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full btn btn-primary btn-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"></div>
+                      <span>Creating account...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <span>Create account</span>
+                      <ArrowRight className="h-4 w-4" />
+                    </div>
+                  )}
+                </button>
+              </form>
+            </div>
           </div>
-          <div className="relative">
-            <Lock className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
-            <input
-              id="password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="new-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              className="w-full py-3 pl-10 pr-10 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute text-gray-500 top-3 right-3"
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
+
+          {/* Sign In Link */}
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{' '}
+              <Link 
+                href="/login" 
+                className="font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Sign in
+              </Link>
+            </p>
           </div>
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60 transition-transform transform hover:scale-105"
-            >
-              {loading ? 'Creating Account...' : 'Create Account'}
-            </button>
+
+          {/* Features */}
+          <div className="space-y-4">
+            <div className="text-center">
+              <h3 className="text-sm font-medium text-foreground mb-3">Why join SLOA?</h3>
+            </div>
+            <div className="grid grid-cols-1 gap-3">
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
+                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <span className="text-sm text-foreground">Access to exclusive resources</span>
+              </div>
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
+                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <span className="text-sm text-foreground">Network with professionals</span>
+              </div>
+              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
+                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                <span className="text-sm text-foreground">Stay updated with latest trends</span>
+              </div>
+            </div>
           </div>
-        </form>
-        <p className="text-sm text-center text-gray-600">
-          Already have an account?{' '}
-          <Link href="/login" passHref className="font-medium text-blue-600 hover:text-blue-500">
-            Sign In
-          </Link>
-        </p>
+        </div>
       </div>
-    </div>
+    </AuthRedirect>
   );
 };
 
