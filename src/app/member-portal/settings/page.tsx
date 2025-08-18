@@ -5,7 +5,6 @@ import api from '@/utils/api';
 import { 
   User, 
   Shield, 
-  Bell, 
   Eye, 
   EyeOff,
   Lock,
@@ -19,10 +18,7 @@ import {
   Check,
   AlertTriangle,
   Key,
-  Smartphone as Phone,
-  Palette,
-  Volume2,
-  VolumeX
+  Smartphone as Phone
 } from 'lucide-react';
 
 const SettingsPage = () => {
@@ -51,22 +47,6 @@ const SettingsPage = () => {
     twoFactorAuth: true,
     loginNotifications: true,
     sessionTimeout: '24 hours',
-    
-    // Notification settings
-    emailNotifications: true,
-    pushNotifications: true,
-    smsNotifications: false,
-    marketingEmails: false,
-    
-    // Appearance settings
-    theme: 'system',
-    compactMode: false,
-    showAvatars: true,
-    
-    // Privacy settings
-    profileVisibility: 'members',
-    showOnlineStatus: true,
-    allowMessages: true
   });
 
   const handleSettingChange = (key: string, value: any) => {
@@ -139,9 +119,6 @@ const SettingsPage = () => {
   const tabs = [
     { id: 'account', name: 'Account', icon: User },
     { id: 'security', name: 'Security', icon: Shield },
-    { id: 'notifications', name: 'Notifications', icon: Bell },
-    { id: 'appearance', name: 'Appearance', icon: Palette },
-    { id: 'privacy', name: 'Privacy', icon: Eye }
   ];
 
   const renderAccountSettings = () => (
@@ -320,299 +297,9 @@ const SettingsPage = () => {
           </button>
         </div>
       </div>
-
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Security Features</h3>
-          <p className="card-description">Manage your account security settings</p>
-        </div>
-        <div className="card-content space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Two-Factor Authentication</h4>
-              <p className="text-sm text-muted-foreground">Add an extra layer of security to your account</p>
-            </div>
-            <button
-              onClick={() => handleSettingChange('twoFactorAuth', !settings.twoFactorAuth)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.twoFactorAuth ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.twoFactorAuth ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Login Notifications</h4>
-              <p className="text-sm text-muted-foreground">Get notified when someone logs into your account</p>
-            </div>
-            <button
-              onClick={() => handleSettingChange('loginNotifications', !settings.loginNotifications)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.loginNotifications ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.loginNotifications ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-foreground">Session Timeout</label>
-            <select
-              value={settings.sessionTimeout}
-              onChange={(e) => handleSettingChange('sessionTimeout', e.target.value)}
-              className="input mt-1"
-            >
-              <option value="1 hour">1 hour</option>
-              <option value="8 hours">8 hours</option>
-              <option value="24 hours">24 hours</option>
-              <option value="7 days">7 days</option>
-            </select>
-          </div>
-        </div>
-      </div>
     </div>
   );
 
-  const renderNotificationSettings = () => (
-    <div className="space-y-4">
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Notification Preferences</h3>
-          <p className="card-description">Choose how you want to receive notifications</p>
-        </div>
-        <div className="card-content space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Mail className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <h4 className="text-sm font-medium text-foreground">Email Notifications</h4>
-                <p className="text-sm text-muted-foreground">Receive notifications via email</p>
-              </div>
-            </div>
-            <button
-              onClick={() => handleSettingChange('emailNotifications', !settings.emailNotifications)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.emailNotifications ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.emailNotifications ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Bell className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <h4 className="text-sm font-medium text-foreground">Push Notifications</h4>
-                <p className="text-sm text-muted-foreground">Receive push notifications in your browser</p>
-              </div>
-            </div>
-            <button
-              onClick={() => handleSettingChange('pushNotifications', !settings.pushNotifications)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.pushNotifications ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.pushNotifications ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Phone className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <h4 className="text-sm font-medium text-foreground">SMS Notifications</h4>
-                <p className="text-sm text-muted-foreground">Receive notifications via SMS</p>
-              </div>
-            </div>
-            <button
-              onClick={() => handleSettingChange('smsNotifications', !settings.smsNotifications)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.smsNotifications ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.smsNotifications ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Mail className="h-5 w-5 text-muted-foreground" />
-              <div>
-                <h4 className="text-sm font-medium text-foreground">Marketing Emails</h4>
-                <p className="text-sm text-muted-foreground">Receive promotional and marketing emails</p>
-              </div>
-            </div>
-            <button
-              onClick={() => handleSettingChange('marketingEmails', !settings.marketingEmails)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.marketingEmails ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.marketingEmails ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderAppearanceSettings = () => (
-    <div className="space-y-4">
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Theme Settings</h3>
-          <p className="card-description">Customize the appearance of your interface</p>
-        </div>
-        <div className="card-content space-y-4">
-          <div>
-            <label className="text-sm font-medium text-foreground">Theme</label>
-            <div className="grid grid-cols-3 gap-3 mt-2">
-              {[
-                { value: 'light', label: 'Light', icon: Sun },
-                { value: 'dark', label: 'Dark', icon: Moon },
-                { value: 'system', label: 'System', icon: Monitor }
-              ].map((theme) => {
-                const Icon = theme.icon;
-                return (
-                  <button
-                    key={theme.value}
-                    onClick={() => handleSettingChange('theme', theme.value)}
-                    className={`p-3 rounded-lg border-2 transition-colors ${
-                      settings.theme === theme.value
-                        ? 'border-primary bg-blue-50'
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <Icon className="h-5 w-5 mx-auto mb-2" />
-                    <span className="text-sm font-medium">{theme.label}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Compact Mode</h4>
-              <p className="text-sm text-muted-foreground">Use a more compact layout</p>
-            </div>
-            <button
-              onClick={() => handleSettingChange('compactMode', !settings.compactMode)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.compactMode ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.compactMode ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Show Avatars</h4>
-              <p className="text-sm text-muted-foreground">Display user avatars throughout the interface</p>
-            </div>
-            <button
-              onClick={() => handleSettingChange('showAvatars', !settings.showAvatars)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.showAvatars ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.showAvatars ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
-  const renderPrivacySettings = () => (
-    <div className="space-y-4">
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Privacy Settings</h3>
-          <p className="card-description">Control who can see your information</p>
-        </div>
-        <div className="card-content space-y-4">
-          <div>
-            <label className="text-sm font-medium text-foreground">Profile Visibility</label>
-            <select
-              value={settings.profileVisibility}
-              onChange={(e) => handleSettingChange('profileVisibility', e.target.value)}
-              className="input mt-1"
-            >
-              <option value="public">Public</option>
-              <option value="members">Members Only</option>
-              <option value="private">Private</option>
-            </select>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Show Online Status</h4>
-              <p className="text-sm text-muted-foreground">Let others see when you're online</p>
-            </div>
-            <button
-              onClick={() => handleSettingChange('showOnlineStatus', !settings.showOnlineStatus)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.showOnlineStatus ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.showOnlineStatus ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="text-sm font-medium text-foreground">Allow Messages</h4>
-              <p className="text-sm text-muted-foreground">Allow other members to send you messages</p>
-            </div>
-            <button
-              onClick={() => handleSettingChange('allowMessages', !settings.allowMessages)}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                settings.allowMessages ? 'bg-primary' : 'bg-muted'
-              }`}
-            >
-              <span
-                className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                  settings.allowMessages ? 'translate-x-6' : 'translate-x-1'
-                }`}
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   const renderContent = () => {
     switch (activeTab) {
@@ -620,12 +307,6 @@ const SettingsPage = () => {
         return renderAccountSettings();
       case 'security':
         return renderSecuritySettings();
-      case 'notifications':
-        return renderNotificationSettings();
-      case 'appearance':
-        return renderAppearanceSettings();
-      case 'privacy':
-        return renderPrivacySettings();
       default:
         return renderAccountSettings();
     }
