@@ -27,27 +27,27 @@ const ResetPasswordPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-lg">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-2xl border border-gray-200 transform transition-all duration-300 hover:scale-[1.02]">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Reset Your Password</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Enter your email to receive a password reset link.
+          <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Reset Your Password</h2>
+          <p className="mt-4 text-base text-gray-600">
+            Enter your email address below and we'll send you a link to reset your password.
           </p>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="p-3 text-sm text-center text-red-800 bg-red-100 border border-red-200 rounded-lg">
+            <div className="p-4 text-sm text-center text-red-700 bg-red-50 border border-red-200 rounded-lg animate-fade-in">
               {error}
             </div>
           )}
           {message && (
-            <div className="p-3 text-sm text-center text-green-800 bg-green-100 border border-green-200 rounded-lg">
+            <div className="p-4 text-sm text-center text-green-700 bg-green-50 border border-green-200 rounded-lg animate-fade-in">
               {message}
             </div>
           )}
           <div className="relative">
-            <Mail className="absolute w-5 h-5 text-gray-400 top-3 left-3" />
+            <Mail className="absolute w-5 h-5 text-gray-400 top-1/2 left-3 -translate-y-1/2" />
             <input
               id="email"
               name="email"
@@ -56,23 +56,23 @@ const ResetPasswordPage = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email address"
-              className="w-full py-3 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="your.email@example.com"
+              className="w-full py-3 pl-10 pr-4 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out"
             />
           </div>
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60 transition-transform transform hover:scale-105"
+              className="w-full px-4 py-3 font-semibold text-white bg-blue-600 rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl"
             >
-              {loading ? 'Sending...' : 'Send Reset Link'}
+              {loading ? 'Sending Reset Link...' : 'Send Reset Link'}
             </button>
           </div>
         </form>
-        <p className="text-sm text-center text-gray-600">
+        <p className="text-sm text-center text-gray-600 mt-6">
           Remember your password?{' '}
-          <Link href="/login" passHref className="font-medium text-blue-600 hover:text-blue-500">
+          <Link href="/login" passHref className="font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200">
             Sign In
           </Link>
         </p>

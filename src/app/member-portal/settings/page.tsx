@@ -278,20 +278,33 @@ const SettingsPage = () => {
               </button>
             </div>
           </div>
-          <button 
-            className="btn btn-primary"
+          <button
+            className={`
+              btn btn-primary
+              flex items-center justify-center
+              px-5 py-2
+              rounded-lg
+              font-semibold
+              transition-colors
+              duration-150
+              shadow-sm
+              focus:outline-none focus:ring-2 focus:ring-primary/50
+              disabled:opacity-60 disabled:cursor-not-allowed
+              mt-4
+            `}
             onClick={handlePasswordUpdate}
             disabled={isUpdatingPassword}
+            type="button"
           >
             {isUpdatingPassword ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Updating...
+                <span className="font-medium">Updating...</span>
               </>
             ) : (
               <>
                 <Save className="h-4 w-4 mr-2" />
-                Update Password
+                <span className="font-medium">Update Password</span>
               </>
             )}
           </button>
