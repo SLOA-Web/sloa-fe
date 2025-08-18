@@ -140,7 +140,7 @@ const ProfilePage = () => {
           <div className="card">
             <div className="card-content">
               {/* Avatar Section */}
-              <div className="flex flex-col items-center space-y-3">
+              <div className="flex flex-col items-center space-y-3 my-6">
                 <div className="relative">
                   <div className="h-24 w-24 rounded-full bg-blue-50 flex items-center justify-center">
                     <User className="h-12 w-12 text-primary" />
