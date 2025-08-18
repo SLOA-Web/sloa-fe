@@ -8,8 +8,49 @@ interface User {
   aud: string;
   role: string;
   email?: string;
-  fullName?: string;
-  status?: string;
+  email_confirmed_at?: string;
+  phone?: string;
+  confirmation_sent_at?: string;
+  confirmed_at?: string;
+  recovery_sent_at?: string;
+  last_sign_in_at?: string;
+  app_metadata?: {
+    provider: string;
+    providers: string[];
+  };
+  user_metadata?: {
+    email?: string;
+    email_verified?: boolean;
+    full_name?: string;
+    location?: string;
+    phone_verified?: boolean;
+    role?: string;
+    status?: string;
+    sub?: string;
+  };
+  identities?: Array<{
+    identity_id?: string;
+    id?: string;
+    user_id?: string;
+    identity_data?: {
+      email?: string;
+      email_verified?: boolean;
+      full_name?: string;
+      location?: string;
+      phone_verified?: boolean;
+      role?: string;
+      status?: string;
+      sub?: string;
+    };
+    provider?: string;
+    last_sign_in_at?: string;
+    created_at?: string;
+    updated_at?: string;
+    email?: string;
+  }>;
+  created_at?: string;
+  updated_at?: string;
+  is_anonymous?: boolean;
 }
 
 interface AuthContextType {
@@ -92,11 +133,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const login = (userData: User, token: string) => {
+  const login = (userData: any, token: string) => { // Change userData type to any for flexible mapping
     console.log('Logging in user:', userData, 'with token:', token); // Debug log
-    setUser(userData);
+    const mappedUser: User = {
+      id: userData.id,
+      aud: userData.aud,
+      role: userData.role,
+      email: userData.email,
+      email_confirmed_at: userData.email_confirmed_at,
+      phone: userData.phone,
+      confirmation_sent_at: userData.confirmation_sent_at,
+      confirmed_at: userData.confirmed_at,
+      recovery_sent_at: userData.recovery_sent_at,
+      last_sign_in_at: userData.last_sign_in_at,
+      app_metadata: userData.app_metadata,
+      user_metadata: userData.user_metadata,
+      identities: userData.identities,
+      created_at: userData.created_at,
+      updated_at: userData.updated_at,
+      is_anonymous: userData.is_anonymous,
+    };
+    setUser(mappedUser);
     setCookie('auth_token', token, 7); // 7 days
-    localStorage.setItem('user_data', JSON.stringify(userData));
+    localStorage.setItem('user_data', JSON.stringify(mappedUser));
   };
 
   const logout = () => {

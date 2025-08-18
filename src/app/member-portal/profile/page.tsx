@@ -1,6 +1,7 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import api from '@/utils/api';
 import { 
   User, 
   Mail, 
@@ -26,19 +27,43 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isAvatarEditing, setIsAvatarEditing] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: user?.fullName || '',
+    fullName: user?.user_metadata?.full_name || '',
     email: user?.email || '',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
-    bio: 'Passionate member of SLOA with expertise in community development and leadership.',
-    company: 'Tech Solutions Inc.',
-    position: 'Senior Developer',
-    education: 'Bachelor of Science in Computer Science',
-    website: 'https://example.com',
-    linkedin: 'https://linkedin.com/in/username',
-    twitter: 'https://twitter.com/username',
-    github: 'https://github.com/username'
+    phone: user?.phone || '',
+    location: user?.user_metadata?.location || '',
+    bio: 'Passionate member of SLOA with expertise in community development and leadership.', // This is a placeholder, as bio is not in the provided user data
+    company: '', // Placeholder
+    position: user?.user_metadata?.role || '',
+    education: '', // Placeholder
+    website: '', // Placeholder
+    linkedin: '', // Placeholder
+    twitter: '', // Placeholder
+    github: '' // Placeholder
   });
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await api.get('/api/v1/auth/me');
+        const fetchedUser = response.user; // Assuming the API returns { user: {...} }
+        setFormData(prev => ({
+          ...prev,
+          fullName: fetchedUser?.user_metadata?.full_name || prev.fullName,
+          email: fetchedUser?.email || prev.email,
+          phone: fetchedUser?.phone || prev.phone,
+          location: fetchedUser?.user_metadata?.location || prev.location,
+          position: fetchedUser?.user_metadata?.role || prev.position,
+          // Update other fields if they become available from the API
+        }));
+      } catch (error) {
+        console.error('Failed to fetch user profile:', error);
+      }
+    };
+
+    if (user) { // Only fetch if user is logged in
+      fetchUserProfile();
+    }
+  }, [user]); // Re-run when user object changes
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -55,18 +80,18 @@ const ProfilePage = () => {
 
   const handleCancel = () => {
     setFormData({
-      fullName: user?.fullName || '',
+      fullName: user?.user_metadata?.full_name || '',
       email: user?.email || '',
-      phone: '+1 (555) 123-4567',
-      location: 'San Francisco, CA',
+      phone: user?.phone || '',
+      location: user?.user_metadata?.location || '',
       bio: 'Passionate member of SLOA with expertise in community development and leadership.',
-      company: 'Tech Solutions Inc.',
-      position: 'Senior Developer',
-      education: 'Bachelor of Science in Computer Science',
-      website: 'https://example.com',
-      linkedin: 'https://linkedin.com/in/username',
-      twitter: 'https://twitter.com/username',
-      github: 'https://github.com/username'
+      company: '',
+      position: user?.user_metadata?.role || '',
+      education: '',
+      website: '',
+      linkedin: '',
+      twitter: '',
+      github: ''
     });
     setIsEditing(false);
   };
@@ -134,10 +159,10 @@ const ProfilePage = () => {
                   <h3 className="text-xl font-semibold text-foreground">
                     {formData.fullName || 'Your Name'}
                   </h3>
-                  <p className="text-sm text-muted-foreground">{formData.position}</p>
+                  <p className="text-sm text-muted-foreground">{formData.position || 'N/A'}</p>
                   <div className="flex items-center justify-center mt-2">
-                    <div className="h-2 w-2 rounded-full bg-green-500 mr-2"></div>
-                    <span className="text-xs text-muted-foreground">Active Member</span>
+                    <div className={`h-2 w-2 rounded-full ${user?.user_metadata?.status === 'active' ? 'bg-green-500' : 'bg-yellow-500'} mr-2`}></div>
+                    <span className="text-xs text-muted-foreground">{user?.user_metadata?.status || 'N/A'} Member</span>
                   </div>
                 </div>
 
@@ -145,11 +170,15 @@ const ProfilePage = () => {
                 <div className="w-full p-3 bg-muted rounded-lg">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Member Since</span>
-                    <span className="font-medium">January 2024</span>
+                    <span className="font-medium">
+                      {user?.created_at ? new Date(user.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : 'N/A'}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-sm mt-1">
                     <span className="text-muted-foreground">Status</span>
-                    <span className="font-medium text-green-600">Active</span>
+                    <span className={`font-medium ${user?.user_metadata?.status === 'active' ? 'text-green-600' : 'text-yellow-600'}`}>
+                      {user?.user_metadata?.status || 'N/A'}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -164,19 +193,19 @@ const ProfilePage = () => {
             <div className="card-content space-y-3">
               <div className="flex items-center space-x-3">
                 <Mail className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{formData.email}</span>
+                <span className="text-sm">{formData.email || 'N/A'}</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{formData.phone}</span>
+                <span className="text-sm">{formData.phone || 'N/A'}</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{formData.location}</span>
+                <span className="text-sm">{formData.location || 'N/A'}</span>
               </div>
               <div className="flex items-center space-x-3">
                 <Globe className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">{formData.website}</span>
+                <span className="text-sm">{formData.website || 'N/A'}</span>
               </div>
             </div>
           </div>
@@ -209,7 +238,7 @@ const ProfilePage = () => {
                     type="email"
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
-                    disabled={!isEditing}
+                    disabled={true}
                     className="input mt-1"
                     placeholder="Enter your email"
                   />
