@@ -152,40 +152,6 @@ const SettingsPage = () => {
         </div>
       </div>
 
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Preferences</h3>
-          <p className="card-description">Customize your experience</p>
-        </div>
-        <div className="card-content space-y-4">
-          <div>
-            <label className="text-sm font-medium text-foreground">Language</label>
-            <select
-              value={settings.language}
-              onChange={(e) => handleSettingChange('language', e.target.value)}
-              className="input mt-1"
-            >
-              <option value="English">English</option>
-              <option value="Spanish">Spanish</option>
-              <option value="French">French</option>
-              <option value="German">German</option>
-            </select>
-          </div>
-          <div>
-            <label className="text-sm font-medium text-foreground">Timezone</label>
-            <select
-              value={settings.timezone}
-              onChange={(e) => handleSettingChange('timezone', e.target.value)}
-              className="input mt-1"
-            >
-              <option value="UTC-8 (Pacific Time)">UTC-8 (Pacific Time)</option>
-              <option value="UTC-5 (Eastern Time)">UTC-5 (Eastern Time)</option>
-              <option value="UTC+0 (GMT)">UTC+0 (GMT)</option>
-              <option value="UTC+1 (Central European Time)">UTC+1 (Central European Time)</option>
-            </select>
-          </div>
-        </div>
-      </div>
     </div>
   );
 
