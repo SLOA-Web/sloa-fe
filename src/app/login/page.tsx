@@ -64,8 +64,8 @@ const LoginPage = () => {
             <div className="card-content">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {error && (
-                  <div className="p-4 text-sm text-destructive-foreground bg-destructive/10 border border-destructive/20 rounded-lg flex items-center space-x-2">
-                    <AlertTriangle className="h-4 w-4" />
+                  <div className="p-4 mt-4 text-sm text-[var(--foreground)] bg-destructive/10 border border-destructive/20 rounded-lg flex items-center space-x-2">
+                    <AlertTriangle className="h-4 w-4 text-[var(--destructive)]" />
                     <span>{error}</span>
                   </div>
                 )}
@@ -177,26 +177,7 @@ const LoginPage = () => {
             </p>
           </div>
 
-          {/* Features */}
-          <div className="space-y-4">
-            <div className="text-center">
-              <h3 className="text-sm font-medium text-foreground mb-3">Why choose SLOA?</h3>
-            </div>
-            <div className="grid grid-cols-1 gap-3">
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <span className="text-sm text-foreground">Secure and reliable platform</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <span className="text-sm text-foreground">24/7 member support</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <span className="text-sm text-foreground">Exclusive member benefits</span>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     </AuthRedirect>

@@ -16,14 +16,14 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--background)]">
       <div className="max-w-md w-full text-center">
         <div className="mb-8">
           <div className="p-4 bg-red-100 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-            <AlertTriangle className="h-8 w-8 text-red-600" />
+            <AlertTriangle className="h-8 w-8 text-[var(--destructive)]" />
           </div>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">Something went wrong!</h1>
-          <p className="text-gray-600 mb-8">
+          <h1 className="text-2xl font-semibold text-[var(--foreground)] mb-2">Something went wrong!</h1>
+          <p className="text-[var(--muted-foreground)] mb-8">
             An unexpected error occurred. Please try again or contact support if the problem persists.
           </p>
         </div>

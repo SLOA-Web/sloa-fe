@@ -7,19 +7,19 @@
 :root {
   /* Modern color palette inspired by Notion */
   --background: #ffffff;
-  --foreground: #37352f;
-  --muted: #f7f6f3;
-  --muted-foreground: #787774;
-  --border: #e3e2e0;
-  --input: #f7f6f3;
+  --foreground: #000000; /* Keep black for maximum contrast */
+  --muted: #f8f8f8; /* Lighter muted background for subtle contrast */
+  --muted-foreground: #1a1a1a; /* Very dark for maximum readability on muted backgrounds */
+  --border: #909090; /* Even darker border for strong separation */
+  --input: #f8f8f8; /* Consistent with muted background */
   --primary: #2e75cc;
   --primary-foreground: #ffffff;
-  --secondary: #f1f1ef;
-  --secondary-foreground: #37352f;
-  --accent: #f1f1ef;
-  --accent-foreground: #37352f;
-  --destructive: #ff6b6b;
-  --destructive-foreground: #ffffff;
+  --secondary: #d8d8d8; /* Slightly lighter secondary background */
+  --secondary-foreground: #000000; /* Keep consistent with foreground */
+  --accent: #d8d8d8; /* Consistent with secondary */
+  --accent-foreground: #000000; /* Consistent with foreground */
+  --destructive: #a00000; /* Even darker, more saturated red for critical error messages */
+  --destructive-foreground: #ffffff; /* Keep white for contrast on darker red */
   --ring: #2e75cc;
   --radius: 0.5rem;
   
@@ -31,20 +31,6 @@
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #191919;
-    --foreground: #e3e2e0;
-    --muted: #2f2f2f;
-    --muted-foreground: #9b9a97;
-    --border: #404040;
-    --input: #2f2f2f;
-    --secondary: #2f2f2f;
-    --secondary-foreground: #e3e2e0;
-    --accent: #2f2f2f;
-    --accent-foreground: #e3e2e0;
-  }
-}
 
 * {
   border-color: var(--border);

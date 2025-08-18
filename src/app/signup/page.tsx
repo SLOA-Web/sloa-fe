@@ -50,10 +50,10 @@ const SignupPage = () => {
           {/* Signup Form */}
           <div className="card">
             <div className="card-content">
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 mt-3">
                 {error && (
-                  <div className="p-4 text-sm text-destructive-foreground bg-destructive/10 border border-destructive/20 rounded-lg flex items-center space-x-2">
-                    <AlertTriangle className="h-4 w-4" />
+                  <div className="p-4 mt-4 text-sm text-[var(--foreground)] bg-destructive/10 border border-destructive/20 rounded-lg flex items-center space-x-2">
+                    <AlertTriangle className="h-4 w-4 text-[var(--destructive)]" />
                     <span>{error}</span>
                   </div>
                 )}
@@ -161,27 +161,6 @@ const SignupPage = () => {
                 Sign in
               </Link>
             </p>
-          </div>
-
-          {/* Features */}
-          <div className="space-y-4">
-            <div className="text-center">
-              <h3 className="text-sm font-medium text-foreground mb-3">Why join SLOA?</h3>
-            </div>
-            <div className="grid grid-cols-1 gap-3">
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <span className="text-sm text-foreground">Access to exclusive resources</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <span className="text-sm text-foreground">Network with professionals</span>
-              </div>
-              <div className="flex items-center space-x-3 p-3 rounded-lg bg-muted/50">
-                <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                <span className="text-sm text-foreground">Stay updated with latest trends</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
