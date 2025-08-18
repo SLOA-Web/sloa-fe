@@ -129,84 +129,47 @@ const MemberPortalPage = () => {
         </div>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat, index) => {
-          const Icon = stat.icon;
-          return (
-            <div key={index} className="card hover:shadow-md transition-shadow duration-200">
-              <div className="card-content">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
-                    <p className="text-2xl font-bold text-foreground mt-1">{stat.value}</p>
-                    <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
-                  </div>
-                  <div className={`p-3 rounded-lg ${stat.changeType === 'positive' ? 'bg-green-100 text-green-600' : stat.changeType === 'negative' ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
-                    <Icon className="h-6 w-6" />
-                  </div>
-                </div>
-                <div className="flex items-center mt-3">
-                  {stat.changeType === 'positive' ? (
-                    <ArrowUpRight className="h-4 w-4 text-green-600" />
-                  ) : stat.changeType === 'negative' ? (
-                    <ArrowDownRight className="h-4 w-4 text-red-600" />
-                  ) : null}
-                  <span className={`text-sm font-medium ml-1 ${
-                    stat.changeType === 'positive' ? 'text-green-600' : 
-                    stat.changeType === 'negative' ? 'text-red-600' : 
-                    'text-blue-600'
-                  }`}>
-                    {stat.change}
-                  </span>
-                </div>
+      <div className="grid grid-cols-1 gap-4">
+        {/* Membership Status */}
+        <div className="card">
+          <div className="card-header">
+            <h3 className="card-title">Membership Status</h3>
+            <p className="card-description">Your current membership details</p>
+          </div>
+          <div className="card-content">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Status</span>
+                <span className="flex items-center text-sm font-medium text-green-600">
+                  <CheckCircle className="h-4 w-4 mr-1" />
+                  Active
+                </span>
               </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Quick Actions */}
-        <div className="lg:col-span-1">
-          <div className="card">
-            <div className="card-header">
-              <h3 className="card-title">Quick Actions</h3>
-              <p className="card-description">Common tasks and shortcuts</p>
-            </div>
-            <div className="card-content">
-              <div className="space-y-2">
-                {quickActions.map((action, index) => {
-                  const Icon = action.icon;
-                  return (
-                    <a
-                      key={index}
-                      href={action.href}
-                      className="flex items-center p-3 rounded-lg border hover:bg-accent hover:border-accent-foreground transition-colors duration-200 group"
-                    >
-                      <div className={`p-2 rounded-lg ${action.color} text-white mr-3`}>
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground group-hover:text-accent-foreground">
-                          {action.title}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {action.description}
-                        </p>
-                      </div>
-                      <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-accent-foreground" />
-                    </a>
-                  );
-                })}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Member Since</span>
+                <span className="text-sm font-medium">January 2024</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Next Renewal</span>
+                <span className="text-sm font-medium">December 2024</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">Role</span>
+                <span className="text-sm font-medium">{user?.role || 'Member'}</span>
               </div>
             </div>
           </div>
         </div>
 
+      </div>
+
+
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+
         {/* Recent Activity */}
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-4">
           <div className="card">
             <div className="card-header">
               <h3 className="card-title">Recent Activity</h3>
@@ -245,67 +208,8 @@ const MemberPortalPage = () => {
         </div>
       </div>
 
-      {/* Additional Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Membership Status */}
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">Membership Status</h3>
-            <p className="card-description">Your current membership details</p>
-          </div>
-          <div className="card-content">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Status</span>
-                <span className="flex items-center text-sm font-medium text-green-600">
-                  <CheckCircle className="h-4 w-4 mr-1" />
-                  Active
-                </span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Member Since</span>
-                <span className="text-sm font-medium">January 2024</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Next Renewal</span>
-                <span className="text-sm font-medium">December 2024</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Role</span>
-                <span className="text-sm font-medium">{user?.role || 'Member'}</span>
-              </div>
-            </div>
-          </div>
-        </div>
+      
 
-        {/* Quick Stats */}
-        <div className="card">
-          <div className="card-header">
-            <h3 className="card-title">Quick Stats</h3>
-            <p className="card-description">Your activity overview</p>
-          </div>
-          <div className="card-content">
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Profile Views</span>
-                <span className="text-sm font-medium">1,234</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Documents Downloaded</span>
-                <span className="text-sm font-medium">45</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Messages Sent</span>
-                <span className="text-sm font-medium">12</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Last Active</span>
-                <span className="text-sm font-medium">2 hours ago</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
