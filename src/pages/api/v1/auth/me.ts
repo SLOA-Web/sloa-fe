@@ -28,7 +28,7 @@ export default async function handler(req: Request) {
 		});
 	}
 
-	const backendBaseUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+	const backendBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 	try {
 		const backendRes = await fetch(`${backendBaseUrl}/api/v1/auth/me`, {
 			method: 'GET',

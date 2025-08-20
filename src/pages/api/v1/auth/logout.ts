@@ -30,7 +30,7 @@ export default async function handler(req: Request) {
 	const cookieHeader = req.headers.get('cookie');
 	const cookies = parseCookies(cookieHeader);
 	const token = cookies['auth_token'];
-	const backendBaseUrl = process.env.BACKEND_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+	const backendBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 	try {
 		if (token) {
 			await fetch(`${backendBaseUrl}/api/v1/auth/logout`, {
