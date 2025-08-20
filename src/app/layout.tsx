@@ -4,7 +4,8 @@ import "./globals.css";
 import Footer from "@/components/Footer";
 import ClientWrapper from "./ClientWrapper";
 import { AuthProvider } from "@/context/AuthContext";
- 
+import Navbar from "@/components/Navbar";
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <ClientWrapper>
+            <Navbar />
             {children}
             <Footer />
           </ClientWrapper>

@@ -113,7 +113,7 @@ export const bookEventData: BookEventData[] = [
   },
 ];
 
-export const HEADER = [
+export const NAVBAR = [
   { title: "Home", href: "/" },
   { title: "About Us", href: "/about" },
   { title: "Event", href: "/event" },

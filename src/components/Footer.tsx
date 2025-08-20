@@ -1,5 +1,5 @@
 "use client"
-import { HEADER, DOCUMENTATION_LINKS } from "@/data";
+import { DOCUMENTATION_LINKS, NAVBAR } from "@/data";
 import Image from "next/image";
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 
 const Footer = () => {
   const pathname = usePathname();
-  if (pathname && pathname.includes("member-portal")) return null;
+  if (pathname?.includes("member-portal")) return null;
 
   return (
     <footer
@@ -41,7 +41,7 @@ const Footer = () => {
           <div className="w-full lg:w-[40%] space-y-4">
             <div className="text-[14px] text-primary">Quick Links</div>
             <ul className="mb-4 flex flex-wrap items-center gap-4">
-              {HEADER.map((item) => (
+              {NAVBAR.map((item) => (
                 <li key={item.title}>
                   <Link href={item.href} className="hover:text-primary">
                     {item.title}
