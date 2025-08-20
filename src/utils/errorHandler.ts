@@ -1,8 +1,10 @@
 // Utility function to handle API errors gracefully
-export const handleApiError = (error: any, router?: any) => {
+export const handleApiError = (error: unknown, router?: { push: (path: string) => void }) => {
   console.error('API Error:', error);
   
-  const errorMessage = error?.message || 'An unexpected error occurred';
+  const errorMessage = (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: string }).message === 'string')
+    ? (error as { message: string }).message
+    : 'An unexpected error occurred';
   
   // Handle authentication errors specifically
   if (errorMessage.includes('Authentication error') || errorMessage.includes('401')) {
@@ -28,16 +30,20 @@ export const handleApiError = (error: any, router?: any) => {
 };
 
 // Utility to check if an error is authentication-related
-export const isAuthError = (error: any): boolean => {
-  const errorMessage = error?.message || '';
+export const isAuthError = (error: unknown): boolean => {
+  const errorMessage = (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: string }).message === 'string')
+    ? (error as { message: string }).message
+    : '';
   return errorMessage.includes('Authentication error') || 
          errorMessage.includes('401') || 
          errorMessage.includes('Unauthorized');
 };
 
 // Utility to check if an error is a 404 error
-export const isNotFoundError = (error: any): boolean => {
-  const errorMessage = error?.message || '';
+export const isNotFoundError = (error: unknown): boolean => {
+  const errorMessage = (typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message?: string }).message === 'string')
+    ? (error as { message: string }).message
+    : '';
   return errorMessage.includes('404') || 
          errorMessage.includes('Resource not found') ||
          errorMessage.includes('Not Found');

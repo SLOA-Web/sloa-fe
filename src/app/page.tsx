@@ -9,20 +9,11 @@ import {
   Shield, 
   Award, 
   Globe, 
-  FileText, 
-  BarChart2,
-  Star,
-  Zap,
-  Heart,
-  Target,
-  Play,
-  Mail,
-  Phone,
-  MapPin,
   Facebook,
   Twitter,
   Linkedin,
-  Instagram
+  Instagram,
+  Star
 } from 'lucide-react';
 
 const HomePage = () => {
@@ -92,11 +83,11 @@ const HomePage = () => {
             <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
-                  Join the Premier
-                  <span className="text-primary"> Professional Network</span>
+                  Join the Premier{' '}
+                  <span className="text-primary">Professional Network</span>
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  Connect with industry leaders, access exclusive resources, and accelerate your career with SLOA's global professional community.
+                  Connect with industry leaders, access exclusive resources, and accelerate your career with SLOA&apos;s global professional community.
                 </p>
               </div>
               
@@ -241,7 +232,7 @@ const HomePage = () => {
                     ))}
                   </div>
                   <blockquote className="text-foreground mb-4">
-                    "{testimonial.content}"
+                    &apos;{testimonial.content}&apos;
                   </blockquote>
                   <div>
                     <div className="font-semibold text-foreground">{testimonial.name}</div>

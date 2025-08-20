@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
+import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Shield, AlertTriangle } from 'lucide-react';
 import api from '@/utils/api';
 import AuthRedirect from '@/components/AuthRedirect';
 
@@ -23,8 +23,14 @@ const SignupPage = () => {
     try {
       await api.post('/api/v1/auth/register', { fullName, email, password });
       router.push('/login?registered=true'); // Redirect to login with a success message
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }

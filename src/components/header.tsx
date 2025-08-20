@@ -13,7 +13,6 @@ import {
   Search,
   Home,
   FileText,
-  Users,
   LayoutDashboard
 } from 'lucide-react';
 
@@ -89,7 +88,7 @@ const Header = () => {
                       <User className="h-4 w-4 text-primary" />
                     </div>
                     <span className="hidden sm:block text-sm font-medium">
-                      {user.fullName || user.email || 'User'}
+                      {user.email || user.id || 'User'}
                     </span>
                     <ChevronDown className="h-4 w-4" />
                   </button>

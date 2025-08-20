@@ -3,10 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Hourglass, CheckCircle, XCircle, HelpCircle, RefreshCw, Mail } from 'lucide-react';
 import api from '@/utils/api';
-import { handleApiError, isAuthError } from '@/utils/errorHandler';
+import { handleApiError } from '@/utils/errorHandler';
 
 const ApplicationStatusPage = () => {
-  const [status, setStatus] = useState<any>(null);
+  type StatusType = {
+    status: string;
+    fullName: string;
+    role: string;
+    createdAt: string;
+  } | null;
+
+  const [status, setStatus] = useState<StatusType>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -16,7 +23,7 @@ const ApplicationStatusPage = () => {
       try {
         const data = await api.get('/api/v1/membership/status');
         setStatus(data);
-      } catch (err: any) {
+      } catch (err: unknown) {
         const errorMessage = handleApiError(err, router);
         setError(errorMessage);
       } finally {
@@ -90,7 +97,7 @@ const ApplicationStatusPage = () => {
       );
     }
 
-    const statusInfo = getStatusInfo(status?.status);
+    const statusInfo = getStatusInfo(status?.status ?? "");
 
     return (
       <div className={`p-8 text-center rounded-2xl ${statusInfo.bgColor} ${statusInfo.textColor}`}>

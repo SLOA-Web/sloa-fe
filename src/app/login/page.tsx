@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Shield, CheckCircle, AlertTriangle } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Shield, AlertTriangle } from 'lucide-react';
 import api from '@/utils/api';
 import { useAuth } from '@/context/AuthContext';
 import AuthRedirect from '@/components/AuthRedirect';
@@ -24,19 +24,18 @@ const LoginPage = () => {
 
     try {
       const response = await api.post('/api/v1/auth/login', { email, password });
-      console.log('Login response:', response); // Debug log
-      
       if (response.user) {
-        // Create a simple token from user ID for cookie storage
-        const token = btoa(response.user.id + ':' + Date.now());
-        login(response.user, token);
-        router.push('/member-portal'); // Redirect to member portal
+        await login(response.user);
+        router.push('/member-portal');
       } else {
         throw new Error('Login failed: User data not found in response.');
       }
-    } catch (err: any) {
-      console.error('Login error:', err); // Debug log
-      setError(err.message || 'An unexpected error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
@@ -167,7 +166,7 @@ const LoginPage = () => {
           {/* Sign Up Link */}
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <Link 
                 href="/signup" 
                 className="font-medium text-primary hover:text-primary/80 transition-colors"

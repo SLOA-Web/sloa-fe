@@ -19,8 +19,14 @@ const ResetPasswordPage = () => {
     try {
       const response = await api.post('/api/v1/auth/reset-password', { email });
       setMessage(response.message);
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'object' && err !== null && 'message' in err) {
+        setError(String((err as { message?: unknown }).message));
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
@@ -32,7 +38,7 @@ const ResetPasswordPage = () => {
         <div className="text-center">
           <h2 className="text-4xl font-extrabold text-gray-900 tracking-tight">Reset Your Password</h2>
           <p className="mt-4 text-base text-gray-600">
-            Enter your email address below and we'll send you a link to reset your password.
+            Enter your email address below and we&apos;ll send you a link to reset your password.
           </p>
         </div>
         <form className="space-y-6" onSubmit={handleSubmit}>

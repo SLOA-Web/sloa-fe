@@ -1,11 +1,43 @@
 "use client";
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useRouter } from 'next/navigation';
-import api from '@/utils/api';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useRouter } from "next/navigation";
+
+interface UserIdentityData {
+  email?: string;
+  email_verified?: boolean;
+  full_name?: string;
+  location?: string;
+  phone_verified?: boolean;
+  role?: string;
+  status?: string;
+  sub?: string;
+}
+
+interface UserIdentity {
+  identity_id?: string;
+  id?: string;
+  user_id?: string;
+  identity_data?: UserIdentityData;
+  provider?: string;
+  last_sign_in_at?: string;
+  created_at?: string;
+  updated_at?: string;
+  email?: string;
+}
+
+interface UserAppMetadata {
+  provider?: string;
+  providers?: string[];
+}
 
 interface User {
   id: string;
-  aud: string;
   role: string;
   email?: string;
   email_confirmed_at?: string;
@@ -14,40 +46,9 @@ interface User {
   confirmed_at?: string;
   recovery_sent_at?: string;
   last_sign_in_at?: string;
-  app_metadata?: {
-    provider: string;
-    providers: string[];
-  };
-  user_metadata?: {
-    email?: string;
-    email_verified?: boolean;
-    full_name?: string;
-    location?: string;
-    phone_verified?: boolean;
-    role?: string;
-    status?: string;
-    sub?: string;
-  };
-  identities?: Array<{
-    identity_id?: string;
-    id?: string;
-    user_id?: string;
-    identity_data?: {
-      email?: string;
-      email_verified?: boolean;
-      full_name?: string;
-      location?: string;
-      phone_verified?: boolean;
-      role?: string;
-      status?: string;
-      sub?: string;
-    };
-    provider?: string;
-    last_sign_in_at?: string;
-    created_at?: string;
-    updated_at?: string;
-    email?: string;
-  }>;
+  app_metadata?: UserAppMetadata;
+  user_metadata?: UserIdentityData;
+  identities?: Array<UserIdentity>;
   created_at?: string;
   updated_at?: string;
   is_anonymous?: boolean;
@@ -55,115 +56,83 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (userData: User, token: string) => void;
-  logout: () => void;
+  login: (userData?: User) => Promise<void>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Cookie utility functions
-const setCookie = (name: string, value: string, days: number = 7) => {
-  if (typeof document === 'undefined') return;
-  const expires = new Date();
-  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Strict`;
-};
-
-const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null;
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
-  return null;
-};
-
-const deleteCookie = (name: string) => {
-  if (typeof document === 'undefined') return;
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
-};
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Check for existing authentication on mount
+  // Always call /api/v1/auth/me on mount (refresh or first load)
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Wait for client-side hydration
-        if (typeof window === 'undefined') return;
-        
-        const token = getCookie('auth_token');
-        const userData = localStorage.getItem('user_data');
-        
-        console.log('Checking auth - Token:', token, 'User data:', userData); // Debug log
-        
-        if (token && userData) {
-          try {
-            const user = JSON.parse(userData);
-            console.log('Found stored user data, restoring session:', user); // Debug log
-            setUser(user);
-          } catch (parseError) {
-            console.error('Error parsing user data:', parseError);
-            // Only clear data if it's actually corrupted, not just missing
-            if (userData && userData !== 'null' && userData !== 'undefined') {
-              deleteCookie('auth_token');
-              localStorage.removeItem('user_data');
-            }
+        const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          setUser(data.user as User);
+          if (typeof window !== 'undefined') {
+            localStorage.setItem("user_data", JSON.stringify(data.user));
           }
         } else {
-          console.log('No valid authentication found'); // Debug log
+          setUser(null);
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem("user_data");
+          }
         }
-      } catch (error) {
-        console.error('Error checking authentication:', error);
-        // Only clear data for specific authentication errors, not general errors
-        if (error instanceof Error && error.message.includes('Authentication error')) {
-          deleteCookie('auth_token');
-          localStorage.removeItem('user_data');
+      } catch {
+        setUser(null);
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem("user_data");
         }
       } finally {
         setIsLoading(false);
       }
     };
-
-    // Add a small delay to ensure client-side hydration is complete
-    const timer = setTimeout(checkAuth, 100);
-    return () => clearTimeout(timer);
+    checkAuth();
   }, []);
 
-  const login = (userData: any, token: string) => { // Change userData type to any for flexible mapping
-    console.log('Logging in user:', userData, 'with token:', token); // Debug log
-    const mappedUser: User = {
-      id: userData.id,
-      aud: userData.aud,
-      role: userData.role,
-      email: userData.email,
-      email_confirmed_at: userData.email_confirmed_at,
-      phone: userData.phone,
-      confirmation_sent_at: userData.confirmation_sent_at,
-      confirmed_at: userData.confirmed_at,
-      recovery_sent_at: userData.recovery_sent_at,
-      last_sign_in_at: userData.last_sign_in_at,
-      app_metadata: userData.app_metadata,
-      user_metadata: userData.user_metadata,
-      identities: userData.identities,
-      created_at: userData.created_at,
-      updated_at: userData.updated_at,
-      is_anonymous: userData.is_anonymous,
-    };
-    setUser(mappedUser);
-    setCookie('auth_token', token, 7); // 7 days
-    localStorage.setItem('user_data', JSON.stringify(mappedUser));
+  // After a successful login API call, re-fetch /me to get the authoritative user
+  const login = async (userData?: User) => {
+    try {
+      const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        setUser(data.user as User);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("user_data", JSON.stringify(data.user));
+        }
+      } else if (userData) {
+        setUser(userData);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("user_data", JSON.stringify(userData));
+        }
+      }
+    } catch {
+      if (userData) {
+        setUser(userData);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("user_data", JSON.stringify(userData));
+        }
+      }
+    }
   };
 
-  const logout = () => {
-    console.log('Logging out user'); // Debug log
-    setUser(null);
-    deleteCookie('auth_token');
-    localStorage.removeItem('user_data');
-    router.push('/');
+  const logout = async () => {
+    try {
+      await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
+    } finally {
+      setUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("user_data");
+      }
+      router.push("/");
+    }
   };
 
   return (
@@ -176,7 +145,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

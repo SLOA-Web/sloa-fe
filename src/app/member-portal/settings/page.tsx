@@ -1,58 +1,41 @@
-'use client';
-import React, { useState } from 'react';
-import { useAuth } from '@/context/AuthContext';
-import api from '@/utils/api';
-import { 
-  User, 
-  Shield, 
-  Eye, 
-  EyeOff,
-  Lock,
-  Mail,
-  Smartphone,
-  Globe,
-  Moon,
-  Sun,
-  Monitor,
-  Save,
-  Check,
-  AlertTriangle,
-  Key,
-  Smartphone as Phone
-} from 'lucide-react';
+"use client";
+import React, { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import api from "@/utils/api";
+import { User, Shield, Eye, EyeOff, Save } from "lucide-react";
 
 const SettingsPage = () => {
   const { user } = useAuth();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState('account');
-  
+  const [activeTab, setActiveTab] = useState("account");
+
   // Password update state
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   const [settings, setSettings] = useState({
     // Account settings
-    email: user?.email || '',
-    phone: '+1 (555) 123-4567',
-    language: 'English',
-    timezone: 'UTC-8 (Pacific Time)',
-    
+    email: user?.email || "",
+    phone: "+1 (555) 123-4567",
+    language: "English",
+    timezone: "UTC-8 (Pacific Time)",
+
     // Security settings
     twoFactorAuth: true,
     loginNotifications: true,
-    sessionTimeout: '24 hours',
+    sessionTimeout: "24 hours",
   });
 
-  const handleSettingChange = (key: string, value: any) => {
-    setSettings(prev => ({
+  const handleSettingChange = (key: string, value: string | boolean) => {
+    setSettings((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
@@ -63,22 +46,22 @@ const SettingsPage = () => {
 
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setPasswordError('All password fields are required');
+      setPasswordError("All password fields are required");
       return;
     }
 
     if (newPassword.length < 6) {
-      setPasswordError('New password must be at least 6 characters long');
+      setPasswordError("New password must be at least 6 characters long");
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError('New password and confirm password do not match');
+      setPasswordError("New password and confirm password do not match");
       return;
     }
 
     if (!user?.email) {
-      setPasswordError('User email not found. Please log in again.');
+      setPasswordError("User email not found. Please log in again.");
       return;
     }
 
@@ -88,37 +71,48 @@ const SettingsPage = () => {
       // Call the API to update password
       const requestBody = {
         currentPassword,
-        newPassword
+        newPassword,
       };
-      
-      console.log('Sending password update request:', requestBody);
-      
-      await api.post('/api/v1/auth/change-password', requestBody);
 
-      setPasswordSuccess('Password updated successfully!');
-      
+      console.log("Sending password update request:", requestBody);
+
+      await api.post("/api/v1/auth/change-password", requestBody);
+
+      setPasswordSuccess("Password updated successfully!");
+
       // Clear the form
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
-      
-    } catch (err: any) {
+      setCurrentPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+    } catch (err: unknown) {
       // Handle specific error cases
-      if (err.message.includes('404') || err.message.includes('Not Found')) {
-        setPasswordError('Password update endpoint not available yet. Please contact support.');
-      } else if (err.message.includes('401') || err.message.includes('Unauthorized')) {
-        setPasswordError('Current password is incorrect. Please try again.');
-      } else {
-        setPasswordError(err.message || 'Failed to update password. Please try again.');
+      let message = "Failed to update password. Please try again.";
+      if (typeof err === "object" && err !== null && "message" in err && typeof (err as { message?: unknown }).message === "string") {
+        const errMsg = (err as { message: string }).message;
+        if (errMsg.includes("404") || errMsg.includes("Not Found")) {
+          setPasswordError(
+            "Password update endpoint not available yet. Please contact support."
+          );
+          return;
+        } else if (
+          errMsg.includes("401") ||
+          errMsg.includes("Unauthorized")
+        ) {
+          setPasswordError("Current password is incorrect. Please try again.");
+          return;
+        } else {
+          message = errMsg;
+        }
       }
+      setPasswordError(message);
     } finally {
       setIsUpdatingPassword(false);
     }
   };
 
   const tabs = [
-    { id: 'account', name: 'Account', icon: User },
-    { id: 'security', name: 'Security', icon: Shield },
+    { id: "account", name: "Account", icon: User },
+    { id: "security", name: "Security", icon: Shield },
   ];
 
   const renderAccountSettings = () => (
@@ -130,28 +124,31 @@ const SettingsPage = () => {
         </div>
         <div className="card-content space-y-4">
           <div>
-            <label className="text-sm font-medium text-foreground">Email Address</label>
+            <label className="text-sm font-medium text-foreground">
+              Email Address
+            </label>
             <input
               type="email"
               value={settings.email}
-              onChange={(e) => handleSettingChange('email', e.target.value)}
+              onChange={(e) => handleSettingChange("email", e.target.value)}
               className="input mt-1"
               placeholder="Enter your email"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground">Phone Number</label>
+            <label className="text-sm font-medium text-foreground">
+              Phone Number
+            </label>
             <input
               type="tel"
               value={settings.phone}
-              onChange={(e) => handleSettingChange('phone', e.target.value)}
+              onChange={(e) => handleSettingChange("phone", e.target.value)}
               className="input mt-1"
               placeholder="Enter your phone number"
             />
           </div>
         </div>
       </div>
-
     </div>
   );
 
@@ -160,7 +157,9 @@ const SettingsPage = () => {
       <div className="card">
         <div className="card-header">
           <h3 className="card-title">Change Password</h3>
-          <p className="card-description">Update your password to keep your account secure</p>
+          <p className="card-description">
+            Update your password to keep your account secure
+          </p>
         </div>
         <div className="card-content space-y-4">
           {/* Error and Success Messages */}
@@ -174,12 +173,14 @@ const SettingsPage = () => {
               {passwordSuccess}
             </div>
           )}
-          
+
           <div>
-            <label className="text-sm font-medium text-foreground">Current Password</label>
+            <label className="text-sm font-medium text-foreground">
+              Current Password
+            </label>
             <div className="relative mt-1">
               <input
-                type={showCurrentPassword ? 'text' : 'password'}
+                type={showCurrentPassword ? "text" : "password"}
                 className="input pr-10"
                 placeholder="Enter current password"
                 value={currentPassword}
@@ -194,15 +195,21 @@ const SettingsPage = () => {
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               >
-                {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showCurrentPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground">New Password</label>
+            <label className="text-sm font-medium text-foreground">
+              New Password
+            </label>
             <div className="relative mt-1">
               <input
-                type={showNewPassword ? 'text' : 'password'}
+                type={showNewPassword ? "text" : "password"}
                 className="input pr-10"
                 placeholder="Enter new password"
                 value={newPassword}
@@ -217,15 +224,21 @@ const SettingsPage = () => {
                 onClick={() => setShowNewPassword(!showNewPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               >
-                {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showNewPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
           <div>
-            <label className="text-sm font-medium text-foreground">Confirm New Password</label>
+            <label className="text-sm font-medium text-foreground">
+              Confirm New Password
+            </label>
             <div className="relative mt-1">
               <input
-                type={showConfirmPassword ? 'text' : 'password'}
+                type={showConfirmPassword ? "text" : "password"}
                 className="input pr-10"
                 placeholder="Confirm new password"
                 value={confirmPassword}
@@ -240,7 +253,11 @@ const SettingsPage = () => {
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
               >
-                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                {showConfirmPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
               </button>
             </div>
           </div>
@@ -279,12 +296,11 @@ const SettingsPage = () => {
     </div>
   );
 
-
   const renderContent = () => {
     switch (activeTab) {
-      case 'account':
+      case "account":
         return renderAccountSettings();
-      case 'security':
+      case "security":
         return renderSecuritySettings();
       default:
         return renderAccountSettings();
@@ -296,7 +312,9 @@ const SettingsPage = () => {
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-        <p className="text-muted-foreground">Manage your account settings and preferences</p>
+        <p className="text-muted-foreground">
+          Manage your account settings and preferences
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
@@ -313,8 +331,8 @@ const SettingsPage = () => {
                       onClick={() => setActiveTab(tab.id)}
                       className={`w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+                          ? "bg-primary text-primary-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
                       }`}
                     >
                       <Icon className="h-4 w-4" />
@@ -328,9 +346,7 @@ const SettingsPage = () => {
         </div>
 
         {/* Main Content */}
-        <div className="lg:col-span-3">
-          {renderContent()}
-        </div>
+        <div className="lg:col-span-3">{renderContent()}</div>
       </div>
     </div>
   );

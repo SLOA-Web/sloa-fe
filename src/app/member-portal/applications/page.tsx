@@ -16,7 +16,7 @@ import {
   RefreshCw
 } from 'lucide-react';
 import api from '@/utils/api';
-import { handleApiError, isAuthError } from '@/utils/errorHandler';
+import { handleApiError } from '@/utils/errorHandler';
 
 interface UserProfile {
   id: string;
@@ -66,7 +66,7 @@ const ApplicationsPage = () => {
       const response = await api.get('/api/v1/membership/my-application');
       setApplication(response.application);
       setError(null);
-    } catch (err: any) {
+    } catch (err: unknown) {
       const errorMessage = handleApiError(err, router);
       setError(errorMessage);
     } finally {
@@ -201,7 +201,7 @@ const ApplicationsPage = () => {
             <div>
               <h2 className="text-xl font-semibold text-blue-900 mb-2">No Application Found</h2>
               <p className="text-blue-800">
-                You haven't submitted a membership application yet. 
+                You haven&apos;t submitted a membership application yet. 
                 Click the button below to start your application process.
               </p>
             </div>

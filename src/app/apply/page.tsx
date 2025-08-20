@@ -41,15 +41,19 @@ const MembershipApplicationPage = () => {
           uploadFormData.append('documents', files[i]);
         }
         // Note: The token is not passed here because cookie-based auth is used.
-        const uploadData = await api.postFormData('/api/v1/upload/documents/membership', uploadFormData, null);
+        const uploadData = await api.postFormData('/api/v1/upload/documents/membership', uploadFormData);
         documentUrls = uploadData.urls;
       }
 
       await api.post('/api/v1/membership/apply', { ...formData, documents: documentUrls });
 
       router.push('/application-status');
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred.');
+      }
     } finally {
       setLoading(false);
     }
