@@ -41,7 +41,7 @@ const MembershipApplicationPage = () => {
           uploadFormData.append('documents', files[i]);
         }
         // Note: The token is not passed here because cookie-based auth is used.
-        const uploadData = await api.postFormData('/api/v1/upload/documents/membership', uploadFormData);
+        const uploadData = await api.post('/api/v1/upload/documents/membership', uploadFormData) as { urls: string[] };
         documentUrls = uploadData.urls;
       }
 

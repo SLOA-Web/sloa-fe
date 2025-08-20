@@ -22,7 +22,7 @@ const ApplicationStatusPage = () => {
     const fetchStatus = async () => {
       try {
         const data = await api.get('/api/v1/membership/status');
-        setStatus(data);
+        setStatus(data as StatusType);
       } catch (err: unknown) {
         const errorMessage = handleApiError(err, router);
         setError(errorMessage);

@@ -1,227 +1,270 @@
-'use client';
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { 
-  Menu, 
-  X, 
-  User, 
-  LogOut, 
-  Settings, 
-  ChevronDown,
-  Bell,
-  Search,
-  Home,
-  FileText,
-  LayoutDashboard
-} from 'lucide-react';
+"use client";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { gsap } from "gsap";
+import { Menu, X } from "lucide-react";
+import Image from "next/image";
+import logo from "../../public/assets/images/logo.png";
+import { HEADER, TOP_BAR_LINKS } from "@/data/index";
+
+// Type definitions
+interface HeaderChild {
+  title: string;
+  href: string;
+}
+
+interface HeaderItem {
+  title: string;
+  href?: string;
+  children?: HeaderChild[];
+}
 
 const Header = () => {
-  const { user, logout, isLoading } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const navLinksRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [hasMounted, setHasMounted] = useState(false);
+  // Removed isHeaderHidden logic
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const prevPathRef = useRef(pathname);
 
-  const handleLogout = () => {
-    logout();
-    setIsUserMenuOpen(false);
+  // Removed lastScrollY and scrollThreshold
+
+  useEffect(() => {
+    const checkMobileScreen = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobileScreen();
+    window.addEventListener("resize", checkMobileScreen);
+    return () => window.removeEventListener("resize", checkMobileScreen);
+  }, []);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 200);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMounted]);
+
+  useEffect(() => {
+    if (!navLinksRef.current || !hasMounted) return;
+    gsap.fromTo(
+      navLinksRef.current.children,
+      { opacity: 0, y: -20 },
+      { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: "power2.out" }
+    );
+  }, [hasMounted]);
+
+  useEffect(() => {
+    if (!hasMounted) return;
+    if (prevPathRef.current !== pathname) {
+      if (isMobileMenuOpen) {
+        closeMobileMenu();
+      }
+      // removed: setMobileDropdownOpen(null);
+      prevPathRef.current = pathname;
+    }
+  }, [pathname, hasMounted, isMobileMenuOpen]);
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+    // removed: setMobileDropdownOpen(null);
+    document.body.classList.remove("overflow-hidden");
   };
 
+  const toggleMobileMenu = useCallback(() => {
+    if (isMobileMenuOpen) {
+      closeMobileMenu();
+    } else {
+      setIsMobileMenuOpen(true);
+      document.body.classList.add("overflow-hidden");
+    }
+  }, [isMobileMenuOpen]);
+
+  const isActiveLink = (item: HeaderItem) => {
+    if (item.children) {
+      return item.children.some(
+        (child: HeaderChild) => pathname === child.href
+      );
+    }
+    return pathname === item.href;
+  };
+
+  if (!hasMounted) return null;
+
+  // Return null if pathname includes "member-portal"
+  if (pathname && pathname.includes("member-portal")) return null;
+
+  // Helper for mobile nav keys
+  const getNavKey = (item: HeaderItem) => item.href || item.title;
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        {/* Logo */}
-        <div className="flex items-center space-x-4">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-              <span className="text-lg font-bold">S</span>
-            </div>
-            <span className="text-xl font-bold text-foreground">SLOA</span>
-          </Link>
-        </div>
+    <>
+      {/* Main Header */}
+      <nav
+        ref={headerRef}
+        className={`fixed w-full font-roboto px-3 lg:px-6 max-w-[1520px] mx-auto font-lato py-2 flex items-center justify-between left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out z-[999] ${
+          isMobileMenuOpen || isScrolled
+            ? "bg-white shadow"
+            : "bg-gradient-to-b from-white to-transparent"
+        }`}
+      >
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="logo"
+            className="relative w-24 lg:w-44 z-[999] mr-12"
+          />
+        </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <Link 
-            href="/" 
-            className="nav-item text-sm font-medium transition-colors hover:text-foreground"
-          >
-            <Home className="h-4 w-4" />
-            Home
-          </Link>
-          <Link 
-            href="/apply" 
-            className="nav-item text-sm font-medium transition-colors hover:text-foreground"
-          >
-            <FileText className="h-4 w-4" />
-            Apply
-          </Link>
-        </nav>
-
-        {/* Right side - Search, Notifications, User */}
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <div className="hidden sm:flex relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search..."
-              className="input pl-9 w-64"
-            />
-          </div>
-
-          {/* Notifications */}
-          <button className="btn btn-ghost btn-sm relative">
-            <Bell className="h-5 w-5" />
-            <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-destructive"></span>
-          </button>
-
-          {/* User Menu */}
-          {!isLoading && (
-            <>
-              {user ? (
-                <div className="relative">
-                  <button
-                    onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="btn btn-ghost btn-sm flex items-center space-x-2"
+        {!isMobile ? (
+          <div className="flex flex-col space-x-2 relative w-full" ref={navLinksRef}>
+            {/* Top Light Bar */}
+            {!isScrolled && (
+              <div className="w-full text-[#122D1E]/50 text-[13px] py-2 px-3 lg:px-6 flex justify-end gap-6 font-light z-[1001] border-b-2">
+                {TOP_BAR_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="hover:underline"
                   >
-                    <div className="h-8 w-8 rounded-full bg-blue-50 flex items-center justify-center">
-                      <User className="h-4 w-4 text-primary" />
-                    </div>
-                    <span className="hidden sm:block text-sm font-medium">
-                      {user.email || user.id || 'User'}
-                    </span>
-                    <ChevronDown className="h-4 w-4" />
-                  </button>
-
-                  {isUserMenuOpen && (
-                    <div className="absolute right-0 mt-2 w-56 rounded-md border bg-background shadow-lg animate-in slide-in-from-top">
-                      <div className="p-2">
-                        <div className="px-3 py-2 text-sm text-muted-foreground">
-                          Signed in as
-                        </div>
-                        <div className="px-3 py-1 text-sm font-medium">
-                          {user.email || user.id || 'User'}
-                        </div>
-                        <div className="mt-2 border-t pt-2">
-                          <Link
-                            href="/member-portal"
-                            className="nav-item w-full"
-                            onClick={() => setIsUserMenuOpen(false)}
-                          >
-                            <LayoutDashboard className="h-4 w-4" />
-                            Dashboard
-                          </Link>
-                          <Link
-                            href="/member-portal/profile"
-                            className="nav-item w-full"
-                            onClick={() => setIsUserMenuOpen(false)}
-                          >
-                            <User className="h-4 w-4" />
-                            Profile
-                          </Link>
-                          <Link
-                            href="/member-portal/settings"
-                            className="nav-item w-full"
-                            onClick={() => setIsUserMenuOpen(false)}
-                          >
-                            <Settings className="h-4 w-4" />
-                            Settings
-                          </Link>
-                          <button
-                            onClick={handleLogout}
-                            className="nav-item w-full text-destructive hover:text-destructive"
-                          >
-                            <LogOut className="h-4 w-4" />
-                            Sign out
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <Link href="/login" className="btn btn-outline btn-sm">
-                    Sign in
+                    {link.title}
                   </Link>
-                  <Link href="/signup" className="btn btn-primary btn-sm">
-                    Sign up
-                  </Link>
-                </div>
-              )}
-            </>
-          )}
-
-          {/* Loading state */}
-          {isLoading && (
-            <div className="flex items-center space-x-2">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-              <span className="text-sm text-muted-foreground">Loading...</span>
-            </div>
-          )}
-
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="btn btn-ghost btn-sm md:hidden"
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile Navigation */}
-      {isMenuOpen && (
-        <div className="md:hidden border-t bg-background animate-in slide-in-from-top">
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="text"
-                placeholder="Search..."
-                className="input pl-9 w-full"
-              />
-            </div>
-            <nav className="flex flex-col space-y-2">
-              <Link 
-                href="/" 
-                className="nav-item"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Home className="h-4 w-4" />
-                Home
-              </Link>
-              <Link 
-                href="/apply" 
-                className="nav-item"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <FileText className="h-4 w-4" />
-                Apply
-              </Link>
-            </nav>
-            {!isLoading && !user && (
-              <div className="flex flex-col space-y-2 pt-4 border-t">
-                <Link 
-                  href="/login" 
-                  className="btn btn-outline w-full"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign in
-                </Link>
-                <Link 
-                  href="/signup" 
-                  className="btn btn-primary w-full"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  Sign up
-                </Link>
+                ))}
               </div>
             )}
+
+            <div className="flex justify-end gap-2 mt-4">
+              {(HEADER as HeaderItem[]).map((item: HeaderItem) => {
+                const isActive = isActiveLink(item);
+                const isGetInvolved = item.title === "Get Involved";
+                let linkClass = "";
+                if (isGetInvolved) {
+                  linkClass = "bg-primary text-white p-4 shadow hover:bg-primary/90";
+                } else if (isActive) {
+                  linkClass = "border-b-[2px] border-black";
+                }
+                return (
+                    <Link
+                    key={item.href || item.title}
+                    href={item.href || "#"}
+                    className={`relative mx-2 lg:mx-4 pt-2 lg:pt-4 mb-4 inline-block text-[10px] lg:text-[14px] uppercase tracking-wide transition-colors duration-200 ${linkClass}`}
+                    >
+                    <span
+                      className="relative inline-block"
+                      style={{ display: "inline-block" }}
+                    >
+                      {item.title}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <button
+            onClick={toggleMobileMenu}
+            className="text-2xl focus:outline-none z-50"
+            style={{ transition: "transform 0.2s" }}
+          >
+            <span
+              style={{
+                display: "inline-block",
+                transform: isMobileMenuOpen ? "rotate(90deg)" : "rotate(0deg)",
+                transition: "transform 0.2s",
+              }}
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </span>
+            <span className="sr-only">Toggle menu</span>
+          </button>
+        )}
+      </nav>
+
+      {/* Mobile Menu */}
+      {isMobile && isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-white z-50 md:hidden min-h-screen flex flex-col justify-center"
+          id="mobile-menu"
+          style={{ opacity: 0 }}
+          ref={(el) => {
+            if (el) {
+              gsap.to(el, { opacity: 1, duration: 0.2, ease: "power2.out" });
+            }
+          }}
+        >
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:100px_100px]" />
+            <div className="absolute -left-[20%] top-0 w-[140%] h-[140%] " />
+          </div>
+
+          <div className="relative z-10 flex flex-col items-center justify-center h-full px-8 text-black overflow-y-auto">
+            <div className="w-full max-w-md">
+              {(HEADER as HeaderItem[]).map((item: HeaderItem) => (
+                <Link
+                  key={getNavKey(item)}
+                  href={item.href || "#"}
+                  className={`block text-2xl sm:text-3xl font-bold transition-all hover:pl-4 cursor-pointer ${
+                    pathname === item.href
+                      ? "pl-4 border-l-2 border-primary"
+                      : ""
+                  }`}
+                  onClick={closeMobileMenu}
+                >
+                  {item.title}
+                </Link>
+              ))}
+            </div>
+
+            <div
+              className="absolute bottom-12 left-0 right-0 text-center text-black text-sm px-8"
+              style={{ opacity: 0, transform: "translateY(20px)" }}
+              ref={(el) => {
+                if (el) {
+                  gsap.to(el, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.3,
+                    delay: 0.4,
+                    ease: "power2.out",
+                  });
+                }
+              }}
+            >
+              <p>© {new Date().getFullYear()} EduSight. All rights reserved.</p>
+            </div>
           </div>
         </div>
       )}
-    </header>
+
+      {/* CSS for dropdown animation */}
+      <style>{`
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateX(-50%) translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+          }
+        }
+      `}</style>
+    </>
   );
 };
 

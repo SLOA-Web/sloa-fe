@@ -63,16 +63,24 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Get backend URL from environment
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
-  // Always call /api/v1/auth/me on mount (refresh or first load)
+  // Always call backend /api/v1/auth/me on mount (refresh or first load)
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+        const res = await fetch(`${BACKEND_URL}/api/v1/auth/me`, { 
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
         if (res.ok) {
           const data = await res.json();
           setUser(data.user as User);
@@ -100,7 +108,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // After a successful login API call, re-fetch /me to get the authoritative user
   const login = async (userData?: User) => {
     try {
-      const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+      const res = await fetch(`${BACKEND_URL}/api/v1/auth/me`, { 
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       if (res.ok) {
         const data = await res.json();
         setUser(data.user as User);
@@ -125,7 +138,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
+      await fetch(`${BACKEND_URL}/api/v1/auth/logout`, { 
+        method: 'POST', 
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
     } finally {
       setUser(null);
       if (typeof window !== 'undefined') {

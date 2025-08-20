@@ -11,16 +11,13 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        primary: "#D47045",
         muted: {
           DEFAULT: "var(--muted)",
           foreground: "var(--muted-foreground)",
         },
         border: "var(--border)",
         input: "var(--input)",
-        primary: {
-          DEFAULT: "var(--primary)",
-          foreground: "var(--primary-foreground)",
-        },
         secondary: {
           DEFAULT: "var(--secondary)",
           foreground: "var(--secondary-foreground)",
@@ -50,9 +47,12 @@ const config: Config = {
         md: "var(--shadow-md)",
         lg: "var(--shadow-lg)",
         xl: "var(--shadow-xl)",
+        custom: "0 4px 24px 0 rgba(128, 128, 128, 0.15)", // gray shadow
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+        roboto: ["Roboto", "Arial", "Helvetica", "sans-serif"],
+        poppins: ["Poppins", "Arial", "Helvetica", "sans-serif"],
       },
     },
   },

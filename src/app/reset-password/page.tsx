@@ -17,7 +17,7 @@ const ResetPasswordPage = () => {
     setMessage(null);
 
     try {
-      const response = await api.post('/api/v1/auth/reset-password', { email });
+      const response = await api.post('/api/v1/auth/reset-password', { email }) as { message: string };
       setMessage(response.message);
     } catch (err: unknown) {
       if (err instanceof Error) {

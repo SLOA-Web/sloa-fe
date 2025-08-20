@@ -1,121 +1,180 @@
+// Get API base URL from environment or fallback to localhost
+const getBaseUrl = () => {
+  // Always use the direct backend URL
+  return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000';
+};
 
-// Helper to get the API base URL
-const getApiBaseUrl = () => {
-  if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
-  if (typeof window !== 'undefined') {
-    // Use same-origin in the browser so dev on port 8000 works
-    return '';
+interface FetchOptions {
+  method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+  headers?: Record<string, string>;
+  body?: string | FormData | object;
+  params?: Record<string, unknown>;
+  skipCredentials?: boolean; // For cases where credentials shouldn't be sent
+}
+
+// Removed unused interface
+
+class ApiClient {
+  private baseUrl: string;
+
+  constructor() {
+    this.baseUrl = getBaseUrl();
   }
-  // Fallback for server-side (build/SSR)
-  return 'http://localhost:3000';
+
+  /**
+   * Main API method - handles all HTTP requests with consistent configuration
+   */
+  async request<T = unknown>(endpoint: string, options: FetchOptions = {}): Promise<T> {
+    try {
+      const { 
+        method = 'GET', 
+        headers = {}, 
+        body, 
+        params, 
+        skipCredentials = false 
+      } = options;
+      
+      // Build URL with query parameters for GET requests
+      let url = `${this.baseUrl}${endpoint}`;
+      if (params && method === 'GET') {
+        const query = new URLSearchParams(params as Record<string, string>).toString();
+        url += query ? `?${query}` : '';
+      }
+
+      // Set default headers with credentials
+      const defaultHeaders: Record<string, string> = {};
+
+      // Handle different body types
+      let processedBody: string | FormData | undefined;
+      if (body instanceof FormData) {
+        // FormData - don't set Content-Type, let browser set it
+        processedBody = body;
+      } else if (body && typeof body === 'object') {
+        // JSON object - stringify and set content type
+        defaultHeaders['Content-Type'] = 'application/json';
+        processedBody = JSON.stringify(body);
+      } else if (body) {
+        // String body
+        processedBody = body as string;
+        if (!headers['Content-Type']) {
+          defaultHeaders['Content-Type'] = 'application/json';
+        }
+      }
+
+      const fetchOptions: RequestInit = {
+        method,
+        headers: {
+          ...defaultHeaders,
+          ...headers,
+        },
+        body: processedBody,
+      };
+
+      // Always include credentials unless explicitly skipped
+      if (!skipCredentials) {
+        fetchOptions.credentials = 'include';
+      }
+
+      const response = await fetch(url, fetchOptions);
+
+      // Handle non-JSON responses
+      const contentType = response.headers.get('content-type');
+      let responseData: unknown;
+
+      if (contentType?.includes('application/json')) {
+        responseData = await response.json();
+      } else {
+        responseData = await response.text();
+      }
+
+      if (!response.ok) {
+        // Try to extract error message from response
+        let errorMessage: string;
+
+        if (typeof responseData === 'object' && responseData !== null) {
+          // Try to extract message or error property if present
+          const data = responseData as Record<string, unknown>;
+          errorMessage =
+            (typeof data.message === 'string' && data.message) ||
+            (typeof data.error === 'string' && data.error) ||
+            `HTTP error! status: ${response.status}`;
+        } else if (typeof responseData === 'string' && responseData.length > 0) {
+          errorMessage = responseData;
+        } else {
+          errorMessage = `HTTP error! status: ${response.status}`;
+        }
+
+        throw new Error(errorMessage);
+      }
+
+      return responseData as T;
+    } catch (err: unknown) {
+      const errorMessage = (err instanceof Error) ? err.message : "An unknown error occurred";
+      console.error(`API call failed [${options.method || 'GET'} ${endpoint}]:`, errorMessage);
+      throw err; // Re-throw the error so the calling function can handle it
+    }
+  }
+
+  /**
+   * GET request
+   */
+  async get<T = unknown>(endpoint: string, params?: Record<string, unknown>, options?: Omit<FetchOptions, 'method' | 'params'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'GET', params });
+  }
+
+  /**
+   * POST request
+   */
+  async post<T = unknown>(endpoint: string, body?: string | FormData | object, options?: Omit<FetchOptions, 'method' | 'body'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'POST', body });
+  }
+
+  /**
+   * PUT request
+   */
+  async put<T = unknown>(endpoint: string, body?: string | object | FormData, options?: Omit<FetchOptions, 'method' | 'body'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'PUT', body });
+  }
+
+  /**
+   * PATCH request
+   */
+  async patch<T = unknown>(endpoint: string, body?: string | object | FormData, options?: Omit<FetchOptions, 'method' | 'body'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'PATCH', body });
+  }
+
+  /**
+   * DELETE request
+   */
+  async delete<T = unknown>(endpoint: string, options?: Omit<FetchOptions, 'method'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'DELETE' });
+  }
+
+  /**
+   * Upload file(s) with FormData
+   */
+  async upload<T = unknown>(endpoint: string, formData: FormData, options?: Omit<FetchOptions, 'method' | 'body'>): Promise<T> {
+    return this.request<T>(endpoint, { ...options, method: 'POST', body: formData });
+  }
+}
+
+// Create and export a singleton instance
+const apiClient = new ApiClient();
+
+// Export the main methods for backwards compatibility
+export const api = apiClient;
+
+// Legacy function for backwards compatibility
+export const fetchData = (endpoint: string, options: FetchOptions = {}) => {
+  return apiClient.request(endpoint, options);
 };
 
-// Helper to get default headers
-const getDefaultHeaders = () => {
-  return {
-    'Content-Type': 'application/json',
-  } as HeadersInit;
-};
+// Export convenience methods with proper binding
+export const get = apiClient.get.bind(apiClient);
+export const post = apiClient.post.bind(apiClient);
+export const put = apiClient.put.bind(apiClient);
+export const patch = apiClient.patch.bind(apiClient);
+export const del = apiClient.delete.bind(apiClient);
+export const upload = apiClient.upload.bind(apiClient);
 
-const api = {
-  async me() {
-    const response = await fetch(`${getApiBaseUrl()}/api/v1/auth/me`, {
-      method: 'GET',
-      headers: getDefaultHeaders(),
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      if (response.status === 401) {
-        throw new Error('Unauthorized');
-      }
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `API Error: ${response.statusText}`);
-    }
-    return response.json();
-  },
-
-  async post(endpoint: string, body: unknown) {
-    const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
-      method: 'POST',
-      headers: getDefaultHeaders(),
-      body: JSON.stringify(body),
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      if (response.status === 404) {
-        const errorData = await response.json().catch(() => ({ message: 'Resource not found' }));
-        throw new Error(errorData.message || 'Resource not found');
-      }
-      if (response.status === 401) {
-        const errorData = await response.json().catch(() => ({ message: 'Unauthorized' }));
-        throw new Error(`Authentication error: ${errorData.message || 'Unauthorized'}`);
-      }
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `API Error: ${response.statusText}`);
-    }
-    return response.json();
-  },
-
-  async get(endpoint: string) {
-    const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
-      method: 'GET',
-      headers: getDefaultHeaders(),
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      if (response.status === 404) {
-        const errorData = await response.json().catch(() => ({ message: 'Resource not found' }));
-        throw new Error(errorData.message || 'Resource not found');
-      }
-      if (response.status === 401) {
-        const errorData = await response.json().catch(() => ({ message: 'Unauthorized' }));
-        throw new Error(`Authentication error: ${errorData.message || 'Unauthorized'}`);
-      }
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `API Error: ${response.statusText}`);
-    }
-    return response.json();
-  },
-
-  async postFormData(endpoint: string, formData: FormData) {
-    const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
-      method: 'POST',
-      body: formData,
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'File upload failed' }));
-      throw new Error(errorData.message || 'File upload failed');
-    }
-    return response.json();
-  },
-
-  async put(endpoint: string, body: unknown) {
-    const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
-      method: 'PUT',
-      headers: getDefaultHeaders(),
-      body: JSON.stringify(body),
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `API Error: ${response.statusText}`);
-    }
-    return response.json();
-  },
-
-  async delete(endpoint: string) {
-    const response = await fetch(`${getApiBaseUrl()}${endpoint}`, {
-      method: 'DELETE',
-      headers: getDefaultHeaders(),
-      credentials: 'include',
-    });
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ message: 'Network error' }));
-      throw new Error(errorData.message || `API Error: ${response.statusText}`);
-    }
-    return response.json();
-  },
-};
-
-export default api;
+export default apiClient;

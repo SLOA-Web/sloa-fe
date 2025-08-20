@@ -1,21 +1,33 @@
 "use client";
-import React, { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Shield, AlertTriangle } from 'lucide-react';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import AuthRedirect from "@/components/AuthRedirect";
+import { Shield, Mail, Lock, Eye, EyeOff, AlertTriangle, ArrowRight } from "lucide-react";
 import api from '@/utils/api';
-import { useAuth } from '@/context/AuthContext';
-import AuthRedirect from '@/components/AuthRedirect';
+
+interface LoginResponse {
+  user: {
+    id: string;
+    email?: string;
+    role: string;
+    user_metadata?: {
+      full_name?: string;
+      role?: string;
+    };
+  };
+}
 
 const LoginPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
   const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,7 +35,7 @@ const LoginPage = () => {
     setError(null);
 
     try {
-      const response = await api.post('/api/v1/auth/login', { email, password });
+      const response = await api.post('/api/v1/auth/login', { email, password }) as LoginResponse;
       if (response.user) {
         await login(response.user);
         router.push('/member-portal');
