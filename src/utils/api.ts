@@ -7,7 +7,7 @@ const getApiBaseUrl = () => {
     return '';
   }
   // Fallback for server-side (build/SSR)
-  return 'http://localhost:8000';
+  return 'http://localhost:3000';
 };
 
 // Helper to get default headers
