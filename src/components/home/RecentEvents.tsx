@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/carousel";
 import { eventCards } from "@/data";
 import EventCard from "./EventCard";
-import About from "./About";
+import InfoSection from "./InfoSection";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -114,7 +114,7 @@ const RecentEvents: React.FC = () => {
         )}
       </div>
 
-      <About />
+      <InfoSection headerText="about" />
     </div>
   );
 };

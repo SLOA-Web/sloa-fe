@@ -36,3 +36,15 @@ export type BookEventData = {
   description: string;
   dateBg: string;
 };
+
+export interface CommonBannerProps {
+  imageUrl: string;
+  text: string;
+}
+
+export interface CTASectionProps {
+  title?: string;
+  description?: string;
+  buttonText?: string;
+  onClick?: () => void;
+}

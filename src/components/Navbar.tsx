@@ -116,7 +116,7 @@ const Navbar = () => {
         className={`fixed w-full font-roboto px-3 lg:px-6 max-w-[1520px] mx-auto font-lato py-2 flex items-center justify-between left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out z-[999] ${
           isMobileMenuOpen || isScrolled
             ? "bg-white shadow"
-            : "bg-gradient-to-b from-white to-transparent"
+            : "bg-gradient-to-b from-white via-white/90 to-transparent"
         }`}
       >
         <Link href="/">
