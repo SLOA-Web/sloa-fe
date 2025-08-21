@@ -407,7 +407,7 @@ Error handling patterns:
 
 ### 8. Appendix
 - Glossary
-  - User.role: "guest"|"trainee"|"consultant"|"admin"
+  - user.userRole: "guest"|"trainee"|"consultant"|"admin"
   - User.status: "pending"|"approved_guest"|"active"|"expired"|"rejected"
     - pending: newly registered, awaiting approval
     - approved_guest: approved for basic event access, no payment required

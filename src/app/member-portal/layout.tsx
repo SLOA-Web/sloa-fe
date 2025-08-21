@@ -101,7 +101,7 @@ export default function MemberPortalLayout({
                         </p>
                         <div className="flex items-center mt-2">
                           <div className="h-2 w-2 rounded-full bg-green-500 mr-2 animate-pulse"></div>
-                          <span className="text-xs text-muted-foreground capitalize">{user.role}</span>
+                          <span className="text-xs text-muted-foreground capitalize">{user.userRole}</span>
                           {user.user_metadata?.status === 'active' && (
                             <BadgeCheck className="h-3 w-3 ml-1 text-primary" />
                           )}

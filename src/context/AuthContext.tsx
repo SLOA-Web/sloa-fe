@@ -38,7 +38,7 @@ interface UserAppMetadata {
 
 interface User {
   id: string;
-  role: string;
+  userRole: string;
   email?: string;
   email_confirmed_at?: string;
   phone?: string;
