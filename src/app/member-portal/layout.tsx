@@ -152,8 +152,8 @@ export default function MemberPortalLayout({
             </aside>
 
             {/* Main Content Panel */}
-            <main className="flex-1 min-w-0">
-              <div className="bg-card rounded-lg border border-border shadow-sm">
+            <main className="flex-1 ">
+              <div className="bg-card p-10 rounded-lg border border-border shadow-sm">
                 {children}
               </div>
             </main>

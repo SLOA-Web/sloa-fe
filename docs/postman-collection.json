@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "sloa-api-collection",
 		"name": "SLOA Membership & Event Portal API",
-		"description": "Complete API collection for the Sri Lanka Orthopaedic Association (SLOA) Portal. This collection includes all endpoints for authentication, guest approval, membership management, events with agenda support, payments, user synchronization, webhooks, analytics, and file uploads.\n\n## New Features:\n- **Cookie-Based Authentication**: Secure HTTP-only cookies for better security (with Bearer token fallback)\n- **Enhanced Membership Management**: New endpoints for viewing applications (user & admin)\n- **Guest Approval Workflow**: Users can request guest access for event registration without payment\n- **Enhanced Event Management**: Events now support structured agenda with time/topic/speaker\n- **User Synchronization**: Admin tools for managing sync between Supabase Auth and database\n- **Webhook Integration**: Automatic user sync via Supabase webhooks\n- **Comprehensive Testing**: Health check endpoints and database connectivity tests\n\n## Authentication Methods:\n1. **Cookie-Based (Recommended)**: Login sets HTTP-only cookie automatically\n2. **Bearer Token**: Traditional Authorization header method (backward compatible)\n\n## User Flow:\n1. **Guest Path**: Register → Request Guest Approval → Admin Approval → Event Access\n2. **Member Path**: Register → Apply for Membership → Admin Approval → Payment → Full Access\n\n## Setup Instructions:\n1. Import this collection into Postman\n2. Set up environment variables (see Variables tab)\n3. Use the Auth endpoints to login (cookie auth works automatically)\n4. For Bearer token auth, copy token to Authorization header for protected endpoints\n5. Configure Supabase webhooks pointing to /api/v1/webhooks/auth/* endpoints\n\n## New Membership Endpoints:\n- `GET /membership/my-application` - View your own application\n- `GET /membership/applications` - Admin: View all applications with filtering\n- `GET /membership/applications/:id` - Admin: View specific application\n\n## Base URL: {{baseUrl}}/api/v1\n\nContact: dev@axleglobal.com",
+		"description": "Complete API collection for the Sri Lanka Orthopaedic Association (SLOA) Portal. This collection includes all endpoints for authentication, guest approval, membership management, events with agenda support, payments, user synchronization, webhooks, analytics, audit logging, and file uploads.\n\n## New Features:\n- **Cookie-Based Authentication**: Secure HTTP-only cookies for better security (with Bearer token fallback)\n- **Restructured User Management**: Clear separation between general user management and member-specific operations\n- **Comprehensive User Filtering**: Advanced filtering for all user types (guests, members, pending, etc.)\n- **Enhanced Membership Management**: Focused endpoints for active members only\n- **UNIFIED PAYMENT SYSTEM**: Manual and gateway payments use identical membership activation/renewal logic\n- **Manual Payment Recording**: Admin endpoints for cash payments, bank transfers with full processing\n- **Payment Source Tracking**: Clear distinction between manual and gateway payments with unified processing\n- **Auto-Guest Approval**: Simplified user flow - guests are auto-approved for events after registration\\n- **Change Password**: Secure password update for authenticated users\\n- **Enhanced Event Management**: Events now support structured agenda with time/topic/speaker\n- **User Synchronization**: Admin tools for managing sync between Supabase Auth and database\n- **Webhook Integration**: Automatic user sync via Supabase webhooks\n- **Audit Logging**: Comprehensive system activity tracking with filtering and pagination\n- **Comprehensive Testing**: Health check endpoints and database connectivity tests\n\n## Authentication Methods:\n1. **Cookie-Based (Default)**: All endpoints use HTTP-only cookies for authentication\n   - Login automatically sets secure cookies\n   - No manual token management required\n   - More secure than bearer tokens\n   - Automatic CSRF protection\n2. **Bearer Token**: Legacy method (deprecated - use cookies instead)\n\n## User Flow (Simplified):\n1. **Guest Path**: Register \u2192 Verify Email \u2192 Immediate Event Access\n2. **Member Path**: Register \u2192 Apply for Membership \u2192 Admin Approval \u2192 Payment (Manual OR Gateway) \u2192 Full Access\n\n## Setup Instructions:\n1. Import this collection into Postman\n2. Import the environment file (SLOA-API.postman_environment.json)\n3. **Enable Cookie Jar**: Go to Postman Settings → General → Enable \"Automatically follow redirects\" and \"Send cookies\"\n4. **Login First**: Use `/auth/login` endpoint - cookies will be set automatically\n5. **Test Protected Endpoints**: All subsequent requests will use cookies automatically\n6. **Admin Access**: Login with admin credentials for admin-only endpoints\n7. **Logout**: Use `/auth/logout` to clear cookies when done\n\n## Cookie Authentication Benefits:\n- ✅ **Automatic**: No manual token copying required\n- ✅ **Secure**: HTTP-only cookies prevent XSS attacks\n- ✅ **Persistent**: Cookies persist across Postman sessions\n- ✅ **CSRF Protected**: Built-in CSRF protection\n- ✅ **Easy Testing**: Login once, test multiple endpoints\n\n## User Management vs Membership:\n### User Management (`/users/*`) - ALL users in system:\n- `GET /users` - Get all users (guests, members, pending, approved but unpaid, etc.)\n- `GET /users/stats` - Get comprehensive user statistics\n- `GET /users/search` - Search across all user types\n- `GET /users/:id` - Get detailed user information\n\n### Membership (`/membership/*`) - Active members & applications:\n- `GET /membership/members` - Get only active/approved members\n- `GET /membership/members/search` - Search only active members\n- `GET /membership/applications` - View membership applications\n- `POST /membership/apply` - Apply for membership\n\n## Payment System (UNIFIED LOGIC):\n### Gateway Payments (`/payments/*`) - Online payment processing:\n- `POST /payments/create` - Create payment session for gateway\n- `POST /payments/webhook` - Process gateway payment notifications\n- `GET /payments/all` - Admin: View all payments with filtering\n\n### Manual Payments (`/manual-payments/*`) - Offline payment recording:\n- `POST /manual-payments/record` - Record cash/bank transfer payments\n- `GET /manual-payments` - Admin: View all manual payments\n- `GET /manual-payments/statistics` - Admin: Payment statistics\n\n**IMPORTANT**: Both payment methods use IDENTICAL logic for:\n- Membership activation (status update, role assignment, membership ID generation)\n- Membership renewal (expiry extension, reactivation)\n- Email notifications (activation/renewal confirmations)\n- Auth synchronization (Supabase metadata updates)\n- Validation (amount verification, application checks)\n\n## Base URL: {{baseUrl}}/api/v1\n\nContact: dev@axleglobal.com",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -97,16 +97,6 @@
 				{
 					"name": "Get Current User",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -156,18 +146,156 @@
 					"response": []
 				},
 				{
-					"name": "Logout",
+					"name": "Change Password",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"currentPassword\": \"current_password_123\",\n  \"newPassword\": \"new_secure_password_456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/auth/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"change-password"
 							]
 						},
+						"description": "Change password for authenticated user. Requires current password for verification. New password must be at least 6 characters and different from current password."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"current_password_123\",\n  \"newPassword\": \"new_secure_password_456\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/auth/change-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"change-password"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Password changed successfully\",\n  \"user\": {\n    \"id\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"email\": \"user@example.com\"\n  }\n}"
+						},
+						{
+							"name": "Current Password Incorrect",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"wrong_password\",\n  \"newPassword\": \"new_secure_password_456\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/auth/change-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"change-password"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Password change failed\",\n  \"message\": \"Current password is incorrect\"\n}"
+						},
+						{
+							"name": "Validation Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"currentPassword\": \"password123\",\n  \"newPassword\": \"password123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/auth/change-password",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"change-password"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Validation failed\",\n  \"message\": \"New password must be different from current password\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Logout",
+					"request": {
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -190,21 +318,743 @@
 			"description": "Authentication endpoints for user registration, login, and profile management"
 		},
 		{
+			"name": "Council",
+			"item": [
+				{
+					"name": "List Council Terms (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/council/terms",
+							"host": ["{{baseUrl}}"],
+							"path": ["api","v1","council","terms"]
+						},
+						"description": "Get all council terms with positions and assigned members (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Term (Auth)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/council/term/active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api","v1","council","term","active"]
+						},
+						"description": "Get currently active council term"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Term (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n  \"name\": \"2025-2027\",\n  \"startsAt\": \"2025-01-01\",\n  \"endsAt\": \"2027-12-31\"\n}" },
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/council/term",
+							"host": ["{{baseUrl}}"],
+							"path": ["api","v1","council","term"]
+						},
+						"description": "Create a new council term (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Term (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n  \"name\": \"2024-2026 Updated\",\n  \"startsAt\": \"2024-02-01\",\n  \"endsAt\": \"2026-01-31\"\n}" },
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/council/term/{{termId}}",
+							"host": ["{{baseUrl}}"],
+							"path": ["api","v1","council","term","{{termId}}"]
+						},
+						"description": "Update council term details - name, start date, end date (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Activate Term (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{ "key": "Content-Type", "value": "application/json" }
+						],
+						"body": { "mode": "raw", "raw": "{\n  \"termId\": \"term-uuid\"\n}" },
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/council/term/active",
+							"host": ["{{baseUrl}}"],
+							"path": ["api","v1","council","term","active"]
+						},
+						"description": "Set a council term as active (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Define Positions (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [ { "key": "Content-Type", "value": "application/json" } ],
+						"body": { "mode": "raw", "raw": "{\n  \"termId\": \"term-uuid\",\n  \"positions\": [\n    { \"name\": \"President\", \"isPresident\": true, \"grantsAdmin\": true },\n    { \"name\": \"Secretary\" },\n    { \"name\": \"Treasurer\" }\n  ]\n}" },
+						"url": { "raw": "{{baseUrl}}/api/v1/council/positions", "host": ["{{baseUrl}}"], "path": ["api","v1","council","positions"] },
+						"description": "Replace positions for a term (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Member (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [ { "key": "Content-Type", "value": "application/json" } ],
+						"body": { "mode": "raw", "raw": "{\n  \"termId\": \"term-uuid\",\n  \"positionId\": \"position-uuid\",\n  \"userId\": \"user-uuid\"\n}" },
+						"url": { "raw": "{{baseUrl}}/api/v1/council/assign", "host": ["{{baseUrl}}"], "path": ["api","v1","council","assign"] },
+						"description": "Assign a user to a position for a term (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Assignment (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [ { "key": "Content-Type", "value": "application/json" } ],
+						"body": { "mode": "raw", "raw": "{\n  \"termId\": \"term-uuid\",\n  \"positionId\": \"position-uuid\"\n}" },
+						"url": { "raw": "{{baseUrl}}/api/v1/council/remove", "host": ["{{baseUrl}}"], "path": ["api","v1","council","remove"] },
+						"description": "Remove current member from a position (Admin only)"
+					},
+					"response": []
+				}
+			],
+			"description": "Council governance endpoints: terms, positions, and member assignments."
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Get All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users?status=active,pending&role=guest,consultant&membershipStatus=active&page=1&limit=20&sortBy=createdAt&sortOrder=desc",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "active,pending",
+									"description": "Filter by user status (comma-separated): pending, active, expired, rejected"
+								},
+								{
+									"key": "role",
+									"value": "guest,consultant",
+									"description": "Filter by role (comma-separated): guest, trainee, consultant, admin"
+								},
+								{
+									"key": "location",
+									"value": "local",
+									"description": "Filter by location: local, foreign",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "john",
+									"description": "Search by name, email, or membership ID",
+									"disabled": true
+								},
+								{
+									"key": "membershipStatus",
+									"value": "active",
+									"description": "Filter by membership status: active, expired, pending, no_application, rejected"
+								},
+								{
+									"key": "hasApplication",
+									"value": "true",
+									"description": "Filter users with/without applications: true, false",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Items per page"
+								},
+								{
+									"key": "sortBy",
+									"value": "createdAt",
+									"description": "Sort by: createdAt, fullName, email, status"
+								},
+								{
+									"key": "sortOrder",
+									"value": "desc",
+									"description": "Sort order: asc, desc"
+								}
+							]
+						},
+						"description": "Get all users in the system including guests, members, pending users, approved but unpaid, etc. Provides comprehensive filtering options for user management."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users?status=active&limit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "active"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital of Sri Lanka\",\n        \"nic\": \"123456789V\"\n      },\n      \"membershipStatus\": \"active\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      },\n      \"stats\": {\n        \"eventRegistrations\": 5,\n        \"payments\": 2\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"guest@example.com\",\n      \"fullName\": \"Jane Guest\",\n      \"role\": \"guest\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": null,\n      \"membershipStatus\": \"no_application\",\n      \"latestApplication\": null,\n      \"stats\": {\n        \"eventRegistrations\": 2,\n        \"payments\": 0\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 150,\n    \"totalPages\": 8\n  },\n  \"summary\": {\n    \"total\": 150,\n    \"filters\": {\n      \"status\": [\"active\"],\n      \"membershipStatus\": null,\n      \"search\": null\n    }\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User Statistics (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/stats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"stats"
+							]
+						},
+						"description": "Get comprehensive user statistics including breakdown by user types, membership status, and approval rates."
+					},
+					"response": [
+						{
+							"name": "Statistics Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/stats",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"stats"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"total\": 1250,\n  \"breakdown\": {\n    \"guests\": 800,\n    \"activeMembers\": 320,\n    \"expiredMembers\": 45,\n    \"pendingApplications\": 60,\n    \"rejectedApplications\": 15,\n    \"usersWithoutApplications\": 810\n  },\n  \"membershipStats\": {\n    \"totalWithApplications\": 440,\n    \"approvalRate\": 82.5\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Search All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/search?q=john&status=active,pending&membershipStatus=active,no_application&limit=15",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "john",
+									"description": "Search query (name, email, or membership ID). Minimum 2 characters."
+								},
+								{
+									"key": "status",
+									"value": "active,pending",
+									"description": "Filter by user status (comma-separated): pending, active, expired, rejected"
+								},
+								{
+									"key": "role",
+									"value": "consultant,guest",
+									"description": "Filter by role (comma-separated): guest, trainee, consultant, admin",
+									"disabled": true
+								},
+								{
+									"key": "location",
+									"value": "local",
+									"description": "Filter by location: local, foreign",
+									"disabled": true
+								},
+								{
+									"key": "membershipStatus",
+									"value": "active,no_application",
+									"description": "Filter by membership status (comma-separated): active, expired, pending, no_application, rejected"
+								},
+								{
+									"key": "limit",
+									"value": "15",
+									"description": "Maximum number of results to return (default: 20)"
+								}
+							]
+						},
+						"description": "Search across all users in the system (guests, members, pending, etc.) by name, email, or membership ID with comprehensive filtering options."
+					},
+					"response": [
+						{
+							"name": "Search Results Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/search?q=john&status=active",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "john"
+										},
+										{
+											"key": "status",
+											"value": "active"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"found\": true,\n  \"count\": 3,\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"john.guest@example.com\",\n      \"fullName\": \"John Guest\",\n      \"role\": \"guest\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": null,\n      \"specialization\": null,\n      \"hospital\": null,\n      \"latestApplication\": null\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User by ID (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/{{userId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{{userId}}"
+							]
+						},
+						"description": "Get comprehensive details for a specific user by ID. Includes profile, membership status, applications, recent registrations, and payments."
+					},
+					"response": [
+						{
+							"name": "User Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/123e4567-e89b-12d3-a456-426614174000",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"123e4567-e89b-12d3-a456-426614174000"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"role\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n    \"profile\": {\n      \"id\": \"profile-uuid\",\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"cv\": \"Senior orthopedic surgeon with 15 years of experience...\"\n    },\n    \"membershipStatus\": \"active\",\n    \"applications\": [\n      {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n        \"approvedAt\": \"2024-01-18T09:15:00.000Z\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    ],\n    \"registrations\": [\n      {\n        \"id\": \"reg-uuid\",\n        \"registeredAt\": \"2024-02-01T08:00:00.000Z\",\n        \"event\": {\n          \"id\": \"event-uuid\",\n          \"title\": \"Annual Orthopedic Conference 2024\",\n          \"date\": \"2024-03-15\",\n          \"time\": \"09:00:00\",\n          \"location\": \"BMICH, Colombo\"\n        }\n      }\n    ],\n    \"payments\": [\n      {\n        \"id\": \"payment-uuid\",\n        \"type\": \"membership\",\n        \"status\": \"success\",\n        \"amount\": 5000,\n        \"createdAt\": \"2024-01-18T10:30:00.000Z\"\n      }\n    ],\n    \"stats\": {\n      \"totalRegistrations\": 5,\n      \"totalPayments\": 2,\n      \"totalApplications\": 1\n    }\n  }\n}"
+						},
+						{
+							"name": "User Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/nonexistent-id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"nonexistent-id"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"User not found\",\n  \"message\": \"User with ID nonexistent-id not found\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Comprehensive user management endpoints for ALL users in the system including guests, members, pending users, approved but unpaid users, etc. Provides extensive filtering and search capabilities."
+		},
+		{
+			"name": "Admin Management",
+			"item": [
+				{
+					"name": "Promote User to Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"User has demonstrated excellent leadership and technical skills\",\n  \"confirmation\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/promote",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"users",
+								"{{userId}}",
+								"promote"
+							]
+						},
+						"description": "Promote a user to admin role (Super Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/admin/users/123e4567-e89b-12d3-a456-426614174000/promote",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"123e4567-e89b-12d3-a456-426614174000",
+										"promote"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"User promoted to admin successfully\",\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"userRole\": \"admin\",\n    \"status\": \"active\",\n    \"updatedAt\": \"2025-01-18T10:30:00.000Z\"\n  },\n  \"auditLog\": {\n    \"id\": \"audit-uuid\",\n    \"actorUserId\": \"admin-uuid\",\n    \"action\": \"admin.promote\",\n    \"targetType\": \"user\",\n    \"targetId\": \"123e4567-e89b-12d3-a456-426614174000\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Demote Admin to Member",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reason\": \"User requested role reduction due to workload\",\n  \"newRole\": \"member\",\n  \"confirmation\": true,\n  \"warning\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/demote",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"users",
+								"{{userId}}",
+								"demote"
+							]
+						},
+						"description": "Demote an admin to member role (Super Admin only)"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/admin/users/123e4567-e89b-12d3-a456-426614174000/demote",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"v1",
+										"admin",
+										"users",
+										"123e4567-e89b-12d3-a456-426614174000",
+										"demote"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"User demoted from admin successfully\",\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"userRole\": \"admin\",\n    \"status\": \"active\",\n    \"updatedAt\": \"2025-01-18T10:30:00.000Z\"\n  },\n  \"auditLog\": {\n    \"id\": \"audit-uuid\",\n    \"actorUserId\": \"admin-uuid\",\n    \"action\": \"admin.demote\",\n    \"targetType\": \"user\",\n    \"targetId\": \"123e4567-e89b-12d3-a456-426614174000\"\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Admin Users List",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/users/admins?page=1&limit=20&includeInactive=false",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"users",
+								"admins"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of items per page"
+								},
+								{
+									"key": "includeInactive",
+									"value": "false",
+									"description": "Include inactive admins: true, false"
+								}
+							]
+						},
+						"description": "Get list of all admin users with pagination and statistics"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/admin/users/admins?page=1&limit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"admins"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"admin@sloa.lk\",\n      \"fullName\": \"System Administrator\",\n      \"userRole\": \"admin\",\n      \"status\": \"active\",\n      \"membershipType\": \"consultant\",\n      \"createdAt\": \"2024-01-01T00:00:00.000Z\",\n      \"updatedAt\": \"2025-01-18T10:30:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 5,\n    \"total\": 3,\n    \"totalPages\": 1,\n    \"hasNext\": false,\n    \"hasPrev\": false\n  },\n  \"stats\": {\n    \"totalAdmins\": 3,\n    \"activeAdmins\": 2,\n    \"pendingAdmins\": 1,\n    \"inactiveAdmins\": 0\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get User Role History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/admin/users/{{userId}}/role-history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"admin",
+								"users",
+								"{{userId}}",
+								"role-history"
+							]
+						},
+						"description": "Get complete role change history for a specific user"
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/admin/users/123e4567-e89b-12d3-a456-426614174000/role-history",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"admin",
+										"users",
+										"123e4567-e89b-12d3-a456-426614174000",
+										"role-history"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"body": "{\n  \"userId\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"roleHistory\": [\n    {\n      \"id\": \"audit-uuid-1\",\n      \"action\": \"promote\",\n      \"fromRole\": \"member\",\n      \"toRole\": \"admin\",\n      \"reason\": \"User has demonstrated excellent leadership skills\",\n      \"actorId\": \"admin-uuid\",\n      \"actorEmail\": \"superadmin@sloa.lk\",\n      \"actorName\": \"Super Administrator\",\n      \"timestamp\": \"2025-01-18T10:00:00.000Z\"\n    },\n    {\n      \"id\": \"audit-uuid-2\",\n      \"action\": \"demote\",\n      \"fromRole\": \"admin\",\n      \"toRole\": \"member\",\n      \"reason\": \"User requested role reduction\",\n      \"actorId\": \"admin-uuid\",\n      \"actorEmail\": \"superadmin@sloa.lk\",\n      \"actorName\": \"Super Administrator\",\n      \"timestamp\": \"2025-01-18T10:30:00.000Z\"\n    }\n  ]\n}"
+						}
+					]
+				}
+			],
+			"description": "Admin role management endpoints for promoting, demoting, and monitoring admin users"
+		},
+		{
 			"name": "Membership",
 			"item": [
 				{
 					"name": "Submit Application",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -235,16 +1085,6 @@
 				{
 					"name": "Get Membership Status",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -266,16 +1106,6 @@
 				{
 					"name": "Renew Membership",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -304,22 +1134,12 @@
 					"response": []
 				},
 				{
-					"name": "Get All Members (Admin)",
+					"name": "Get Active Members Only (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/membership/members?status=pending&page=1&limit=10",
+							"raw": "{{baseUrl}}/api/v1/membership/members?status=active&page=1&limit=10",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -332,7 +1152,7 @@
 							"query": [
 								{
 									"key": "status",
-									"value": "pending",
+									"value": "active",
 									"description": "Filter by status: pending, active, expired, rejected"
 								},
 								{
@@ -359,23 +1179,50 @@
 								}
 							]
 						},
-						"description": "Get all members with filtering and pagination (Admin only)"
+						"description": "Get only active/approved members with current memberships. For all users including guests, pending, etc., use /api/v1/users endpoint instead."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Active Members Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/membership/members?limit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"membership",
+										"members"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital of Sri Lanka\"\n      },\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"jane.smith@example.com\",\n      \"fullName\": \"Dr. Jane Smith\",\n      \"role\": \"trainee\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024002\",\n      \"profile\": {\n        \"specialization\": \"Sports Medicine\",\n        \"hospital\": \"Colombo General Hospital\"\n      },\n      \"latestApplication\": {\n        \"id\": \"app-uuid-2\",\n        \"role\": \"trainee\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-02-15\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total\": 320,\n    \"totalPages\": 32\n  }\n}"
+						}
+					]
 				},
 				{
 					"name": "Process Application (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [
 							{
@@ -385,7 +1232,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"status\": \"approved\",\n  \"membershipId\": \"SLOA-2024-001\",\n  \"expiryDate\": \"2025-12-31\"\n}"
+							"raw": "{\n  \"status\": \"approved\",\n  \"membershipId\": \"SLOA-2024-001\",\n  \"expiryDate\": \"2025-12-31\"\n}\n\n// For rejection, use:\n// {\n//   \"status\": \"rejected\",\n//   \"rejectionReason\": \"Incomplete documentation. Please provide updated CV and specialization certificates.\"\n// }"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/membership/members/{{applicationId}}/process",
@@ -401,23 +1248,78 @@
 								"process"
 							]
 						},
-						"description": "Approve or reject membership application (Admin only)"
+						"description": "Approve or reject membership application (Admin only). For rejections, rejectionReason is required and will be included in the rejection email sent to the applicant."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Application Approved",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"approved\",\n  \"membershipId\": \"SLOA-2024-001\",\n  \"expiryDate\": \"2025-12-31\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/membership/members/{{applicationId}}/process",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "v1", "membership", "members", "{{applicationId}}", "process"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Application approved successfully\",\n  \"application\": {\n    \"id\": \"app-uuid-123\",\n    \"userId\": \"user-uuid-456\",\n    \"role\": \"consultant\",\n    \"status\": \"approved\",\n    \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n    \"approvedAt\": \"2024-01-20T14:45:00.000Z\",\n    \"expiryDate\": \"2025-12-31\",\n    \"rejectionReason\": null\n  }\n}"
+						},
+						{
+							"name": "Application Rejected",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"rejected\",\n  \"rejectionReason\": \"Incomplete documentation. Please provide updated CV and specialization certificates.\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/membership/members/{{applicationId}}/process",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "v1", "membership", "members", "{{applicationId}}", "process"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Application rejected successfully\",\n  \"application\": {\n    \"id\": \"app-uuid-123\",\n    \"userId\": \"user-uuid-456\",\n    \"role\": \"trainee\",\n    \"status\": \"rejected\",\n    \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n    \"approvedAt\": null,\n    \"expiryDate\": null,\n    \"rejectionReason\": \"Incomplete documentation. Please provide updated CV and specialization certificates.\"\n  }\n}"
+						}
+					]
 				},
 				{
 					"name": "Get My Application",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -439,16 +1341,6 @@
 				{
 					"name": "Get All Applications (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -499,16 +1391,6 @@
 				{
 					"name": "Get Application by ID (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -527,9 +1409,130 @@
 						"description": "Get specific membership application by ID (Admin only)"
 					},
 					"response": []
+				},
+				{
+					"name": "Search Active Members Only (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/membership/members/search?q=john&status=active&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"membership",
+								"members",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "john",
+									"description": "Search query (name, email, or membership ID). Minimum 2 characters."
+								},
+								{
+									"key": "status",
+									"value": "active",
+									"description": "Filter by user status: pending, active, expired, rejected",
+									"disabled": true
+								},
+								{
+									"key": "role",
+									"value": "consultant",
+									"description": "Filter by role: guest, trainee, consultant, admin",
+									"disabled": true
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Maximum number of results to return (default: 10)"
+								}
+							]
+						},
+						"description": "Search only among active/approved members by name, email, or membership ID. For comprehensive user search including guests, pending users, etc., use /api/v1/users/search endpoint."
+					},
+					"response": [
+						{
+							"name": "Active Members Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/membership/members/search?q=john",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"membership",
+										"members",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "john"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"found\": true,\n  \"count\": 2,\n  \"members\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024001\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"john.smith@example.com\",\n      \"fullName\": \"Dr. John Smith\",\n      \"role\": \"trainee\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024002\",\n      \"specialization\": \"Sports Medicine\",\n      \"hospital\": \"Colombo General Hospital\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid-2\",\n        \"role\": \"trainee\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-02-15\"\n      }\n    }\n  ]\n}"
+						},
+						{
+							"name": "No Active Members Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/membership/members/search?q=nonexistent",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"membership",
+										"members",
+										"search"
+									],
+									"query": [
+										{
+											"key": "q",
+											"value": "nonexistent"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"found\": false,\n  \"count\": 0,\n  \"members\": []\n}"
+						}
+					]
 				}
 			],
-			"description": "Membership management endpoints for applications, renewals, and admin operations"
+			"description": "Membership management endpoints focused on active members and membership applications. For comprehensive user management including guests, pending users, etc., use the User Management section."
 		},
 		{
 			"name": "Guests",
@@ -537,16 +1540,6 @@
 				{
 					"name": "Request Guest Approval",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -577,16 +1570,6 @@
 				{
 					"name": "Get Guest Status",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{userToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -608,16 +1591,6 @@
 				{
 					"name": "Get Pending Guest Requests (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -654,16 +1627,6 @@
 				{
 					"name": "Process Guest Request (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [
 							{
@@ -695,16 +1658,6 @@
 				{
 					"name": "Get Guest Statistics (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -725,6 +1678,367 @@
 				}
 			],
 			"description": "Guest management endpoints for approval workflow and event access"
+		},
+		{
+			"name": "Banners",
+			"item": [
+				{
+					"name": "Create Banner (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "banner-image.jpg",
+									"description": "Banner image file"
+								},
+								{
+									"key": "title",
+									"value": "Welcome to SLOA 2024",
+									"type": "text",
+									"description": "Optional banner title"
+								},
+								{
+									"key": "description",
+									"value": "Join Sri Lanka's premier orthopedic association",
+									"type": "text",
+									"description": "Optional banner description"
+								},
+								{
+									"key": "altText",
+									"value": "Medical professionals in modern hospital",
+									"type": "text",
+									"description": "Alt text for accessibility"
+								},
+								{
+									"key": "linkUrl",
+									"value": "https://sloa.lk/membership",
+									"type": "text",
+									"description": "Optional URL when banner is clicked"
+								},
+								{
+									"key": "isActive",
+									"value": "true",
+									"type": "text",
+									"description": "Whether banner is active"
+								},
+								{
+									"key": "displayOrder",
+									"value": "1",
+									"type": "text",
+									"description": "Display order (lower = first)"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners"
+							]
+						},
+						"description": "Create a new banner with image upload. Admin only. Supports image compression and multiple variants."
+					},
+					"response": [
+						{
+							"name": "Banner Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "banner-image.jpg"
+										},
+										{
+											"key": "title",
+											"value": "Welcome to SLOA 2024",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/banners",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "v1", "banners"]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Banner created successfully\",\n  \"banner\": {\n    \"id\": \"banner-uuid-123\",\n    \"title\": \"Welcome to SLOA 2024\",\n    \"description\": \"Join Sri Lanka's premier orthopedic association\",\n    \"imageUrl\": \"https://storage.supabase.co/banners/banner-123.jpg\",\n    \"altText\": \"Medical professionals in modern hospital\",\n    \"linkUrl\": \"https://sloa.lk/membership\",\n    \"isActive\": true,\n    \"displayOrder\": 1,\n    \"imageVariants\": {\n      \"thumbnail\": {\"url\": \"https://storage.supabase.co/banners/banner-123-thumbnail.jpg\", \"size\": 45000},\n      \"medium\": {\"url\": \"https://storage.supabase.co/banners/banner-123-medium.jpg\", \"size\": 120000},\n      \"large\": {\"url\": \"https://storage.supabase.co/banners/banner-123-large.jpg\", \"size\": 200000},\n      \"original\": {\"url\": \"https://storage.supabase.co/banners/banner-123.jpg\", \"size\": 350000}\n    },\n    \"createdBy\": \"admin-uuid\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-15T10:30:00.000Z\",\n    \"creator\": {\n      \"id\": \"admin-uuid\",\n      \"fullName\": \"System Administrator\",\n      \"email\": \"admin@sloa.test\"\n    }\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Banners (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners?isActive=true&limit=10&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners"
+							],
+							"query": [
+								{
+									"key": "isActive",
+									"value": "true",
+									"description": "Filter by active status: true, false (optional)"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Limit number of results"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Offset for pagination"
+								}
+							]
+						},
+						"description": "Get all banners with filtering options. Admin only."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Banners (Public)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"active"
+							]
+						},
+						"description": "Get only active banners for public display. No authentication required."
+					},
+					"response": [
+						{
+							"name": "Active Banners",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/banners/active",
+									"host": ["{{baseUrl}}"],
+									"path": ["api", "v1", "banners", "active"]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"banners\": [\n    {\n      \"id\": \"banner-uuid-1\",\n      \"title\": \"Welcome to SLOA 2024\",\n      \"description\": \"Join Sri Lanka's premier orthopedic association\",\n      \"imageUrl\": \"https://storage.supabase.co/banners/banner-1.jpg\",\n      \"altText\": \"Medical professionals in modern hospital\",\n      \"linkUrl\": \"https://sloa.lk/membership\",\n      \"displayOrder\": 1,\n      \"imageVariants\": {\n        \"thumbnail\": {\"url\": \"https://storage.supabase.co/banners/banner-1-thumbnail.jpg\", \"size\": 45000},\n        \"medium\": {\"url\": \"https://storage.supabase.co/banners/banner-1-medium.jpg\", \"size\": 120000},\n        \"large\": {\"url\": \"https://storage.supabase.co/banners/banner-1-large.jpg\", \"size\": 200000}\n      },\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"updatedAt\": \"2024-01-15T10:30:00.000Z\"\n    },\n    {\n      \"id\": \"banner-uuid-2\",\n      \"title\": \"Annual Conference 2024\",\n      \"description\": \"Don't miss our flagship annual conference\",\n      \"imageUrl\": \"https://storage.supabase.co/banners/banner-2.jpg\",\n      \"altText\": \"Conference hall with attendees\",\n      \"linkUrl\": \"https://sloa.lk/events/annual-conference-2024\",\n      \"displayOrder\": 2,\n      \"imageVariants\": {\n        \"thumbnail\": {\"url\": \"https://storage.supabase.co/banners/banner-2-thumbnail.jpg\", \"size\": 42000},\n        \"medium\": {\"url\": \"https://storage.supabase.co/banners/banner-2-medium.jpg\", \"size\": 115000},\n        \"large\": {\"url\": \"https://storage.supabase.co/banners/banner-2-large.jpg\", \"size\": 190000}\n      },\n      \"createdAt\": \"2024-01-14T09:15:00.000Z\",\n      \"updatedAt\": \"2024-01-14T09:15:00.000Z\"\n    }\n  ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Banner by ID (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/{{bannerId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"{{bannerId}}"
+							]
+						},
+						"description": "Get a specific banner by ID. Admin only."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Banner (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Banner Title\",\n  \"description\": \"Updated description for the banner\",\n  \"altText\": \"Updated alt text\",\n  \"linkUrl\": \"https://sloa.lk/new-link\",\n  \"isActive\": true,\n  \"displayOrder\": 2\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/{{bannerId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"{{bannerId}}"
+							]
+						},
+						"description": "Update banner details (except image). Admin only."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Banner Image (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "new-banner-image.jpg",
+									"description": "New banner image file"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/{{bannerId}}/image",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"{{bannerId}}",
+								"image"
+							]
+						},
+						"description": "Update only the banner image. Admin only."
+					},
+					"response": []
+				},
+				{
+					"name": "Toggle Banner Status (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/{{bannerId}}/toggle",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"{{bannerId}}",
+								"toggle"
+							]
+						},
+						"description": "Toggle banner active/inactive status. Admin only."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Banner (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/{{bannerId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"{{bannerId}}"
+							]
+						},
+						"description": "Delete a banner permanently. Admin only."
+					},
+					"response": []
+				},
+				{
+					"name": "Reorder Banners (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"banners\": [\n    {\n      \"id\": \"banner-uuid-1\",\n      \"displayOrder\": 2\n    },\n    {\n      \"id\": \"banner-uuid-2\",\n      \"displayOrder\": 1\n    },\n    {\n      \"id\": \"banner-uuid-3\",\n      \"displayOrder\": 3\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/banners/reorder",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"banners",
+								"reorder"
+							]
+						},
+						"description": "Reorder multiple banners by updating their display order. Admin only."
+					},
+					"response": []
+				}
+			],
+			"description": "Banner management endpoints for dynamic hero section content. Includes image upload with automatic compression and multiple variants (thumbnail, medium, large, original)."
 		},
 		{
 			"name": "Events",
@@ -790,16 +2104,6 @@
 				{
 					"name": "Register for Event",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -822,16 +2126,6 @@
 				{
 					"name": "Unregister from Event",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -854,16 +2148,6 @@
 				{
 					"name": "Get User Registrations",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -886,16 +2170,6 @@
 				{
 					"name": "Create Event (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -925,16 +2199,6 @@
 				{
 					"name": "Update Event (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "PATCH",
 						"header": [
 							{
@@ -965,16 +2229,6 @@
 				{
 					"name": "Delete Event (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -996,16 +2250,6 @@
 				{
 					"name": "Get Event Attendees (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1034,16 +2278,6 @@
 				{
 					"name": "Create Payment",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1074,16 +2308,6 @@
 				{
 					"name": "Get Payment History",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1103,7 +2327,7 @@
 					"response": []
 				},
 				{
-					"name": "Payment Webhook",
+					"name": "Payment Webhook (Gateway)",
 					"request": {
 						"method": "POST",
 						"header": [
@@ -1114,7 +2338,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"paymentId\": \"payment-id-from-gateway\",\n  \"status\": \"success\",\n  \"gatewayRef\": \"gateway-reference-id\"\n}"
+							"raw": "{\n  \"paymentId\": \"{{paymentId}}\",\n  \"status\": \"success\",\n  \"gatewayRef\": \"STRIPE_pi_1234567890\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/payments/webhook",
@@ -1128,27 +2352,96 @@
 								"webhook"
 							]
 						},
-						"description": "Webhook endpoint for payment gateway notifications"
+						"description": "Webhook endpoint for payment gateway notifications. Uses UNIFIED payment processing logic - same as manual payments for membership activation/renewal."
 					},
-					"response": []
+					"response": [
+						{
+							"name": "Successful Payment Processing",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"paymentId\": \"payment-uuid\",\n  \"status\": \"success\",\n  \"gatewayRef\": \"STRIPE_pi_1234567890\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/payments/webhook",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"payments",
+										"webhook"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Webhook processed successfully using unified payment logic\",\n  \"details\": \"Payment processed with same logic as manual payments - membership activation/renewal completed\",\n  \"payment\": {\n    \"id\": \"payment-uuid\",\n    \"userId\": \"user-uuid\",\n    \"type\": \"membership\",\n    \"amount\": 5000,\n    \"status\": \"success\",\n    \"gatewayRef\": \"STRIPE_pi_1234567890\",\n    \"isManuallyRecorded\": false,\n    \"createdAt\": \"2024-01-20T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-20T10:35:00.000Z\"\n  },\n  \"processingInfo\": {\n    \"unifiedLogic\": true,\n    \"sameAsManualPayments\": true,\n    \"membershipProcessing\": true\n  }\n}"
+						},
+						{
+							"name": "Failed Payment",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"paymentId\": \"payment-uuid\",\n  \"status\": \"failed\",\n  \"gatewayRef\": \"STRIPE_pi_failed_123\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/payments/webhook",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"payments",
+										"webhook"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Webhook processed successfully using unified payment logic\",\n  \"details\": \"Payment status updated\",\n  \"payment\": {\n    \"id\": \"payment-uuid\",\n    \"userId\": \"user-uuid\",\n    \"type\": \"membership\",\n    \"amount\": 5000,\n    \"status\": \"failed\",\n    \"gatewayRef\": \"STRIPE_pi_failed_123\",\n    \"isManuallyRecorded\": false\n  },\n  \"processingInfo\": {\n    \"unifiedLogic\": true,\n    \"sameAsManualPayments\": true,\n    \"membershipProcessing\": false\n  }\n}"
+						}
+					]
 				},
 				{
 					"name": "Get All Payments (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/api/v1/payments/all?status=success&type=membership&page=1&limit=10",
+							"raw": "{{baseUrl}}/api/v1/payments/all?status=success&type=membership&isManuallyRecorded=false&page=1&limit=10",
 							"host": [
 								"{{baseUrl}}"
 							],
@@ -1162,12 +2455,17 @@
 								{
 									"key": "status",
 									"value": "success",
-									"description": "Filter by status: success, failed"
+									"description": "Filter by status: success, failed, pending"
 								},
 								{
 									"key": "type",
 									"value": "membership",
 									"description": "Filter by type: membership, renewal, event"
+								},
+								{
+									"key": "isManuallyRecorded",
+									"value": "false",
+									"description": "Filter by payment source: true (manual), false (gateway)"
 								},
 								{
 									"key": "page",
@@ -1186,7 +2484,281 @@
 					"response": []
 				}
 			],
-			"description": "Payment processing endpoints for membership fees, renewals, and event payments"
+			"description": "Payment processing endpoints for membership fees, renewals, and event payments via payment gateways"
+		},
+		{
+			"name": "Manual Payments (Admin)",
+			"item": [
+				{
+					"name": "Record Manual Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{userId}}\",\n  \"type\": \"membership\",\n  \"amount\": 5000,\n  \"notes\": \"Cash payment received in office - Receipt #12345\",\n  \"eventId\": null\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/manual-payments/record",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"manual-payments",
+								"record"
+							]
+						},
+						"description": "Record manual payment (cash, bank transfer, etc.) with UNIFIED processing logic - same membership activation/renewal as gateway payments."
+					},
+					"response": [
+						{
+							"name": "Membership Payment Recorded",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"user-uuid\",\n  \"type\": \"membership\",\n  \"amount\": 5000,\n  \"notes\": \"Cash payment received in office - Receipt #12345\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/manual-payments/record",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"manual-payments",
+										"record"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Manual payment recorded and processed successfully\",\n  \"details\": \"membership payment processed using unified payment logic - same as gateway payments\",\n  \"payment\": {\n    \"id\": \"payment-uuid\",\n    \"userId\": \"user-uuid\",\n    \"type\": \"membership\",\n    \"amount\": 5000,\n    \"status\": \"success\",\n    \"isManuallyRecorded\": true,\n    \"notes\": \"Cash payment received in office - Receipt #12345\",\n    \"createdAt\": \"2024-01-20T10:30:00.000Z\",\n    \"user\": {\n      \"id\": \"user-uuid\",\n      \"fullName\": \"Dr. John Doe\",\n      \"email\": \"john.doe@example.com\",\n      \"location\": \"local\"\n    }\n  },\n  \"processingInfo\": {\n    \"unifiedLogic\": true,\n    \"membershipActivation\": \"User status updated to active, membership ID assigned, role updated\",\n    \"emailNotification\": \"Activation/renewal email scheduled\",\n    \"authSync\": \"Supabase auth metadata update scheduled\"\n  }\n}"
+						},
+						{
+							"name": "Renewal Payment Recorded",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"user-uuid\",\n  \"type\": \"renewal\",\n  \"amount\": 3000,\n  \"notes\": \"Bank transfer renewal payment - Ref: TXN789\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/manual-payments/record",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"manual-payments",
+										"record"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"message\": \"Manual payment recorded and processed successfully\",\n  \"details\": \"renewal payment processed using unified payment logic - same as gateway payments\",\n  \"payment\": {\n    \"id\": \"payment-uuid-2\",\n    \"userId\": \"user-uuid\",\n    \"type\": \"renewal\",\n    \"amount\": 3000,\n    \"status\": \"success\",\n    \"isManuallyRecorded\": true,\n    \"notes\": \"Bank transfer renewal payment - Ref: TXN789\",\n    \"createdAt\": \"2024-01-20T11:00:00.000Z\",\n    \"user\": {\n      \"id\": \"user-uuid\",\n      \"fullName\": \"Dr. Jane Smith\",\n      \"email\": \"jane.smith@example.com\",\n      \"location\": \"local\"\n    }\n  },\n  \"processingInfo\": {\n    \"unifiedLogic\": true,\n    \"membershipRenewal\": \"Membership extended by 1 year, user reactivated\",\n    \"emailNotification\": \"Activation/renewal email scheduled\",\n    \"authSync\": \"Supabase auth metadata update scheduled\"\n  }\n}"
+						},
+						{
+							"name": "Invalid Amount Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"userId\": \"user-uuid\",\n  \"type\": \"membership\",\n  \"amount\": 3000,\n  \"notes\": \"Incorrect amount\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/manual-payments/record",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"manual-payments",
+										"record"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Invalid membership payment amount for local user. Expected: 5000, received: 3000\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Manual Payments",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/manual-payments?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"manual-payments"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Items per page"
+								}
+							]
+						},
+						"description": "Get all manually recorded payments with pagination (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Manual Payments List",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/manual-payments?limit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"manual-payments"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"payments\": [\n    {\n      \"id\": \"payment-uuid-1\",\n      \"userId\": \"user-uuid-1\",\n      \"type\": \"membership\",\n      \"amount\": 5000,\n      \"status\": \"success\",\n      \"isManuallyRecorded\": true,\n      \"recordedByAdminId\": \"admin-uuid\",\n      \"notes\": \"Cash payment received in office - Receipt #12345\",\n      \"gatewayRef\": \"MANUAL_1705747800000\",\n      \"createdAt\": \"2024-01-20T10:30:00.000Z\",\n      \"user\": {\n        \"id\": \"user-uuid-1\",\n        \"fullName\": \"Dr. John Doe\",\n        \"email\": \"john.doe@example.com\",\n        \"location\": \"local\"\n      }\n    },\n    {\n      \"id\": \"payment-uuid-2\",\n      \"userId\": \"user-uuid-2\",\n      \"type\": \"renewal\",\n      \"amount\": 3000,\n      \"status\": \"success\",\n      \"isManuallyRecorded\": true,\n      \"recordedByAdminId\": \"admin-uuid\",\n      \"notes\": \"Bank transfer renewal payment - Ref: TXN789\",\n      \"gatewayRef\": \"MANUAL_1705748400000\",\n      \"createdAt\": \"2024-01-20T11:00:00.000Z\",\n      \"user\": {\n        \"id\": \"user-uuid-2\",\n        \"fullName\": \"Dr. Jane Smith\",\n        \"email\": \"jane.smith@example.com\",\n        \"location\": \"local\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 45,\n    \"totalPages\": 3\n  }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Payment Statistics",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/manual-payments/statistics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"manual-payments",
+								"statistics"
+							]
+						},
+						"description": "Get comprehensive payment statistics including manual vs gateway payment breakdown (Admin only)"
+					},
+					"response": [
+						{
+							"name": "Payment Statistics",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/manual-payments/statistics",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"manual-payments",
+										"statistics"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"stats\": {\n    \"totalManualPayments\": 45,\n    \"totalOnlinePayments\": 128,\n    \"totalPayments\": 173,\n    \"totalRevenue\": 865000,\n    \"revenueByType\": {\n      \"membership\": 650000,\n      \"renewal\": 180000,\n      \"event\": 35000\n    },\n    \"revenueByLocation\": {\n      \"local\": 720000,\n      \"foreign\": 145000\n    },\n    \"paymentsByStatus\": {\n      \"success\": 173,\n      \"failed\": 12,\n      \"pending\": 3\n    },\n    \"averagePaymentAmount\": 5000\n  }\n}"
+						}
+					]
+				}
+			],
+			"description": "Manual payment recording endpoints for cash payments, bank transfers, and other offline payment methods. Uses UNIFIED processing logic - same membership activation/renewal as gateway payments."
 		},
 		{
 			"name": "Analytics (Admin)",
@@ -1194,16 +2766,6 @@
 				{
 					"name": "Dashboard Statistics",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1225,16 +2787,6 @@
 				{
 					"name": "Membership Statistics",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1257,16 +2809,6 @@
 				{
 					"name": "Registration Trends",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1296,16 +2838,6 @@
 				{
 					"name": "Event Statistics",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1328,16 +2860,6 @@
 				{
 					"name": "Top Events",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1367,16 +2889,6 @@
 				{
 					"name": "Revenue Statistics",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1398,16 +2910,6 @@
 				{
 					"name": "Member Activity",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1430,21 +2932,215 @@
 			"description": "Analytics endpoints for dashboard statistics and reporting (Admin only)"
 		},
 		{
+			"name": "Audit & Logging (Admin)",
+			"item": [
+				{
+					"name": "Get Audit Logs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/audit?page=1&limit=20",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"audit"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination (default: 1)"
+								},
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of items per page (default: 20, max: 100)"
+								},
+								{
+									"key": "actorEmail",
+									"value": "admin@sloa.lk",
+									"description": "Filter by actor email (partial match, case-insensitive)"
+								},
+								{
+									"key": "action",
+									"value": "application.approved",
+									"description": "Filter by action type (partial match, case-insensitive)"
+								},
+								{
+									"key": "targetType",
+									"value": "application",
+									"description": "Filter by target type (partial match, case-insensitive)"
+								},
+								{
+									"key": "from",
+									"value": "2025-01-01",
+									"description": "Filter logs from this date (YYYY-MM-DD format)"
+								},
+								{
+									"key": "to",
+									"value": "2025-01-31",
+									"description": "Filter logs up to this date (YYYY-MM-DD format)"
+								}
+							]
+						},
+						"description": "Get audit logs with comprehensive filtering options. Supports pagination and filtering by actor, action, target type, and date range. Admin only."
+					},
+					"response": [
+						{
+							"name": "Success Response",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/audit?page=1&limit=5",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"audit"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"name": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"items\": [\n    {\n      \"id\": \"80e25d82-c2cd-4ee7-8da6-b9698be189b9\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"application.approved\",\n      \"targetType\": \"application\",\n      \"targetId\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"metadata\": {\n        \"decision\": {\n          \"status\": \"approved\",\n          \"membershipId\": \"MEM-2025-001\",\n          \"expiryDate\": \"2026-01-15\"\n        },\n        \"applicationDetails\": {\n          \"role\": \"trainee\",\n          \"userId\": \"00000004-0000-4000-8000-000000000004\"\n        }\n      },\n      \"createdAt\": \"2025-01-15T10:30:00.000Z\"\n    },\n    {\n      \"id\": \"90f36e93-d3de-5ff8-9eb7-c0709cf2a0a0\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"payment.success\",\n      \"targetType\": \"payment\",\n      \"targetId\": \"660f47f1-f4cf-62g9-0fc8-d1810dg3b1b1\",\n      \"metadata\": {\n        \"paymentType\": \"membership\",\n        \"amount\": 5000,\n        \"gateway\": \"stripe\",\n        \"gatewayRef\": \"pi_3OqK8t2eZvKYlo2C1gQ1234\"\n      },\n      \"createdAt\": \"2025-01-15T09:15:00.000Z\"\n    },\n    {\n      \"id\": \"a1g47f04-e4ef-63g0-1gd9-e2921eh4c2c2\",\n      \"actorUserId\": \"00000002-0000-4000-8000-000000000002\",\n      \"actorEmail\": \"council@sloa.lk\",\n      \"actorName\": \"Council Member\",\n      \"action\": \"event.created\",\n      \"targetType\": \"event\",\n      \"targetId\": \"770g58g2-g5dg-73h0-2ge0-f3032fi5d3d3\",\n      \"metadata\": {\n        \"eventTitle\": \"Annual Conference 2025\",\n        \"eventDate\": \"2025-06-15\",\n        \"maxCapacity\": 200\n      },\n      \"createdAt\": \"2025-01-15T08:45:00.000Z\"\n    },\n    {\n      \"id\": \"b2h58g15-f5fg-74h1-2hf1-f4143gj6e4e4\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"user.status_updated\",\n      \"targetType\": \"user\",\n      \"targetId\": \"00000004-0000-4000-8000-000000000004\",\n      \"metadata\": {\n        \"oldStatus\": \"pending\",\n        \"newStatus\": \"active\",\n        \"reason\": \"Payment confirmed\"\n      },\n      \"createdAt\": \"2025-01-15T07:30:00.000Z\"\n    },\n    {\n      \"id\": \"c3i69h26-g6gh-85i2-3ig2-g5254hk7f5f5\",\n      \"actorUserId\": \"00000003-0000-4000-8000-000000000003\",\n      \"actorEmail\": \"member@sloa.lk\",\n      \"actorName\": \"Dr. Jane Smith\",\n      \"action\": \"event.registered\",\n      \"targetType\": \"registration\",\n      \"targetId\": \"880h69h3-h6eh-86i3-3hf3-g6365il8g6g6\",\n      \"metadata\": {\n        \"eventId\": \"770g58g2-g5dg-73h0-2ge0-f3032fi5d3d3\",\n        \"eventTitle\": \"Annual Conference 2025\",\n        \"registrationType\": \"member\"\n      },\n      \"createdAt\": \"2025-01-15T06:20:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 5,\n    \"total\": 156,\n    \"totalPages\": 32\n  }\n}"
+						},
+						{
+							"name": "Filtered Response Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/audit?action=application.approved&from=2025-01-01&to=2025-01-31",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"audit"
+									],
+									"query": [
+										{
+											"key": "action",
+											"value": "application.approved"
+										},
+										{
+											"key": "from",
+											"value": "2025-01-01"
+										},
+										{
+											"key": "to",
+											"value": "2025-01-31"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"name": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"items\": [\n    {\n      \"id\": \"80e25d82-c2cd-4ee7-8da6-b9698be189b9\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"application.approved\",\n      \"targetType\": \"application\",\n      \"targetId\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"metadata\": {\n        \"decision\": {\n          \"status\": \"approved\",\n          \"membershipId\": \"MEM-2025-001\",\n          \"expiryDate\": \"2025-12-31\"\n        }\n      },\n      \"createdAt\": \"2025-01-15T10:30:00.000Z\"\n    },\n    {\n      \"id\": \"91g47f15-e4fg-64h1-1hf1-e3032fi5d3d3\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"application.approved\",\n      \"targetType\": \"application\",\n      \"targetId\": \"661f58g2-f5dg-75h2-2ig2-f4143gj6e4e4\",\n      \"metadata\": {\n        \"decision\": {\n          \"status\": \"approved\",\n          \"membershipId\": \"MEM-2025-002\",\n          \"expiryDate\": \"2025-12-31\"\n        }\n      },\n      \"createdAt\": \"2025-01-14T14:20:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 2,\n    \"totalPages\": 1\n  }\n}"
+						},
+						{
+							"name": "Error Response - Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/audit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"audit"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"name": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Access denied\",\n  \"message\": \"Authentication required\"\n}"
+						},
+						{
+							"name": "Error Response - Forbidden",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/audit",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"audit"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"name": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"error\": \"Access denied\",\n  \"message\": \"Admin access required\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Audit logging endpoints for tracking system activities and administrative actions. Provides comprehensive filtering and pagination for security monitoring and compliance. Admin only."
+		},
+		{
 			"name": "File Upload & Compression",
 			"item": [
 				{
 					"name": "Upload Membership Documents",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1482,16 +3178,6 @@
 				{
 					"name": "Upload Event Poster (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1525,16 +3211,6 @@
 				{
 					"name": "Upload Event Program (Admin)",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1568,16 +3244,6 @@
 				{
 					"name": "Get Signed URL",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1608,16 +3274,6 @@
 				{
 					"name": "Compress Single File",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1669,16 +3325,6 @@
 				{
 					"name": "Get File Information",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1710,16 +3356,6 @@
 				{
 					"name": "Create Image Variants",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1752,16 +3388,6 @@
 				{
 					"name": "Batch Compress Files",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1804,16 +3430,6 @@
 				{
 					"name": "Validate File",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1845,16 +3461,6 @@
 				{
 					"name": "Get Compression Statistics",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -1898,16 +3504,6 @@
 				{
 					"name": "Export Members",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1947,16 +3543,6 @@
 				{
 					"name": "Export Events",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -1978,16 +3564,6 @@
 				{
 					"name": "Export Event Attendees",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -2011,16 +3587,6 @@
 				{
 					"name": "Export Payments",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -2066,16 +3632,6 @@
 				{
 					"name": "Export Analytics",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -2145,16 +3701,6 @@
 				{
 					"name": "Get Sync Status",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -2176,16 +3722,6 @@
 				{
 					"name": "Verify User Sync",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "GET",
 						"header": [],
 						"url": {
@@ -2208,16 +3744,6 @@
 				{
 					"name": "Sync All Users",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [],
 						"url": {
@@ -2239,16 +3765,6 @@
 				{
 					"name": "Cleanup Orphaned Users",
 					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{adminToken}}",
-									"type": "string"
-								}
-							]
-						},
 						"method": "DELETE",
 						"header": [],
 						"url": {
@@ -2381,21 +3897,21 @@
 			"value": "",
 			"description": "Sample event ID for testing"
 		},
-						{
-					"key": "applicationId",
-					"value": "",
-					"description": "Sample application ID for testing"
-				},
-				{
-					"key": "guestUserId",
-					"value": "",
-					"description": "Sample guest user ID for testing guest approval"
-				},
-				{
-					"key": "userToken",
-					"value": "",
-					"description": "User access token for member/guest endpoints"
-				},
+		{
+			"key": "applicationId",
+			"value": "",
+			"description": "Sample application ID for testing"
+		},
+		{
+			"key": "guestUserId",
+			"value": "",
+			"description": "Sample guest user ID for testing guest approval"
+		},
+		{
+			"key": "userToken",
+			"value": "",
+			"description": "User access token for member/guest endpoints"
+		},
 		{
 			"key": "bucket",
 			"value": "documents",

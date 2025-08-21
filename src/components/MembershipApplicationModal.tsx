@@ -1,17 +1,22 @@
 "use client";
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileUp, Send } from 'lucide-react';
+import { FileUp, Send, X } from 'lucide-react';
 import api from '@/utils/api';
 
-const MembershipApplicationPage = () => {
+interface MembershipApplicationModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const MembershipApplicationModal: React.FC<MembershipApplicationModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState({
     fullName: '',
     nic: '',
     specialization: '',
     hospital: '',
-    role: 'consultant', // Default role
-    location: 'local', // Default location
+    role: 'consultant',
+    location: 'local',
     cv: '',
   });
   const [files, setFiles] = useState<FileList | null>(null);
@@ -40,14 +45,14 @@ const MembershipApplicationPage = () => {
         for (let i = 0; i < files.length; i++) {
           uploadFormData.append('documents', files[i]);
         }
-        // Note: The token is not passed here because cookie-based auth is used.
         const uploadData = await api.post('/api/v1/upload/documents/membership', uploadFormData) as { urls: string[] };
         documentUrls = uploadData.urls;
       }
 
       await api.post('/api/v1/membership/apply', { ...formData, documents: documentUrls });
-
-      router.push('/application-status');
+      
+      onClose();
+      router.refresh();
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -59,14 +64,27 @@ const MembershipApplicationPage = () => {
     }
   };
 
+  if (!isOpen) return null;
+
   return (
-    <div className="flex items-center justify-center min-h-screen py-12 bg-gray-50">
-      <div className="w-full max-w-4xl p-10 space-y-8 bg-white rounded-2xl shadow-lg">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">Membership Application</h2>
-          <p className="mt-2 text-sm text-gray-600">Complete the form to apply for membership.</p>
+    <div 
+      className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50"
+      onClick={onClose}
+    >
+      <div 
+        className="relative w-full max-w-4xl p-6 mx-auto my-8 space-y-6 bg-white rounded-2xl shadow-lg md:p-8"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between">
+          <div className="text-left">
+            <h2 className="text-3xl font-extrabold text-gray-900">Membership Application</h2>
+            <p className="mt-2 text-sm text-gray-600">Complete the form to apply for membership.</p>
+          </div>
+          <button onClick={onClose} className="p-2 text-gray-500 rounded-full hover:bg-gray-100">
+            <X className="w-6 h-6" />
+          </button>
         </div>
-        <form className="space-y-8" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
           {error && (
             <div className="p-3 text-sm text-center text-red-800 bg-red-100 border border-red-200 rounded-lg">
               {error}
@@ -97,7 +115,6 @@ const MembershipApplicationPage = () => {
                 <select id="role" name="role" value={formData.role} onChange={handleChange} className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
                   <option value="consultant">Consultant</option>
                   <option value="trainee">Trainee</option>
-                  <option value="guest">Guest</option>
                 </select>
               </div>
               <div>
@@ -110,7 +127,7 @@ const MembershipApplicationPage = () => {
             </div>
             <div className="mt-6">
               <label htmlFor="cv" className="block text-sm font-medium text-gray-700">Curriculum Vitae (CV)</label>
-              <textarea id="cv" name="cv" rows={6} value={formData.cv} onChange={handleChange} className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Paste your CV here or provide a summary of your qualifications."></textarea>
+              <textarea id="cv" name="cv" rows={4} value={formData.cv} onChange={handleChange} className="w-full px-4 py-3 mt-1 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Paste your CV here or provide a summary of your qualifications."></textarea>
             </div>
           </div>
 
@@ -156,4 +173,4 @@ const MembershipApplicationPage = () => {
   );
 };
 
-export default MembershipApplicationPage;
+export default MembershipApplicationModal;
