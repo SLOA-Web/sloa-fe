@@ -28,7 +28,7 @@ const ContactPage = () => {
     id?: string;
     success?: boolean;
     message?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
