@@ -43,8 +43,8 @@ const CustomImage: React.FC<CustomImageProps> = ({
           />
           {imageUrl && (
             <div
-              className="w-full h-full bg-cover bg-center bg-fixed"
-              style={{ backgroundImage: `url('${imageUrl}')` }}
+              className="w-full h-full bg-cover bg-center"
+              style={{ backgroundImage: `url('${imageUrl}')`, willChange: 'transform' }}
             />
           )}
         </div>

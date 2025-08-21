@@ -13,11 +13,12 @@ export default function useLenis(): void {
       lerp: 0.08,
     });
 
-    function raf(time: number) {
+    let rafId: number;
+    const raf = (time: number) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
 
     // Sync ScrollTrigger with Lenis
     function updateScrollTrigger() {
@@ -43,16 +44,16 @@ export default function useLenis(): void {
       },
     });
 
-    ScrollTrigger.addEventListener("refresh", () => {
-      // No lenis.update(), just refresh triggers
-    });
+    const onRefresh = () => {};
+    ScrollTrigger.addEventListener("refresh", onRefresh);
     ScrollTrigger.refresh();
 
     return () => {
       lenis.off("scroll", updateScrollTrigger);
+      cancelAnimationFrame(rafId);
       lenis.destroy();
-      ScrollTrigger.removeEventListener("refresh", () => {});
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ScrollTrigger.removeEventListener("refresh", onRefresh);
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
 }

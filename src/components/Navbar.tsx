@@ -49,10 +49,30 @@ const Navbar = () => {
 
   useEffect(() => {
     if (!hasMounted) return;
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 200);
+
+    let ticking = false;
+    let lastIsScrolled = isScrolled;
+
+    const update = () => {
+      const nextIsScrolled = window.scrollY > 200;
+      if (nextIsScrolled !== lastIsScrolled) {
+        lastIsScrolled = nextIsScrolled;
+        setIsScrolled(nextIsScrolled);
+      }
+      ticking = false;
     };
-    window.addEventListener("scroll", handleScroll);
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    // Initialize on mount
+    update();
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasMounted]);
 
