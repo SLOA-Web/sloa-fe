@@ -400,7 +400,7 @@ const MemberPortalPage = () => {
               <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg border border-purple-200">
                 <span className="text-sm text-muted-foreground">Role</span>
                 <span className="text-sm font-medium text-purple-700 capitalize">
-                  {user?.role || "Member"}
+                  {user?.userRole || "Member"}
                 </span>
               </div>
             </div>

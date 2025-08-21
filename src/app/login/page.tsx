@@ -11,7 +11,7 @@ interface LoginResponse {
   user: {
     id: string;
     email?: string;
-    role: string;
+    userRole: string;
     user_metadata?: {
       full_name?: string;
       role?: string;
