@@ -8,7 +8,6 @@ import {
   CheckCircle, 
   XCircle, 
   AlertCircle,
-  Download,
   User,
   RefreshCw,
   FileText
@@ -153,7 +152,7 @@ const MembershipsPage = () => {
       <Crown className="h-16 w-16 text-primary mx-auto mb-4" />
       <h3 className="text-xl font-semibold text-foreground mb-2">Start Your Membership Journey</h3>
       <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-        It looks like you haven't applied for a membership yet. Join our community to unlock exclusive benefits.
+        It looks like you haven&#39;t applied for a membership yet. Join our community to unlock exclusive benefits.
       </p>
       <button 
         onClick={() => setIsModalOpen(true)}

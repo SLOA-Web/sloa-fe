@@ -8,29 +8,15 @@ import {
   Save,
   Edit3,
   X,
-  Globe,
-  Linkedin,
-  Twitter,
-  Github,
   Calendar,
   CheckCircle,
   AlertCircle,
   Building,
   GraduationCap,
   Briefcase,
-  Globe2,
   Smartphone,
   MapPin,
-  UserCheck, // Added
-  Award, // Added
-  Star, // Added
-  Zap, // Added
-  Shield, // Added
-  Bell, // Added
-  CreditCard, // Added
-  Users, // Added
-  BarChart3, // Added
-  BookOpen, // Added
+  BookOpen,
 } from "lucide-react";
 
 interface UserProfile {
@@ -75,8 +61,8 @@ const ProfilePage = () => {
     bio: "", // Maps to profile.cv
     nic: "", // Maps to profile.nic
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setLoading] = useState(true);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {

@@ -4,7 +4,6 @@ import {
   Calendar, 
   Clock, 
   MapPin, 
-  Users, 
   ExternalLink, 
   Search,
   Bookmark,
@@ -36,7 +35,7 @@ const EventsPage = () => {
     try {
       const response = await api.get<{ registrations: Registration[] }>("/api/v1/events/user/registrations");
       setEvents(response.registrations);
-    } catch (error) {
+    } catch {
       toast.error("Failed to fetch your events.");
     } finally {
       setLoading(false);
@@ -52,7 +51,7 @@ const EventsPage = () => {
       await api.delete(`/api/v1/events/${eventId}/register`);
       toast.success("Successfully unregistered from the event.");
       fetchEvents(); // Refresh the list of events
-    } catch (error) {
+    } catch {
       toast.error("Failed to unregister from the event.");
     }
   };
