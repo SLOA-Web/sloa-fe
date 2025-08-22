@@ -133,7 +133,7 @@ const Navbar = () => {
       {/* Main Header */}
       <nav
         ref={headerRef}
-        className={`fixed w-full font-roboto px-3 lg:px-6 max-w-[1520px] mx-auto font-lato py-2 flex items-center justify-between left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out z-[999] ${
+        className={`fixed w-full font-roboto px-3 lg:px-6 max-w-[1560px] mx-auto font-lato py-2 flex items-center justify-between left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out z-[999] ${
           isMobileMenuOpen || isScrolled
             ? "bg-white shadow"
             : "bg-gradient-to-b from-white via-white/90 to-transparent"
@@ -248,6 +248,22 @@ const Navbar = () => {
                   {item.title}
                 </Link>
               ))}
+            </div>
+
+            {/* Top Bar Links on Mobile */}
+            <div className="w-full max-w-md mt-8 pt-6 border-t border-gray-200">
+              <div className="grid grid-cols-1 gap-3">
+                {TOP_BAR_LINKS.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="block text-base sm:text-lg text-gray-700 hover:text-black transition-colors"
+                    onClick={closeMobileMenu}
+                  >
+                    {link.title}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             <div

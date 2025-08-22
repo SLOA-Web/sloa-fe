@@ -33,11 +33,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen overflow-x-hidden relative`}
       >
         <AuthProvider>
-          <ClientWrapper>
-            <Navbar />
-            {children}
-            <Footer />
-          </ClientWrapper>
+          <div className="max-w-[1560px] mx-auto">
+            <ClientWrapper>
+              <Navbar />
+              {children}
+              <Footer />
+            </ClientWrapper>
+          </div>
         </AuthProvider>
       </body>
     </html>

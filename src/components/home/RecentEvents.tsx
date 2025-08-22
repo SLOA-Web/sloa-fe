@@ -68,7 +68,7 @@ const RecentEvents: React.FC = () => {
   }, [api]);
 
   return (
-    <div className="bg-gradient-to-b from-[#fff] to-[#D47045]/10 py-12 lg:py-24">
+    <div className="bg-gradient-to-b from-[#fff] to-[#D47045]/10 py-12 lg:py-24 overflow-x-hidden">
       <SectionHeader text="recent events" />
 
       <div className="my-12">
@@ -81,11 +81,11 @@ const RecentEvents: React.FC = () => {
           <h1 className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </h1>
-          <CarouselContent className="my-8">
+          <CarouselContent className="my-8 ml-0">
             {eventCards.map((event) => (
               <CarouselItem
                 key={event.title + event.date}
-                className="pl-2 md:pl-2 basis-[85%] md:basis-1/3 lg:basis-1/4"
+                className="pl-0 md:pl-2 basis-[85%] md:basis-1/3 lg:basis-1/4"
               >
                 <EventCard
                   image={event.image || "/assets/images/about_us.svg"}
