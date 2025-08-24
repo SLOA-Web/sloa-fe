@@ -13,7 +13,7 @@ export default function OurVision({
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   ],
-  imageUrl = "https://api.builder.io/api/v1/image/assets/TEMP/390d36554cb055fbf9bf86ea6fe1a3d37613c2e1?width=1190",
+  imageUrl = "/assets/images/our-vision.webp",
   imageAlt = "Medical facility"
 }: OurVisionProps) {
   return (

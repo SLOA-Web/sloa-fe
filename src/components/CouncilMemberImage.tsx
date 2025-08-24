@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface CouncilMemberImageProps {
   src: string;
@@ -16,15 +17,17 @@ const CouncilMemberImage: React.FC<CouncilMemberImageProps> = ({
   const [imgSrc, setImgSrc] = useState(src);
 
   const handleError = () => {
-    setImgSrc("https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=600&fit=crop&crop=face");
+    setImgSrc("/assets/images/member.webp");
   };
 
   return (
-    <img
+    <Image
       src={imgSrc}
       alt={alt}
       className={className}
       onError={handleError}
+      width={400}
+      height={600}
     />
   );
 };

@@ -12,7 +12,7 @@ export default function HowItStarted({
   title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   leftContent = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.",
   rightContent = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.",
-  heroImageUrl = "https://api.builder.io/api/v1/image/assets/TEMP/fdd893fc2fa547e97cca62cfeb9fd5b48ffca56f?width=2560",
+  heroImageUrl = "/assets/images/how-it-started.webp",
   heroImageAlt = "Medical professionals working"
 }: HowItStartedProps) {
   return (

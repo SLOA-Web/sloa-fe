@@ -74,7 +74,7 @@ const Navbar = () => {
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMounted]);
+  }, [hasMounted, isScrolled]);
 
   useEffect(() => {
     if (!navLinksRef.current || !hasMounted) return;

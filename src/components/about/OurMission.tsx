@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import SimpleImage from "@/components/SimpleImage";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  type CarouselApi,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -23,32 +24,32 @@ export default function OurMission({
   content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   images = [
     {
-      src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=445&fit=crop&crop=center",
+      src: "/assets/images/our-mission.webp",
       alt: "Physical rehabilitation with forearm crutches"
     },
     {
-      src: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=445&fit=crop&crop=center",
+      src: "/assets/images/our-mission.webp",
       alt: "Medical assistance with rehabilitation"
     },
     {
-      src: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=445&fit=crop&crop=center",
+      src: "/assets/images/our-mission.webp",
       alt: "Physical therapy session"
     },
     {
-      src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=445&fit=crop&crop=center",
+      src: "/assets/images/our-mission.webp",
       alt: "Rehabilitation progress"
     },
     {
-      src: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=445&fit=crop&crop=center",
+      src: "/assets/images/our-mission.webp",
       alt: "Physical therapy session"
     },
     {
-      src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=445&fit=crop&crop=center",
+      src: "/assets/images/our-mission.webp",
       alt: "Rehabilitation progress"
     }
   ]
 }: OurMissionProps) {
-  const [api, setApi] = useState<any>(null);
+  const [api, setApi] = useState<CarouselApi | null>(null);
 
   // Auto-scroll functionality with autoplay plugin
   const plugin = React.useRef(

@@ -18,37 +18,37 @@ export default function CouncilMembers({
       name: "Dr. Samantha Fernando",
       position: "President",
       specialization: "Spine Surgery",
-      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=600&fit=crop&crop=face"
+      image: "/assets/images/member.webp"
     },
     {
       name: "Dr. Rajesh Perera",
       position: "Vice President",
       specialization: "Joint Replacement",
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=600&fit=crop&crop=face"
+      image: "/assets/images/member.webp"
     },
     {
       name: "Dr. Nimal Silva",
       position: "Secretary",
       specialization: "Trauma Surgery",
-      image: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=600&fit=crop&crop=face"
+      image: "/assets/images/member.webp"
     },
     {
       name: "Dr. Priya Jayawardene",
       position: "Treasurer",
       specialization: "Pediatric Orthopedics",
-      image: "https://images.unsplash.com/photo-1594824475315-2a3c728c0362?w=400&h=600&fit=crop&crop=face"
+      image: "/assets/images/member.webp"
     },
     {
       name: "Dr. Kamal Wijesinghe",
       position: "Council Member",
       specialization: "Sports Medicine",
-      image: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=600&fit=crop&crop=face"
+      image: "/assets/images/member.webp"
     },
     {
       name: "Dr. Deepika Rathnayake",
       position: "Council Member",
       specialization: "Hand Surgery",
-      image: "https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=400&h=600&fit=crop&crop=face"
+      image: "/assets/images/member.webp"
     }
   ],
   title = "Council members"
