@@ -1,0 +1,49 @@
+import SimpleImage from "@/components/SimpleImage";
+
+interface OurVisionProps {
+  title?: string;
+  content?: string[];
+  imageUrl?: string;
+  imageAlt?: string;
+}
+
+export default function OurVision({
+  title = "Our\nVision",
+  content = [
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+  ],
+  imageUrl = "https://api.builder.io/api/v1/image/assets/TEMP/390d36554cb055fbf9bf86ea6fe1a3d37613c2e1?width=1190",
+  imageAlt = "Medical facility"
+}: OurVisionProps) {
+  return (
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-[#F6E4E5]/50 to-white">
+      <div className="container mx-auto px-4 lg:px-20">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+          {/* Left Column - Text */}
+          <div className="order-2 lg:order-1">
+            <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight mb-8">
+              {title}
+            </h2>
+            <div className="space-y-6">
+              {content.map((paragraph, index) => (
+                <p key={index} className="text-[#122D1E] font-poppins text-base leading-7">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Column - Image */}
+          <div className="order-1 lg:order-2">
+            <SimpleImage
+              src={imageUrl}
+              alt={imageAlt}
+              className="w-full h-[300px] lg:h-[492px] object-cover rounded-lg"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
