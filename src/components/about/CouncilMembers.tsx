@@ -55,7 +55,7 @@ export default function CouncilMembers({
 }: CouncilMembersProps) {
   return (
     <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-[#F6E4E5]/30">
-      <div className="container mx-auto px-4 lg:px-20">
+      <div className="container mx-auto px-4">
         {/* Section Title */}
         <div className="flex items-center gap-3 mb-16">
           <div className="w-[70px] h-[1px] bg-[#587565]"></div>

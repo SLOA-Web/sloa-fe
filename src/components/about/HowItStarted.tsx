@@ -17,7 +17,7 @@ export default function HowItStarted({
 }: HowItStartedProps) {
   return (
     <section className="relative bg-gradient-to-r from-[#122D1E] via-[#122D1E]/90 to-[#122D1E]/80 py-16 lg:py-24">
-      <div className="container mx-auto px-4 lg:px-20">
+      <div className="container mx-auto px-4">
         {/* Section Title */}
         <div className="flex items-center gap-3 mb-12">
           <div className="w-[70px] h-[1px] bg-[#587565]"></div>
