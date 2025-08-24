@@ -1,12 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import SimpleImage from "@/components/SimpleImage";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  type CarouselApi,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -49,7 +48,7 @@ export default function OurMission({
     }
   ]
 }: OurMissionProps) {
-  const [api, setApi] = useState<CarouselApi | null>(null);
+
 
   // Auto-scroll functionality with autoplay plugin
   const plugin = React.useRef(
@@ -92,7 +91,6 @@ export default function OurMission({
           <div className="absolute right-0 top-0 w-8  h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
           <Carousel
-            setApi={setApi}
             plugins={[plugin.current]}
             opts={{
               align: "start",
