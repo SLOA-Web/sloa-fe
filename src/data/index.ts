@@ -69,28 +69,28 @@ export const eventCards: EventCardProp[] = [
 export const BENEFITS_LIST = [
   {
     image: "/assets/images/benefit1.svg",
-    title: "Professional Networking",
-    para: "Connect with leading orthopaedic professionals and expand your network through exclusive events and forums.",
+    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
   },
   {
     image: "/assets/images/homepage_hero.svg",
-    title: "Continuous Education",
-    para: "Access workshops, seminars, and resources to stay updated with the latest advancements in orthopaedics.",
+    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
   },
   {
     image: "/assets/images/benefit1.svg",
-    title: "Research Opportunities",
-    para: "Participate in collaborative research projects and contribute to the growth of orthopaedic science.",
+    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
   },
   {
     image: "/assets/images/homepage_hero.svg",
-    title: "Advocacy & Support",
-    para: "Benefit from representation and support on professional matters at national and international levels.",
+    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
   },
   {
     image: "/assets/images/benefit1.svg",
-    title: "Exclusive Resources",
-    para: "Gain access to members-only publications, guidelines, and clinical tools to enhance your practice.",
+    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
   },
 ];
 
@@ -145,6 +145,7 @@ export const NAVBAR = [
   { title: "Home", href: "/" },
   { title: "About Us", href: "/about" },
   { title: "Event", href: "/event" },
+  { title: "Membership", href: "/membership" },
   { title: "Contact", href: "/contact" },
   { title: "Get Involved", href: "/get-involved" },
 ];

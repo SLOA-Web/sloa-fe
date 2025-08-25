@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import React, { useState } from "react";
 import SectionHeader from "../SectionHeader";
 import { BENEFITS_LIST } from "@/data";
@@ -31,7 +32,6 @@ const BenefitsList: React.FC = () => {
             />
           </div>
         </div>
-        
         {/* Cards Container - Stacked */}
         <div className="w-full md:w-1/2 flex flex-col justify-center">
           <div className="flex flex-col h-[600px] min-h-[400px]">
@@ -39,25 +39,40 @@ const BenefitsList: React.FC = () => {
               <button
                 key={idx}
                 onClick={() => setActiveIdx(idx)}
-                className={`text-left flex flex-col transition-all duration-300 px-12 border-y border-white/50 cursor-pointer bg-transparent overflow-hidden ${
+                className={`text-left flex flex-col transition-all duration-300 px-8 border-y border-white/50 cursor-pointer bg-transparent overflow-hidden ${
                   idx === activeIdx
-                    ? "shadow-lg flex-grow min-h-[300px] py-6 opacity-100"
-                    : "flex-shrink-0 min-h-[56px] max-h-[56px] py-2 opacity-50"
+                    ? "flex-grow min-h-[300px] py-6 opacity-100"
+                    : "flex-shrink-0 py-2 opacity-25"
                 }`}
                 style={{
-                  transition: 'all 0.4s cubic-bezier(0.4,0,0.2,1)',
+                  transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
                   zIndex: idx === activeIdx ? 1 : 0,
                 }}
               >
-                <h3 className="font-roboto text-xl lg:text-2xl mb-1 font-semibold">
-                  {benefit.title}
-                </h3>
-                {idx === activeIdx && (
-                  <div className="overflow-hidden">
-                    <p className="font-poppins text-sm lg:text-base leading-relaxed animate-in slide-in-from-top-2 duration-300">
-                      {benefit.para}
-                    </p>
+                {idx === activeIdx ? (
+                  <div className="flex flex-col h-full">
+                    <div className="flex gap-8 py-8">
+                      <div className="inline-block w-3 h-3 aspect-square rounded-full mr-3 bg-[#D47045] mt-3" />
+
+                      <div className="overflow-hidden">
+                        <h3 className="font-roboto text-[32px] font-normal">
+                          {benefit.title}
+                        </h3>
+                        <p className="font-poppins text-[16px] opacity-75 py-4 leading-relaxed font-thin animate-in slide-in-from-top-2 duration-300">
+                          {benefit.para}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="mt-auto -mb-4 pt-4 flex">
+                      <span className="font-roboto text-[12px] lg:text-[16px] px-12 uppercase">
+                        Benefit {idx + 1}
+                      </span>
+                    </div>
                   </div>
+                ) : (
+                  <span className="font-roboto text-[12px] lg:text-[16px] px-12 uppercase">
+                    Benefit {idx + 1}
+                  </span>
                 )}
               </button>
             ))}
