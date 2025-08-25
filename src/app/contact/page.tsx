@@ -38,18 +38,15 @@ const ContactPage = () => {
     setError(null);
     setSuccess(null);
 
-    // --- FRONT-END VALIDATION ---
     if (!name.trim() || !email.trim() || !contactNumber.trim() || !subject.trim() || !message.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
     
-    // --- NEW VALIDATION ADDED HERE ---
     if (message.trim().length < 10) {
       setError("Message must be at least 10 characters long.");
       return;
     }
-    // --- END OF NEW VALIDATION ---
 
     if (!isValidEmail(email)) {
       setError("Please enter a valid email address.");
