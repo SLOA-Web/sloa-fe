@@ -1,4 +1,5 @@
 import CouncilMemberImage from "@/components/CouncilMemberImage";
+import SectionHeader from "../SectionHeader";
 
 interface CouncilMember {
   name: string;
@@ -51,21 +52,15 @@ export default function CouncilMembers({
       image: "/assets/images/member.webp"
     }
   ],
-  title = "Council members"
-}: CouncilMembersProps) {
+  // title = "Council members"
+}: Readonly<CouncilMembersProps>) {
   return (
     <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-[#F6E4E5]/30">
-      <div className="container mx-auto px-4">
-        {/* Section Title */}
-        <div className="flex items-center gap-3 mb-16">
-          <div className="w-[70px] h-[1px] bg-[#587565]"></div>
-          <span className="text-[#587565] font-poppins text-lg uppercase tracking-wider">
-            {title}
-          </span>
-        </div>
+      <div className="container mx-auto">
+        <SectionHeader text="Council members" />
 
         {/* Council Members Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 mx-4 md:mx-10 lg:mx-16 py-12">
           {members.map((member, index) => (
             <div key={index} className="group cursor-pointer">
               <div className="flex flex-col space-y-6">

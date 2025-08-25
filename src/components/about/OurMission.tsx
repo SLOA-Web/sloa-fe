@@ -8,6 +8,7 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
+import SectionHeader from "../SectionHeader";
 
 interface OurMissionProps {
   title?: string;
@@ -24,32 +25,30 @@ export default function OurMission({
   images = [
     {
       src: "/assets/images/our-mission.webp",
-      alt: "Physical rehabilitation with forearm crutches"
+      alt: "Physical rehabilitation with forearm crutches",
     },
     {
       src: "/assets/images/our-mission.webp",
-      alt: "Medical assistance with rehabilitation"
+      alt: "Medical assistance with rehabilitation",
     },
     {
       src: "/assets/images/our-mission.webp",
-      alt: "Physical therapy session"
+      alt: "Physical therapy session",
     },
     {
       src: "/assets/images/our-mission.webp",
-      alt: "Rehabilitation progress"
+      alt: "Rehabilitation progress",
     },
     {
       src: "/assets/images/our-mission.webp",
-      alt: "Physical therapy session"
+      alt: "Physical therapy session",
     },
     {
       src: "/assets/images/our-mission.webp",
-      alt: "Rehabilitation progress"
-    }
-  ]
+      alt: "Rehabilitation progress",
+    },
+  ],
 }: OurMissionProps) {
-
-
   // Auto-scroll functionality with autoplay plugin
   const plugin = React.useRef(
     Autoplay({ delay: 3000, stopOnInteraction: false })
@@ -57,16 +56,10 @@ export default function OurMission({
 
   return (
     <section className="py-16 lg:py-24 bg-white">
-      <div className="container mx-auto px-4">
-        {/* Section Title */}
-        <div className="flex items-center gap-3 mb-16">
-          <div className="w-[70px] h-[1px] bg-[#587565]"></div>
-          <span className="text-[#587565] font-poppins text-lg uppercase tracking-wider font-medium">
-            Become a Member
-          </span>
-        </div>
+      <div className="container mx-auto">
+        <SectionHeader text="Become a member" />
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16 mx-4 md:mx-10 lg:mx-16 my-12">
           {/* Left Column - Title */}
           <div>
             <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight font-normal whitespace-pre-line">
@@ -85,10 +78,10 @@ export default function OurMission({
         {/* Auto-moving Carousel with Gradient Overlays */}
         <div className="relative mt-16">
           {/* Left Gradient Overlay */}
-          <div className="absolute left-0 top-0 w-8 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-          
+          <div className="absolute left-0 top-0 w-8 md:w-16 lg:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"/>
+
           {/* Right Gradient Overlay */}
-          <div className="absolute right-0 top-0 w-8  h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute right-0 top-0 w-8 md:w-16 lg:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"/>
 
           <Carousel
             plugins={[plugin.current]}
@@ -102,7 +95,10 @@ export default function OurMission({
           >
             <CarouselContent className="-ml-4">
               {images.map((image, index) => (
-                <CarouselItem key={index} className="pl-4 basis-full md:basis-1/2 lg:basis-1/4">
+                <CarouselItem
+                  key={index}
+                  className="pl-4 basis-full md:basis-1/2 lg:basis-1/4"
+                >
                   <div className="relative">
                     <SimpleImage
                       src={image.src}

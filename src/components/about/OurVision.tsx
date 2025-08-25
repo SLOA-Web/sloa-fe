@@ -1,10 +1,10 @@
 import SimpleImage from "@/components/SimpleImage";
 
 interface OurVisionProps {
-  title?: string;
-  content?: string[];
-  imageUrl?: string;
-  imageAlt?: string;
+  readonly title?: string;
+  readonly content?: readonly string[];
+  readonly imageUrl?: string;
+  readonly imageAlt?: string;
 }
 
 export default function OurVision({
@@ -17,8 +17,8 @@ export default function OurVision({
   imageAlt = "Medical facility"
 }: OurVisionProps) {
   return (
-    <section className="py-16 lg:py-24 bg-white">
-      <div className="container mx-auto px-4">
+    <section className="py-12 lg:py-24 bg-white">
+      <div className="container mx-auto mx-4 md:mx-10 lg:mx-16">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Text */}
           <div className="order-2 lg:order-1">
@@ -39,7 +39,7 @@ export default function OurVision({
             <SimpleImage
               src={imageUrl}
               alt={imageAlt}
-              className="w-full h-[300px] lg:h-[492px] object-cover rounded-lg"
+              className="w-full h-[300px] lg:h-[492px] object-cover rounded-[8px]"
             />
           </div>
         </div>

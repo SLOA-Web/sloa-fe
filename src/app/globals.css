@@ -7,20 +7,20 @@
 
 :root {
   /* Modern color palette inspired by Notion */
-  --background: #ffffff;
+  --background: #fdfbfa;
   --foreground: #000000; /* Keep black for maximum contrast */
   --muted: #f8f8f8; /* Lighter muted background for subtle contrast */
   --muted-foreground: #1a1a1a; /* Very dark for maximum readability on muted backgrounds */
   --border: #909090; /* Even darker border for strong separation */
   --input: #f8f8f8; /* Consistent with muted background */
   --primary: #2e75cc;
-  --primary-foreground: #ffffff;
-  --secondary: #d8d8d8; /* Slightly lighter secondary background */
+  --primary-foreground: #fdfbfa;
+  --secondary: #122D1E; /* Slightly lighter secondary background */
   --secondary-foreground: #000000; /* Keep consistent with foreground */
   --accent: #d8d8d8; /* Consistent with secondary */
   --accent-foreground: #000000; /* Consistent with foreground */
   --destructive: #a00000; /* Even darker, more saturated red for critical error messages */
-  --destructive-foreground: #ffffff; /* Keep white for contrast on darker red */
+  --destructive-foreground: #fdfbfa; /* Keep white for contrast on darker red */
   --ring: #2e75cc;
   --radius: 0.5rem;
   

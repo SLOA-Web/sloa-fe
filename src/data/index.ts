@@ -66,6 +66,34 @@ export const eventCards: EventCardProp[] = [
   },
 ];
 
+export const BENEFITS_LIST = [
+  {
+    image: "/assets/images/benefit1.svg",
+    title: "Professional Networking",
+    para: "Connect with leading orthopaedic professionals and expand your network through exclusive events and forums.",
+  },
+  {
+    image: "/assets/images/homepage_hero.svg",
+    title: "Continuous Education",
+    para: "Access workshops, seminars, and resources to stay updated with the latest advancements in orthopaedics.",
+  },
+  {
+    image: "/assets/images/benefit1.svg",
+    title: "Research Opportunities",
+    para: "Participate in collaborative research projects and contribute to the growth of orthopaedic science.",
+  },
+  {
+    image: "/assets/images/homepage_hero.svg",
+    title: "Advocacy & Support",
+    para: "Benefit from representation and support on professional matters at national and international levels.",
+  },
+  {
+    image: "/assets/images/benefit1.svg",
+    title: "Exclusive Resources",
+    para: "Gain access to members-only publications, guidelines, and clinical tools to enhance your practice.",
+  },
+];
+
 export const bookEventData: BookEventData[] = [
   {
     id: "neglected-trauma-workshop-july",
@@ -132,4 +160,19 @@ export const DOCUMENTATION_LINKS = [
   { title: "Privacy Policy", href: "/privacy-policy" },
   { title: "Terms and Condition", href: "/terms-and-condition" },
   { title: "Copyright", href: "/copyright" },
+];
+
+export const BENEFITS = [
+  {
+    title: "Startup Pack",
+    para: "For new businesses. Includes Name Reservation, Company Incorporation, and a Digital Articles of Association.Company Incorporation, and a Digital Articles of Association.",
+  },
+  {
+    title: "Growth Package",
+    para: "Designed for scaling startups. Features include Business Plan Development, Investor Pitch Deck, and Market Research Analysis.",
+  },
+  {
+    title: "Enterprise",
+    para: "Tailored for established businesses. Offers Comprehensive Compliance Management, Strategic Consultancy, and Advanced Market Insights.",
+  },
 ];

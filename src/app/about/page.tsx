@@ -6,7 +6,6 @@ export default function AboutPage() {
   return (
     <div>
       <CommonBanner imageUrl="assets/images/aboutus_hero.svg" text="about us" />
-      
       <HowItStarted />
       <OurMission />
       <OurVision />
