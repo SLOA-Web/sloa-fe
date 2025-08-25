@@ -6,6 +6,7 @@ const ContactPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [contactNumber, setContactNumber] = useState("");
+  const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -15,6 +16,7 @@ const ContactPage = () => {
     setName("");
     setEmail("");
     setContactNumber("");
+    setSubject("");
     setMessage("");
   };
 
@@ -36,11 +38,19 @@ const ContactPage = () => {
     setError(null);
     setSuccess(null);
 
-    // front-end validation
-    if (!name.trim() || !email.trim() || !contactNumber.trim() || !message.trim()) {
+    // --- FRONT-END VALIDATION ---
+    if (!name.trim() || !email.trim() || !contactNumber.trim() || !subject.trim() || !message.trim()) {
       setError("Please fill in all required fields.");
       return;
     }
+    
+    // --- NEW VALIDATION ADDED HERE ---
+    if (message.trim().length < 10) {
+      setError("Message must be at least 10 characters long.");
+      return;
+    }
+    // --- END OF NEW VALIDATION ---
+
     if (!isValidEmail(email)) {
       setError("Please enter a valid email address.");
       return;
@@ -56,12 +66,12 @@ const ContactPage = () => {
         name: name.trim(),
         email: email.trim(),
         contactNumber: contactNumber.trim(),
+        subject: subject.trim(),
         message: message.trim(),
       };
 
       const response = (await api.post("/api/v1/inquiries", payload)) as InquiryResponse;
 
-      // follow the same response-handling style as the login page
       if (response && (response.id || response.success || response.message)) {
         setSuccess("Message sent. We'll get back to you shortly.");
         reset();
@@ -109,7 +119,6 @@ const ContactPage = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
-                  placeholder="Your full name"
                 />
               </div>
 
@@ -122,7 +131,6 @@ const ContactPage = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="your.email@example.com"
                 />
               </div>
 
@@ -135,9 +143,19 @@ const ContactPage = () => {
                   value={contactNumber}
                   onChange={(e) => setContactNumber(e.target.value)}
                   required
-                  placeholder="+1 555 555 5555"
                 />
               </div>
+            </div>
+            
+            <div>
+              <label htmlFor="subject" className="text-sm font-medium block mb-1">Subject</label>
+              <input
+                id="subject"
+                className="input w-full"
+                value={subject}
+                onChange={(e) => setSubject(e.target.value)}
+                required
+              />
             </div>
 
             <div>
@@ -149,7 +167,6 @@ const ContactPage = () => {
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 required
-                placeholder="Write your message..."
               />
             </div>
 
