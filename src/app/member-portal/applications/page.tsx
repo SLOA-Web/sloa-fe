@@ -1,13 +1,13 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import MembershipApplicationModal from '@/components/MembershipApplicationModal';
 import { 
   Crown, 
   Clock, 
   CheckCircle, 
   XCircle, 
   AlertCircle,
-  Download,
   User,
   RefreshCw,
   FileText
@@ -15,6 +15,7 @@ import {
 import api from '@/utils/api';
 import { handleApiError } from '@/utils/errorHandler';
 
+// --- Type Definitions ---
 interface UserProfile {
   id: string;
   userId: string;
@@ -51,21 +52,65 @@ interface Membership {
   user: User;
 }
 
+interface ApiResponse {
+  application: Membership;
+}
+
+// --- Helper Components ---
+const InfoCard: React.FC<{ title: string; children: React.ReactNode }> = ({ title, children }) => (
+  <div className="bg-card border border-border rounded-lg p-6">
+    <h3 className="text-lg font-semibold text-foreground mb-4">{title}</h3>
+    {children}
+  </div>
+);
+
+const InfoField: React.FC<{ label: string; value: string }> = ({ label, value }) => (
+  <div>
+    <label className="text-sm font-medium text-muted-foreground">{label}</label>
+    <p className="text-foreground font-medium capitalize">{value}</p>
+  </div>
+);
+
+const StatusBadge: React.FC<{ status: Membership['status'] }> = ({ status }) => {
+  const statusConfig = {
+    approved: { icon: <CheckCircle className="h-4 w-4 text-green-600" />, text: 'Active', bg: 'bg-green-100', textColor: 'text-green-800' },
+    pending: { icon: <Clock className="h-4 w-4 text-yellow-600" />, text: 'Pending', bg: 'bg-yellow-100', textColor: 'text-yellow-800' },
+    rejected: { icon: <XCircle className="h-4 w-4 text-red-600" />, text: 'Rejected', bg: 'bg-red-100', textColor: 'text-red-800' },
+  };
+  const config = statusConfig[status] || { icon: <AlertCircle className="h-4 w-4 text-gray-600" />, text: 'Unknown', bg: 'bg-gray-100', textColor: 'text-gray-800' };
+
+  return (
+    <div className={`inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-full ${config.bg} ${config.textColor}`}>
+      {config.icon}
+      <span>{config.text}</span>
+    </div>
+  );
+};
+
+// --- Main Page Component ---
 const MembershipsPage = () => {
   const router = useRouter();
   const [membership, setMembership] = useState<Membership | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchMembership = useCallback(async () => {
     try {
-      const response = await api.get('/api/v1/membership/my-application') as { application: Membership };
+      const response = await api.get<ApiResponse>('/api/v1/membership/my-application');
       setMembership(response.application);
       setError(null);
     } catch (err: unknown) {
       const errorMessage = handleApiError(err, router);
-      setError(errorMessage);
+      // If no application is found, API might return 404, which handleApiError might interpret as an error.
+      // We'll specifically check for "not found" cases if the API behaves that way.
+      if (errorMessage.toLowerCase().includes('not found')) {
+        setMembership(null);
+        setError(null);
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -81,27 +126,105 @@ const MembershipsPage = () => {
     fetchMembership();
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'approved':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      case 'pending':
-        return <Clock className="h-4 w-4 text-yellow-600" />;
-      case 'rejected':
-        return <XCircle className="h-4 w-4 text-red-600" />;
-      default:
-        return <AlertCircle className="h-4 w-4 text-gray-600" />;
-    }
+  // --- Render Methods ---
+  const renderLoading = () => (
+    <div className="flex items-center justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+    </div>
+  );
+
+  const renderError = () => (
+    <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 text-center">
+      <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+      <h3 className="text-lg font-semibold text-destructive mb-2">Error Loading Membership</h3>
+      <p className="text-destructive/80 mb-4">{error}</p>
+      <button
+        onClick={handleRefresh}
+        className="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
+      >
+        Try Again
+      </button>
+    </div>
+  );
+
+  const renderNoMembership = () => (
+    <div className="text-center py-12 bg-card border border-border rounded-lg">
+      <Crown className="h-16 w-16 text-primary mx-auto mb-4" />
+      <h3 className="text-xl font-semibold text-foreground mb-2">Start Your Membership Journey</h3>
+      <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+        It looks like you haven&#39;t applied for a membership yet. Join our community to unlock exclusive benefits.
+      </p>
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
+      >
+        Apply for Membership
+      </button>
+    </div>
+  );
+
+  const renderMembershipDetails = () => {
+    if (!membership) return null;
+    return (
+      <div className="space-y-6">
+        <div className="space-y-6">
+          <InfoCard title="Membership Status">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="text-lg font-semibold text-foreground">Current Status</h4>
+              <StatusBadge status={membership.status} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InfoField label="Role" value={membership.role} />
+              <InfoField label="Applied Date" value={new Date(membership.appliedAt).toLocaleDateString()} />
+              {membership.approvedAt && <InfoField label="Approved Date" value={new Date(membership.approvedAt).toLocaleDateString()} />}
+              {membership.expiryDate && <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />}
+            </div>
+          </InfoCard>
+
+          <InfoCard title="Profile Information">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InfoField label="Full Name" value={membership.user.fullName} />
+              <InfoField label="Email" value={membership.user.email} />
+              <InfoField label="NIC" value={membership.user.profile.nic} />
+              <InfoField label="Specialization" value={membership.user.profile.specialization} />
+              <InfoField label="Hospital" value={membership.user.profile.hospital} />
+              <InfoField label="Location" value={membership.user.location} />
+            </div>
+          </InfoCard>
+
+          <InfoCard title="Documents">
+            <div className="space-y-3">
+              {membership.documents.length > 0 ? (
+                membership.documents.map((doc, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-primary" />
+                      <span className="text-sm font-medium text-foreground">Document {index + 1}</span>
+                    </div>
+                    <button className="px-3 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
+                      Download
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-muted-foreground text-center py-4">No documents uploaded</p>
+              )}
+            </div>
+          </InfoCard>
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex items-center justify-between">
+    <>
+      <MembershipApplicationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-foreground">My Memberships</h2>
+          <h2 className="text-2xl font-bold text-foreground">My Membership</h2>
           <p className="text-muted-foreground mt-1">
-            View your membership status and application details
+            View your membership status and application details.
           </p>
         </div>
         <button
@@ -114,214 +237,9 @@ const MembershipsPage = () => {
         </button>
       </div>
 
-      {loading ? (
-        <div className="flex items-center justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        </div>
-      ) : error ? (
-        <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-6 text-center">
-          <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-destructive mb-2">Error Loading Membership</h3>
-          <p className="text-destructive/80 mb-4">{error}</p>
-          <button
-            onClick={handleRefresh}
-            className="px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:bg-destructive/90 transition-colors"
-          >
-            Try Again
-          </button>
-        </div>
-      ) : membership ? (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-          {/* Main Content */}
-          <div className="xl:col-span-2 space-y-6">
-            {/* Membership Status Card */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-foreground">Membership Status</h3>
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(membership.status)}
-                  <span className={`text-sm font-medium px-3 py-1 rounded-full ${
-                    membership.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    membership.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {membership.status === 'approved' ? 'Active' : 
-                     membership.status === 'pending' ? 'Pending' : 'Rejected'}
-                  </span>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Role</label>
-                  <p className="text-foreground font-medium capitalize">{membership.role}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Applied Date</label>
-                  <p className="text-foreground font-medium">
-                    {new Date(membership.appliedAt).toLocaleDateString()}
-                  </p>
-                </div>
-                {membership.approvedAt && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Approved Date</label>
-                    <p className="text-foreground font-medium">
-                      {new Date(membership.approvedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-                {membership.expiryDate && (
-                  <div>
-                    <label className="text-sm font-medium text-muted-foreground">Expiry Date</label>
-                    <p className="text-foreground font-medium">
-                      {new Date(membership.expiryDate).toLocaleDateString()}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* User Profile Information */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Profile Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Full Name</label>
-                  <p className="text-foreground font-medium">{membership.user.fullName}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Email</label>
-                  <p className="text-foreground font-medium">{membership.user.email}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">NIC</label>
-                  <p className="text-foreground font-medium">{membership.user.profile.nic}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Specialization</label>
-                  <p className="text-foreground font-medium">{membership.user.profile.specialization}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Hospital</label>
-                  <p className="text-foreground font-medium">{membership.user.profile.hospital}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Location</label>
-                  <p className="text-foreground font-medium capitalize">{membership.user.location}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Documents */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Documents</h3>
-              <div className="space-y-3">
-                {membership.documents.map((doc, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-5 w-5 text-primary" />
-                      <span className="text-sm font-medium text-foreground">Document {index + 1}</span>
-                    </div>
-                    <button className="px-3 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
-                      Download
-                    </button>
-                  </div>
-                ))}
-                {membership.documents.length === 0 && (
-                  <p className="text-muted-foreground text-center py-4">No documents uploaded</p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Right Sidebar */}
-          <div className="space-y-6">
-            {/* Quick Actions */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h3>
-              <div className="space-y-3">
-                <button className="w-full flex items-center gap-3 p-3 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors">
-                  <Download className="h-4 w-4" />
-                  Download Certificate
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors">
-                  <RefreshCw className="h-4 w-4" />
-                  Renew Membership
-                </button>
-                <button className="w-full flex items-center gap-3 p-3 text-sm font-medium text-primary hover:bg-primary/10 rounded-lg transition-colors">
-                  <FileText className="h-4 w-4" />
-                  Update Documents
-                </button>
-              </div>
-            </div>
-
-            {/* Membership Benefits */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Membership Benefits</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-foreground">Access to exclusive events</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-foreground">Professional development resources</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-foreground">Networking opportunities</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-foreground">Research collaboration</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-foreground">Continuing education credits</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Membership Stats */}
-            <div className="bg-card border border-border rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-foreground mb-4">Membership Stats</h3>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Member Since</span>
-                  <span className="text-sm font-medium text-foreground">
-                    {new Date(membership.appliedAt).getFullYear()}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Status</span>
-                  <span className={`text-sm font-medium px-2 py-1 rounded-full ${
-                    membership.status === 'approved' ? 'bg-green-100 text-green-800' :
-                    membership.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                    'bg-red-100 text-red-800'
-                  }`}>
-                    {membership.status === 'approved' ? 'Active' : 
-                     membership.status === 'pending' ? 'Pending' : 'Rejected'}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Documents</span>
-                  <span className="text-sm font-medium text-foreground">{membership.documents.length}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="text-center py-12">
-          <Crown className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-foreground mb-2">No Membership Found</h3>
-          <p className="text-muted-foreground mb-4">You haven&apos;t applied for membership yet.</p>
-          <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors">
-            Apply Now
-          </button>
-        </div>
-      )}
-    </div>
+      {loading ? renderLoading() : error ? renderError() : membership ? renderMembershipDetails() : renderNoMembership()}
+      </div>
+    </>
   );
 };
 
