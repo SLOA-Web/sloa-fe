@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import SectionHeader from "../SectionHeader";
 import { BENEFITS_LIST } from "@/data";
+import Image from "next/image";
 
 const BenefitsList: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -25,10 +26,12 @@ const BenefitsList: React.FC = () => {
         {/* Image Container - Full Height */}
         <div className="w-full md:w-1/2 flex justify-center items-center mb-8 md:mb-0">
           <div className="w-full h-64 md:h-full md:min-h-[600px] flex items-center justify-center">
-            <img
+            <Image
               src={BENEFITS_LIST[activeIdx].image}
               alt={BENEFITS_LIST[activeIdx].title}
               className="w-full h-full object-cover rounded-lg"
+              width={500}
+              height={300}
             />
           </div>
         </div>

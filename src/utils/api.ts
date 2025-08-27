@@ -13,6 +13,8 @@ interface FetchOptions {
 }
 
 // User profile update interface
+import { User } from '@/types';
+
 interface UserProfileUpdate {
   fullName?: string;
   nic?: string;
@@ -172,14 +174,14 @@ class ApiClient {
   /**
    * Update current user's profile details
    */
-  async updateUserProfile(profileData: UserProfileUpdate): Promise<{ message: string; user: any }> {
+  async updateUserProfile(profileData: UserProfileUpdate): Promise<{ message: string; user: User }> {
     return this.patch('/api/v1/users/me/details', profileData);
   }
 
   /**
    * Get current user's profile
    */
-  async getCurrentUser(): Promise<{ user: any }> {
+  async getCurrentUser(): Promise<{ user: User }> {
     return this.get('/api/v1/auth/me');
   }
 }

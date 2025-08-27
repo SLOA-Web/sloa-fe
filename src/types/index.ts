@@ -48,3 +48,17 @@ export interface CTASectionProps {
   buttonText?: string;
   onClick?: () => void;
 }
+
+export interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  nic?: string;
+  specialization?: string;
+  hospital?: string;
+  location?: string;
+  cv?: string;
+  birthDate?: string;
+  documents?: string[];
+  // Add other user properties as needed
+}
