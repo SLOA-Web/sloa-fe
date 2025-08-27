@@ -52,6 +52,19 @@ interface User {
   created_at?: string;
   updated_at?: string;
   is_anonymous?: boolean;
+  fullName?: string;
+  role?: string;
+  status?: string;
+  location?: string;
+  membershipId?: string;
+  profile?: {
+    id?: string;
+    nic?: string;
+    specialization?: string;
+    hospital?: string;
+    cv?: string;
+    birthDate?: string;
+  };
 }
 
 interface AuthContextType {

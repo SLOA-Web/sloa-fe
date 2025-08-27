@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import api from "@/utils/api";
 import {
-  User,
+  User as UserIcon,
   Mail,
   Save,
   Edit3,
@@ -71,7 +71,7 @@ const ProfilePage = () => {
       setError(null);
       try {
         const response = await api.get("/api/v1/auth/me") as ApiResponse;
-        const fetchedUser = response.user;
+        const fetchedUser: ApiResponse['user'] = response.user;
         const fullName = fetchedUser?.fullName || "";
         const nameParts = fullName.split(' ');
         
@@ -146,7 +146,7 @@ const ProfilePage = () => {
       
       // Re-fetch profile to ensure data consistency after save
       const userResponse = await api.getCurrentUser();
-      const fetchedUser = userResponse.user;
+      const fetchedUser: ApiResponse['user'] = userResponse.user;
       const fullName = fetchedUser?.fullName || "";
       const nameParts = fullName.split(' ');
       
@@ -186,7 +186,7 @@ const ProfilePage = () => {
         setError(null);
         try {
           const response = await api.get("/api/v1/auth/me") as ApiResponse;
-          const fetchedUser = response.user;
+          const fetchedUser: ApiResponse['user'] = response.user;
           const fullName = fetchedUser?.fullName || "";
           const nameParts = fullName.split(' ');
           
@@ -231,7 +231,7 @@ const ProfilePage = () => {
             <div>
               <div className="flex items-center gap-3 mb-3">
                 <div className="p-3 bg-primary/20 rounded-xl">
-                  <User className="h-8 w-8 text-primary" />
+                  <UserIcon className="h-8 w-8 text-primary" />
                 </div>
                 <div>
                   <h2 className="text-3xl font-bold text-foreground">My Details</h2>
@@ -261,7 +261,7 @@ const ProfilePage = () => {
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-6 py-4 border-b border-border">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-primary/20 rounded-lg">
-                <User className="h-5 w-5 text-primary" />
+                <UserIcon className="h-5 w-5 text-primary" />
               </div>
               <h3 className="text-xl font-semibold text-foreground">
                 Personal Information
@@ -276,7 +276,7 @@ const ProfilePage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <User className="h-4 w-4 text-primary" />
+                  <UserIcon className="h-4 w-4 text-primary" />
                   FIRST NAME
                 </label>
                 <input
@@ -291,7 +291,7 @@ const ProfilePage = () => {
 
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <User className="h-4 w-4 text-primary" />
+                  <UserIcon className="h-4 w-4 text-primary" />
                   SECOND NAME
                 </label>
                 <input
@@ -346,7 +346,7 @@ const ProfilePage = () => {
               </div>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <User className="h-4 w-4 text-primary" />
+                  <UserIcon className="h-4 w-4 text-primary" />
                   NIC
                 </label>
                 <input
