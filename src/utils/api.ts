@@ -12,6 +12,18 @@ interface FetchOptions {
   skipCredentials?: boolean; // For cases where credentials shouldn't be sent
 }
 
+// User profile update interface
+interface UserProfileUpdate {
+  fullName?: string;
+  nic?: string;
+  specialization?: string;
+  hospital?: string;
+  location?: string;
+  cv?: string;
+  birthDate?: string;
+  documents?: string[];
+}
+
 // Removed unused interface
 
 class ApiClient {
@@ -155,6 +167,20 @@ class ApiClient {
    */
   async upload<T = unknown>(endpoint: string, formData: FormData, options?: Omit<FetchOptions, 'method' | 'body'>): Promise<T> {
     return this.request<T>(endpoint, { ...options, method: 'POST', body: formData });
+  }
+
+  /**
+   * Update current user's profile details
+   */
+  async updateUserProfile(profileData: UserProfileUpdate): Promise<{ message: string; user: any }> {
+    return this.patch('/api/v1/users/me/details', profileData);
+  }
+
+  /**
+   * Get current user's profile
+   */
+  async getCurrentUser(): Promise<{ user: any }> {
+    return this.get('/api/v1/auth/me');
   }
 }
 

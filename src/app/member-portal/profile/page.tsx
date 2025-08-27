@@ -25,6 +25,7 @@ interface UserProfile {
   specialization?: string;
   hospital?: string;
   cv?: string;
+  birthDate?: string;
 }
 
 interface ApiResponse {
@@ -74,18 +75,24 @@ const ProfilePage = () => {
         const fullName = fetchedUser?.fullName || "";
         const nameParts = fullName.split(' ');
         
+        // Ensure location is a valid value
+        const location = fetchedUser?.location === 'local' || fetchedUser?.location === 'foreign' 
+          ? fetchedUser.location 
+          : 'local'; // Default to local if invalid
+        
         setFormData((prev) => ({
           ...prev,
           firstName: nameParts[0] || "",
           secondName: nameParts.slice(1).join(' ') || "",
           email: fetchedUser?.email || "",
           phone: fetchedUser?.phone || "",
-          location: fetchedUser?.location || "",
+          location: location,
           position: fetchedUser?.role || "",
           company: fetchedUser?.profile?.hospital || "",
           education: fetchedUser?.profile?.specialization || "",
           bio: fetchedUser?.profile?.cv || "",
           nic: fetchedUser?.profile?.nic || "",
+          birthDate: fetchedUser?.profile?.birthDate || "",
         }));
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
@@ -114,43 +121,58 @@ const ProfilePage = () => {
     setLoading(true);
     setError(null);
     try {
+      // Validate location field
+      if (!formData.location || (formData.location !== 'local' && formData.location !== 'foreign')) {
+        setError("Please select a valid location (Local or Foreign)");
+        setLoading(false);
+        return;
+      }
+
       const payload = {
         fullName: `${formData.firstName} ${formData.secondName}`.trim(),
-        email: formData.email,
-        phone: formData.phone,
+        nic: formData.nic,
+        specialization: formData.education,
+        hospital: formData.company,
         location: formData.location,
-        role: formData.position,
-        profile: {
-          specialization: formData.education,
-          hospital: formData.company,
-          cv: formData.bio,
-          nic: formData.nic,
-        },
+        cv: formData.bio,
+        birthDate: formData.birthDate,
       };
-      await api.patch("/api/v1/auth/me", payload);
+      
+      // Use the new convenience method
+      const response = await api.updateUserProfile(payload);
+      console.log("Profile updated successfully:", response);
+      
       setIsEditing(false);
+      
       // Re-fetch profile to ensure data consistency after save
-      // This also updates the local state with any server-side transformations
-      const response = await api.get("/api/v1/auth/me") as ApiResponse;
-      const fetchedUser = response.user;
+      const userResponse = await api.getCurrentUser();
+      const fetchedUser = userResponse.user;
       const fullName = fetchedUser?.fullName || "";
       const nameParts = fullName.split(' ');
+      
+      // Ensure location is a valid value
+      const location = fetchedUser?.location === 'local' || fetchedUser?.location === 'foreign' 
+        ? fetchedUser.location 
+        : 'local'; // Default to local if invalid
+      
       setFormData((prev) => ({
         ...prev,
         firstName: nameParts[0] || "",
         secondName: nameParts.slice(1).join(' ') || "",
         email: fetchedUser?.email || "",
         phone: fetchedUser?.phone || "",
-        location: fetchedUser?.location || "",
+        location: location,
         position: fetchedUser?.role || "",
         company: fetchedUser?.profile?.hospital || "",
         education: fetchedUser?.profile?.specialization || "",
         bio: fetchedUser?.profile?.cv || "",
         nic: fetchedUser?.profile?.nic || "",
+        birthDate: fetchedUser?.profile?.birthDate || "",
       }));
     } catch (err) {
       console.error("Failed to save profile:", err);
-      setError("Failed to save profile data. Please check your input.");
+      const errorMessage = err instanceof Error ? err.message : "Failed to save profile data. Please check your input.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -167,18 +189,25 @@ const ProfilePage = () => {
           const fetchedUser = response.user;
           const fullName = fetchedUser?.fullName || "";
           const nameParts = fullName.split(' ');
+          
+          // Ensure location is a valid value
+          const location = fetchedUser?.location === 'local' || fetchedUser?.location === 'foreign' 
+            ? fetchedUser.location 
+            : 'local'; // Default to local if invalid
+          
           setFormData((prev) => ({
             ...prev,
             firstName: nameParts[0] || "",
             secondName: nameParts.slice(1).join(' ') || "",
             email: fetchedUser?.email || "",
             phone: fetchedUser?.phone || "",
-            location: fetchedUser?.location || "",
+            location: location,
             position: fetchedUser?.role || "",
             company: fetchedUser?.profile?.hospital || "",
             education: fetchedUser?.profile?.specialization || "",
             bio: fetchedUser?.profile?.cv || "",
             nic: fetchedUser?.profile?.nic || "",
+            birthDate: fetchedUser?.profile?.birthDate || "",
           }));
         } catch (err) {
           console.error("Failed to fetch user profile on cancel:", err);
@@ -282,15 +311,19 @@ const ProfilePage = () => {
                 </label>
                 <div className="relative">
                   <input
-                    type="text"
+                    type="date"
                     value={formData.birthDate}
                     onChange={(e) => handleInputChange("birthDate", e.target.value)}
                     disabled={!isEditing}
-                    className="w-full px-4 py-3 pr-10 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
-                    placeholder="dd/mm/yy"
+                    className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
+                    placeholder="Select birth date"
                   />
-                  <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  {/* <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" /> */}
                 </div>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" />
+                  Select your date of birth
+                </p>
               </div>
 
               <div className="space-y-2">
@@ -341,7 +374,7 @@ const ProfilePage = () => {
               </h3>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
-              Your primary email for communications and account access
+              Your primary email for communications and account access (cannot be changed)
             </p>
           </div>
 
@@ -355,13 +388,13 @@ const ProfilePage = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => handleInputChange("email", e.target.value)}
-                disabled={!isEditing}
-                className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200"
+                disabled={true}
+                className="w-full px-4 py-3 border border-border rounded-xl bg-muted/50 text-muted-foreground focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 cursor-not-allowed"
                 placeholder="Enter email address"
               />
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <CheckCircle className="h-3 w-3 text-green-600" />
-                Email verified and active
+                Email verified and active - Contact support to change
               </div>
             </div>
           </div>
@@ -435,14 +468,20 @@ const ProfilePage = () => {
                   <MapPin className="h-4 w-4 text-green-600" />
                   LOCATION
                 </label>
-                <input
-                  type="text"
+                <select
                   value={formData.location}
                   onChange={(e) => handleInputChange("location", e.target.value)}
                   disabled={!isEditing}
                   className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
-                  placeholder="Enter your location"
-                />
+                >
+                  <option value="">Select location</option>
+                  <option value="local">Local (Sri Lanka)</option>
+                  <option value="foreign">Foreign</option>
+                </select>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <AlertCircle className="h-3 w-3" />
+                  Select your primary location for membership purposes
+                </p>
               </div>
             </div>
           </div>
