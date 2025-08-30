@@ -145,9 +145,8 @@ export const NAVBAR = [
   { title: "Home", href: "/" },
   { title: "About Us", href: "/about" },
   { title: "Event", href: "/event" },
-  { title: "Membership", href: "/membership" },
   { title: "Contact", href: "/contact" },
-  { title: "Get Involved", href: "/get-involved" },
+  { title: "Get Involved", href: "/membership" },
 ];
 
 export const TOP_BAR_LINKS = [
