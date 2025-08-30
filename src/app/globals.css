@@ -13,7 +13,7 @@
   --muted-foreground: #1a1a1a; /* Very dark for maximum readability on muted backgrounds */
   --border: #909090; /* Even darker border for strong separation */
   --input: #f8f8f8; /* Consistent with muted background */
-  --primary: #2e75cc;
+  --primary: #D47045;
   --primary-foreground: #fdfbfa;
   --secondary: #122D1E; /* Slightly lighter secondary background */
   --secondary-foreground: #000000; /* Keep consistent with foreground */
@@ -21,7 +21,7 @@
   --accent-foreground: #000000; /* Consistent with foreground */
   --destructive: #a00000; /* Even darker, more saturated red for critical error messages */
   --destructive-foreground: #fdfbfa; /* Keep white for contrast on darker red */
-  --ring: #2e75cc;
+  --ring: #D47045;
   --radius: 0.5rem;
   
   /* Shadows */
@@ -190,82 +190,44 @@ body {
     background-color: var(--muted);
   }
   
+  .bg-primary {
+    background-color: var(--primary);
+  }
+  .bg-primary-100 {
+    background-color: color-mix(in srgb, var(--primary) 10%, white);
+  }
+  .bg-primary-200 {
+    background-color: color-mix(in srgb, var(--primary) 20%, white);
+  }
+  .bg-primary-300 {
+    background-color: color-mix(in srgb, var(--primary) 30%, white);
+  }
+  .bg-primary-600 {
+    background-color: color-mix(in srgb, var(--primary) 60%, black);
+  }
+  .bg-primary-700 {
+    background-color: color-mix(in srgb, var(--primary) 70%, black);
+  }
+
   .text-primary-foreground {
     color: var(--primary-foreground);
   }
-}
-
-@keyframes animateIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
+  .text-primary-500 {
+    color: var(--primary);
   }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .text-primary-600 {
+    color: color-mix(in srgb, var(--primary) 60%, black);
   }
-}
-
-@keyframes animateOut {
-  from {
-    opacity: 1;
-    transform: translateY(0);
+  .text-primary-700 {
+    color: color-mix(in srgb, var(--primary) 70%, black);
   }
-  to {
-    opacity: 0;
-    transform: translateY(10px);
+  .border-primary-300 {
+    border-color: color-mix(in srgb, var(--primary) 30%, white);
   }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
+  .ring-primary-500 {
+    --tw-ring-color: var(--primary);
   }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromTop {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInFromBottom {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInFromLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slideInFromRight {
-  from {
-    opacity: 0;
-    transform: translateX(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
+  .shadow-primary-500\/10 {
+    box-shadow: 0 4px 6px -1px color-mix(in srgb, var(--primary) 10%, transparent), 0 2px 4px -2px color-mix(in srgb, var(--primary) 10%, transparent);
   }
 }

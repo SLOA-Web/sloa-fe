@@ -14,6 +14,14 @@ export interface EventCardProp {
   onReadMore?: () => void;
 }
 
+export type Resource = {
+  id: string;
+  name: string;
+  category: string;
+  type: string;
+  link: string;
+};
+
 export interface SectionHeaderProps {
   text: string;
   color?: string; // hex or tailwind color class
