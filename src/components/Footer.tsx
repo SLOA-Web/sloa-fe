@@ -1,16 +1,15 @@
-"use client"
+"use client";
 import React, { useState, useRef, FormEvent } from "react"; 
 import { DOCUMENTATION_LINKS, NAVBAR } from "@/data";
 import Image from "next/image";
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
 import { usePathname } from "next/navigation";
-import { api } from "@/utils/api";
+import { api } from "@/utils/api"; 
 
 const Footer = () => {
   const pathname = usePathname();
-
-  const [name, setName] = useState("");
+  
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -25,8 +24,8 @@ const Footer = () => {
     setError(null);
     setSuccess(null);
 
-    if (!name.trim() || !email.trim()) {
-      setError("Name and email are required.");
+    if (!email.trim()) {
+      setError("Email is required.");
       return;
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -36,12 +35,11 @@ const Footer = () => {
 
     setLoading(true);
     try {
-      const payload = { name: name.trim(), email: email.trim() };
+      const payload = { email: email.trim() };
       await api.post("/api/v1/newsletter/subscribe", payload);
       
       setSuccess("Thank you for subscribing!");
-      setName("");
-      setEmail("");
+      setEmail(""); 
     } catch (err: unknown) {
       const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
       setError(`Subscription failed: ${errorMessage}`);
@@ -138,18 +136,8 @@ const Footer = () => {
 
           {/* --- MODIFIED Email Input Section --- */}
           <div className="w-full lg:w-[40%] flex flex-col justify-end self-end">
-            <form ref={formRef} onSubmit={handleSubscribe} className="flex flex-col gap-4 font-poppins text-[18px]">
-              <div className="flex flex-col gap-4 lg:flex-row lg:gap-2">
-                {/* Name Input */}
-                <input
-                  type="text"
-                  placeholder="YOUR NAME"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={loading}
-                  className="border-b border-black border-b-[1px] w-full rounded px-3 py-2 focus:outline-none focus:border-primary font-poppins text-[18px] disabled:opacity-50"
-                />
-                {/* Email Input */}
+            <form ref={formRef} onSubmit={handleSubscribe} className="flex flex-col gap-2 font-poppins text-[18px]">
+              <div className="flex flex-col gap-2 lg:flex-row">
                 <input
                   type="email"
                   placeholder="YOUR EMAIL"
@@ -158,19 +146,13 @@ const Footer = () => {
                   disabled={loading}
                   className="border-b border-black border-b-[1px] w-full rounded px-3 py-2 focus:outline-none focus:border-primary font-poppins text-[18px] disabled:opacity-50"
                 />
+                <CustomButton onClick={handleButtonClick} 
+                className="border-none font-poppins text-[18px] mt-2 lg:mt-0" />
               </div>
-              <div className="flex items-center justify-between">
-                {/* Success/Error Message Area */}
-                <div className="text-sm h-5">
+              {/* Success/Error Message Area */}
+              <div className="text-sm h-5 text-left">
                   {success && <p className="text-green-600">{success}</p>}
                   {error && <p className="text-red-600">{error}</p>}
-                </div>
-                {/* Custom Button */}
-                <CustomButton
-                  text={loading ? 'Subscribing...' : 'Subscribe'}
-                  className={`border-none font-poppins text-[18px] lg:self-end ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  onClick={handleButtonClick}
-                />
               </div>
             </form>
           </div>
