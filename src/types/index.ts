@@ -5,13 +5,47 @@ export interface HeroSlide {
   content?: string;
 }
 
+
+export interface EventAgendaItem {
+  time: string;
+  topic: string;
+  speaker?: string;
+}
+
 export interface EventCardProp {
   image: string;
   date: string;
+  time?: string;
   title: string;
   summary: string;
-  doctor?:string;
+  doctor?: string;
+  location?: string;
+  capacity?: string;
+  registrationDeadline?: string;
+  agenda?: EventAgendaItem[];
+  totalRegistrations?: number;
   onReadMore?: () => void;
+}
+
+export interface EventApiType {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  endDate?: string | null;
+  time?: string;
+  location?: string;
+  posterUrl?: string | null;
+  agenda?: { time: string; topic: string; speaker?: string; description?: string }[];
+  externalRegistrationUrl?: string | null;
+  criteria?: unknown;
+  isRegistrationOpen: boolean;
+  maxCapacity?: number;
+  registrationDeadline?: string;
+  createdBy?: string;
+  createdAt?: string;
+  creator?: { id: string; fullName: string };
+  _count?: { registrations: number };
 }
 
 export type Resource = {

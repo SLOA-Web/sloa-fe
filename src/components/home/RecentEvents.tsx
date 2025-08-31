@@ -13,17 +13,54 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { eventCards } from "@/data";
+import { api } from "@/utils/api";
+import { handleApiError } from "@/utils/errorHandler";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { EventApiType } from "@/types";
 import EventCard from "./EventCard";
+import { useRouter } from "next/navigation";
 import InfoSection from "./InfoSection";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const RecentEvents: React.FC = () => {
-  const [api, setApi] = useState<EmblaCarouselType | undefined>();
+  const [carouselApi, setCarouselApi] = useState<
+    EmblaCarouselType | undefined
+  >();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   const [isMdScreen, setIsMdScreen] = useState(false);
+  const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
+  const [events, setEvents] = useState<EventApiType[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data: { events?: EventApiType[] } | EventApiType[] =
+          await api.get("/api/v1/events");
+        if (
+          data &&
+          typeof data === "object" &&
+          "events" in data &&
+          Array.isArray(data.events)
+        ) {
+          setEvents(data.events);
+        } else if (Array.isArray(data)) {
+          setEvents(data);
+        } else {
+          setEvents([]);
+        }
+      } catch (err: unknown) {
+        const errorMessage = handleApiError(err, router);
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEvents();
+  }, [router]);
 
   // Ref for autoplay plugin
   const autoplay = useRef(
@@ -49,23 +86,43 @@ const RecentEvents: React.FC = () => {
   }, []); // Runs once on mount
 
   useEffect(() => {
-    if (!api) return;
+    if (!carouselApi) return;
 
-    setCount(api.scrollSnapList().length);
-    setCurrent(api.selectedScrollSnap());
+    // Set count and current on mount and reInit
+    const updateCountAndCurrent = () => {
+      setCount(carouselApi.scrollSnapList().length);
+      setCurrent(carouselApi.selectedScrollSnap());
+      console.log("[Embla] updateCountAndCurrent", {
+        count: carouselApi.scrollSnapList().length,
+        current: carouselApi.selectedScrollSnap(),
+      });
+    };
+    updateCountAndCurrent();
 
     const onSelectCallback = (emblaApi: EmblaCarouselType) => {
       setCurrent(emblaApi.selectedScrollSnap());
+      console.log("[Embla] onSelect", emblaApi.selectedScrollSnap());
+    };
+    const onReInitCallback = (emblaApi: EmblaCarouselType) => {
+      updateCountAndCurrent();
+      console.log("[Embla] onReInit", emblaApi.scrollSnapList().length);
     };
 
-    api.on("select", onSelectCallback);
-    api.on("reInit", onSelectCallback);
+    carouselApi.on("select", onSelectCallback);
+    carouselApi.on("reInit", onReInitCallback);
+
+    // Defensive: update on resize (in case Embla doesn't reInit)
+    const handleResize = () => {
+      updateCountAndCurrent();
+    };
+    window.addEventListener("resize", handleResize);
 
     return () => {
-      api?.off("select", onSelectCallback);
-      api?.off("reInit", onSelectCallback);
+      carouselApi?.off("select", onSelectCallback);
+      carouselApi?.off("reInit", onReInitCallback);
+      window.removeEventListener("resize", handleResize);
     };
-  }, [api]);
+  }, [carouselApi]);
 
   return (
     <div className="bg-gradient-to-b from-[#fff] to-[#D47045]/10 py-12 lg:py-24 overflow-x-hidden">
@@ -73,7 +130,7 @@ const RecentEvents: React.FC = () => {
 
       <div className="my-12">
         <Carousel
-          setApi={setApi}
+          setApi={setCarouselApi}
           opts={{ align: "start", loop: true }}
           plugins={isMdScreen ? [autoplay.current] : []} // Conditionally add autoplay plugin
           className="w-full mx-4 lg:ml-16"
@@ -81,21 +138,58 @@ const RecentEvents: React.FC = () => {
           <h1 className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </h1>
-          <CarouselContent className="my-8 ml-0">
-            {eventCards.map((event) => (
-              <CarouselItem
-                key={event.title + event.date}
-                className="pl-0 md:pl-2 basis-[85%] md:basis-1/3 lg:basis-1/4"
-              >
-                <EventCard
-                  image={event.image || "/assets/images/about_us.svg"}
-                  date={event.date || ""}
-                  title={event.title}
-                  summary={event.summary || ""}
-                  onReadMore={() => {}}
-                />
-              </CarouselItem>
-            ))}
+          
+          {loading && <LoadingSpinner text="Loading event details..." />}
+          {error && <div className="text-red-500 mb-4">{error}</div>}
+          {!loading && !error && events.length === 0 && (
+            <div className="text-center text-gray-500">No events found.</div>
+          )}
+
+
+          <CarouselContent className="my-8 ml-0 gap-x-12">
+            {!loading &&
+              !error &&
+              events.map((event) => {
+                const eventId = event.id;
+                const dateObj = new Date(event.date);
+                const dateStr = !isNaN(dateObj.getTime())
+                  ? dateObj.toLocaleDateString("en-GB", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })
+                  : event.date;
+                const image = event.posterUrl || "/assets/images/cta.svg";
+                const summary = event.description || "";
+                const doctor =
+                  event.agenda && event.agenda.length > 0
+                    ? event.agenda[0].speaker
+                    : "";
+                const now = new Date();
+                const isUpcoming = event.isRegistrationOpen && dateObj > now;
+                return (
+                  <CarouselItem
+                    key={event.id}
+                    className="basis-[100%] md:basis-1/3 lg:basis-1/3"
+                  >
+                    <EventCard
+                      image={image}
+                      date={dateStr}
+                      title={event.title}
+                      summary={summary}
+                      doctor={doctor}
+                      state={isUpcoming ? "upcoming" : undefined}
+                      onReadMore={() => {
+                        setLoadingSlug(eventId);
+                        setTimeout(() => {
+                          router.push(`/event/${eventId}`);
+                        }, 500);
+                      }}
+                      loading={loadingSlug === eventId}
+                    />
+                  </CarouselItem>
+                );
+              })}
           </CarouselContent>
         </Carousel>
         {/* Progress Bar */}

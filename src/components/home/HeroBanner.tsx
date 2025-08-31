@@ -187,7 +187,7 @@ const HeroBanner = () => {
         >
           <EventCard
             {...currentEventCardData}
-            state="upcoming"
+            state="heropage"
           />
         </div>
       </div>

@@ -11,6 +11,7 @@ interface CustomButtonProps {
   href?: string;
   onClick?: () => void;
   className?: string;
+  hideIcon?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -18,6 +19,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   href,
   onClick,
   className,
+  hideIcon,
 }) => {
   const buttonRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
 
@@ -48,14 +50,16 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   const content = (
     <span className="flex items-center gap-3">
       {text}
-      <Image
-        src="/assets/images/arrow.svg"
-        alt="arrow"
-        width={16}
-        height={20}
-        className="w-4 h-4 inline-block transition-transform duration-200 group-hover:rotate-45 group-hover:invert group-hover:brightness-0"
-        priority
-      />
+      {!hideIcon && (
+        <Image
+          src="/assets/images/arrow.svg"
+          alt="arrow"
+          width={16}
+          height={20}
+          className="w-4 h-4 inline-block transition-transform duration-200 group-hover:rotate-45 group-hover:invert group-hover:brightness-0"
+          priority
+        />
+      )}
     </span>
   );
 
