@@ -18,7 +18,7 @@ const LoadingSpinner: React.FC<{ text?: string }> = ({ text = "Loading..." }) =>
   return (
     <div
       ref={containerRef}
-      className="flex flex-col items-center justify-center min-h-[600px] w-full bg-white/70 backdrop-blur rounded-lg shadow-lg p-8"
+      className="flex flex-col items-center justify-center min-h-[600px] w-full p-8"
     >
       <svg
         className="animate-spin h-12 w-12 mb-4 text-primary rounded-full p-1"
