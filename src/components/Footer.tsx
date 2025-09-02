@@ -4,12 +4,9 @@ import { DOCUMENTATION_LINKS, NAVBAR } from "@/data";
 import Image from "next/image";
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
-import { usePathname } from "next/navigation";
 import { api } from "@/utils/api"; 
 
 const Footer = () => {
-  const pathname = usePathname();
-  
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);

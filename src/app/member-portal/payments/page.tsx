@@ -6,30 +6,56 @@ import {
   CheckCircle,
   Clock,
   AlertCircle,
-  Eye,
   Plus,
   TrendingUp
 } from "lucide-react";
 import { api } from "@/utils/api";
 import { toast } from "react-hot-toast";
 
+interface Payment {
+  status?: string;
+  date?: string;
+  createdAt?: string;
+  paidAt?: string;
+  updatedAt?: string;
+  amount?: number | string;
+  total?: number | string;
+  totalAmount?: number | string;
+  currency?: string;
+  currencyCode?: string;
+  description?: string;
+  note?: string;
+  title?: string;
+  reference?: string;
+  ref?: string;
+  code?: string;
+  id?: string;
+  method?: string;
+  channel?: string;
+  source?: string;
+  receipt?: string;
+  receiptUrl?: string;
+  invoiceUrl?: string;
+  category?: string;
+}
+
 const PaymentsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [selectedPeriod, setSelectedPeriod] = useState("all");
-  const [payments, setPayments] = useState<any[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch payments from API
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const data = await api.get<any>("/api/v1/payments/history");
+        const data = await api.get<Payment[] | { payments?: Payment[]; history?: Payment[]; items?: Payment[] }>("/api/v1/payments/history");
         const list = Array.isArray(data)
           ? data
           : (data?.payments || data?.history || data?.items || []);
         setPayments(list);
-      } catch (e) {
+      } catch {
         toast.error("Failed to fetch payment history.");
       } finally {
         setLoading(false);
@@ -70,18 +96,18 @@ const PaymentsPage = () => {
   }, [payments]);
 
   // Helpers
-  const parseAmount = (p: any): number => {
+  const parseAmount = (p: Payment): number => {
     const raw = p.amount ?? p.total ?? p.totalAmount ?? 0;
     const n = typeof raw === "string" ? parseFloat(raw) : Number(raw || 0);
     return Number.isFinite(n) ? n : 0;
   };
 
-  const currencyOf = (p: any): string => p.currency || p.currencyCode || "";
-  const descriptionOf = (p: any): string => p.description || p.note || p.title || "Payment";
-  const referenceOf = (p: any): string => p.reference || p.ref || p.code || p.id || "";
-  const methodOf = (p: any): string => p.method || p.channel || p.source || "";
-  const dateOf = (p: any): string => p.date || p.paidAt || p.createdAt || p.updatedAt || new Date().toISOString();
-  const receiptUrlOf = (p: any): string | null => p.receipt || p.receiptUrl || p.invoiceUrl || null;
+  const currencyOf = (p: Payment): string => p.currency || p.currencyCode || "";
+  const descriptionOf = (p: Payment): string => p.description || p.note || p.title || "Payment";
+  const referenceOf = (p: Payment): string => p.reference || p.ref || p.code || p.id || "";
+  const methodOf = (p: Payment): string => p.method || p.channel || p.source || "";
+  const dateOf = (p: Payment): string => p.date || p.paidAt || p.createdAt || p.updatedAt || new Date().toISOString();
+  const receiptUrlOf = (p: Payment): string | null => p.receipt || p.receiptUrl || p.invoiceUrl || null;
 
   const filtered = useMemo(() => {
     return payments.filter((p) => {
@@ -232,7 +258,7 @@ const PaymentsPage = () => {
                 {filtered.length === 0 ? (
                   <p className="text-sm text-muted-foreground">No payments found.</p>
                 ) : (
-                  filtered.map((payment: any) => {
+                  filtered.map((payment) => {
                     const status = String(payment.status || "").toLowerCase();
                     const badgeClass =
                       status === "paid" || status === "success" || status === "succeeded"
