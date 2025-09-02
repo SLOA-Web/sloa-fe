@@ -16,7 +16,7 @@ import {
 import { api } from "@/utils/api";
 import { handleApiError } from "@/utils/errorHandler";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { EventApiType } from "@/types";
+import { UpcomingEvent, UpcomingEventsResponse } from "@/types";
 import EventCard from "./EventCard";
 import { useRouter } from "next/navigation";
 import InfoSection from "./InfoSection";
@@ -31,27 +31,17 @@ const RecentEvents: React.FC = () => {
   const [count, setCount] = useState(0);
   const [isMdScreen, setIsMdScreen] = useState(false);
   const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
-  const [events, setEvents] = useState<EventApiType[]>([]);
+  const [events, setEvents] = useState<UpcomingEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const data: { events?: EventApiType[] } | EventApiType[] =
-          await api.get("/api/v1/events");
-        if (
-          data &&
-          typeof data === "object" &&
-          "events" in data &&
-          Array.isArray(data.events)
-        ) {
-          setEvents(data.events);
-        } else if (Array.isArray(data)) {
-          setEvents(data);
-        } else {
-          setEvents([]);
-        }
+        setLoading(true);
+        const data: UpcomingEventsResponse = await api.get("/api/v1/events/upcoming/brief");
+        setEvents(data.events || []);
       } catch (err: unknown) {
         const errorMessage = handleApiError(err, router);
         setError(errorMessage);
@@ -159,26 +149,19 @@ const RecentEvents: React.FC = () => {
                       year: "numeric",
                     })
                   : event.date;
-                const image = event.posterUrl || "/assets/images/cta.svg";
-                const summary = event.description || "";
-                const doctor =
-                  event.agenda && event.agenda.length > 0
-                    ? event.agenda[0].speaker
-                    : "";
-                const now = new Date();
-                const isUpcoming = event.isRegistrationOpen && dateObj > now;
+                
                 return (
                   <CarouselItem
                     key={event.id}
                     className="basis-[100%] md:basis-1/3 lg:basis-1/3"
                   >
                     <EventCard
-                      image={image}
+                      image={event.image}
                       date={dateStr}
                       title={event.title}
-                      summary={summary}
-                      doctor={doctor}
-                      state={isUpcoming ? "upcoming" : undefined}
+                      summary={event.shortDesc}
+                      doctor={event.speaker}
+                      state="upcoming"
                       onReadMore={() => {
                         setLoadingSlug(eventId);
                         setTimeout(() => {

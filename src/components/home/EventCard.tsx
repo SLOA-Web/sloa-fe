@@ -1,29 +1,29 @@
 "use client"
 
-import { useRef, useEffect } from "react";
-import { EventCardProp } from "@/types";
+import React, { useRef, useEffect } from "react";
+// Import types are available for future use
 import Image from "next/image";
 import CustomButton from "../ui/CustomButton";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SUMMARY_LIMIT } from "@/utils/constants";
 
-interface EventCardPropsWithState extends EventCardProp {
-  state?: string;
-}
+
 
 gsap.registerPlugin(ScrollTrigger);
 
-const EventCard: React.FC<EventCardPropsWithState & { loading?: boolean }> = ({
-  image,
-  date,
-  title,
-  summary,
-  doctor,
-  onReadMore,
-  state,
-  loading,
-}) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const EventCard: React.FC<any> = (props) => {
+  // Handle both old and new data structures
+  const image = props.image;
+  const date = props.date;
+  const title = props.title;
+  const summary = props.summary || props.shortDesc || "";
+  const doctor = props.doctor || props.speaker || "";
+  const onReadMore = props.onReadMore;
+  const state = props.state;
+  const loading = props.loading;
+
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);

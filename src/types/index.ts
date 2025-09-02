@@ -104,3 +104,47 @@ export interface User {
   documents?: string[];
   // Add other user properties as needed
 }
+
+// New API response types for upcoming events
+export interface UpcomingEvent {
+  id: string;
+  image: string;
+  title: string;
+  shortDesc: string;
+  date: string;
+  speaker: string;
+}
+
+export interface UpcomingEventsResponse {
+  events: UpcomingEvent[];
+  count: number;
+}
+
+// Banner API response types
+export interface BannerImageVariant {
+  url: string;
+  size: number;
+}
+
+export interface BannerImageVariants {
+  thumbnail: BannerImageVariant;
+  medium: BannerImageVariant;
+  large: BannerImageVariant;
+}
+
+export interface Banner {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  altText: string;
+  linkUrl: string;
+  displayOrder: number;
+  imageVariants: BannerImageVariants;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BannersResponse {
+  banners: Banner[];
+}

@@ -3,15 +3,60 @@ import Image from "next/image";
 import EventCard from "./EventCard";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { heroSlides, eventCards } from "@/data";
+import { heroSlides } from "@/data";
+import { UpcomingEvent, Banner, BannersResponse } from "@/types";
+import api from "@/utils/api";
+import { handleApiError } from "@/utils/errorHandler";
+import { useRouter } from "next/navigation";
 
 const HeroBanner = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [upcomingEvent, setUpcomingEvent] = useState<UpcomingEvent | null>(null);
+  const [eventLoading, setEventLoading] = useState(true);
+  const [eventError, setEventError] = useState<string | null>(null);
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [bannersLoading, setBannersLoading] = useState(true);
   const leftColRef = useRef<HTMLDivElement>(null);
   const rightColRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef = useRef(false);
+  const router = useRouter();
+
+  // Fetch banners
+  useEffect(() => {
+    const fetchBanners = async () => {
+      try {
+        setBannersLoading(true);
+        const data: BannersResponse = await api.get("/api/v1/banners/active");
+        setBanners(data.banners || []);
+      } catch (err: unknown) {
+        // Fallback to static data if API fails
+        console.error('Failed to fetch banners:', err);
+        setBanners([]);
+      } finally {
+        setBannersLoading(false);
+      }
+    };
+    fetchBanners();
+  }, [router]);
+
+  // Fetch upcoming event
+  useEffect(() => {
+    const fetchUpcomingEvent = async () => {
+      try {
+        setEventLoading(true);
+        const data: UpcomingEvent = await api.get("/api/v1/events/upcoming/next");
+        setUpcomingEvent(data);
+      } catch (err: unknown) {
+        const errorMessage = handleApiError(err, router);
+        setEventError(errorMessage);
+      } finally {
+        setEventLoading(false);
+      }
+    };
+    fetchUpcomingEvent();
+  }, [router]);
 
   useEffect(() => {
     if (leftColRef.current && rightColRef.current) {
@@ -127,8 +172,16 @@ const HeroBanner = () => {
   //   return () => clearInterval(interval);
   // }, []);
 
-  const currentSlideData = heroSlides[currentSlide];
-  const currentEventCardData = eventCards[currentSlide];
+  // Use banners if available, fallback to static slides
+  const slidesData = banners.length > 0 ? banners : heroSlides;
+  const currentSlideData = slidesData[currentSlide];
+  
+  // Ensure currentSlide is within bounds when data changes
+  useEffect(() => {
+    if (slidesData.length > 0 && currentSlide >= slidesData.length) {
+      setCurrentSlide(0);
+    }
+  }, [slidesData.length, currentSlide]);
 
   return (
     <section
@@ -137,15 +190,33 @@ const HeroBanner = () => {
     >
       {/* Background Image */}
       <div ref={imageRef} className="absolute inset-0 -z-10">
-        <Image
-          src={currentSlideData.backgroundImage}
-          alt={`Hero Banner Slide ${currentSlide + 1}`}
-          fill
-          priority
-          quality={90}
-          className="object-cover object-center transition-opacity duration-700 ease-in-out"
-          sizes="100vw"
-        />
+        {bannersLoading ? (
+          <div className="w-full h-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
+        ) : currentSlideData ? (
+          <Image
+            src={
+              'imageUrl' in currentSlideData 
+                ? currentSlideData.imageUrl 
+                : currentSlideData.backgroundImage
+            }
+            alt={
+              'altText' in currentSlideData 
+                ? currentSlideData.altText 
+                : `Hero Banner Slide ${currentSlide + 1}`
+            }
+            fill
+            priority
+            quality={90}
+            className="object-cover object-center transition-opacity duration-700 ease-in-out"
+            sizes="100vw"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+            <p className="text-white text-lg">No banners available</p>
+          </div>
+        )}
       </div>
 
       {/* Gradient overlays */}
@@ -153,20 +224,22 @@ const HeroBanner = () => {
       <div className="pointer-events-none absolute inset-0 -z-5 bg-gradient-to-r from-black/20 to-transparent" />
 
       {/* Navigation Dots */}
-      <div className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 flex flex-col gap-3">
-        {heroSlides.map((slide, index) => (
-          <button
-            key={slide.id ?? slide.title ?? index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-500 ease-out border border-white/30 ${
-              currentSlide === index
-                ? "bg-white scale-125 shadow-lg shadow-white/20"
-                : "bg-white/20 hover:bg-white/50 hover:scale-110"
-            }`}
-            aria-label={`Go to slide ${index + 1}`}
-          />
-        ))}
-      </div>
+      {slidesData.length > 1 && (
+        <div className="absolute right-6 top-1/2 transform -translate-y-1/2 z-20 flex flex-col gap-3">
+          {slidesData.map((slide, index) => (
+            <button
+              key={`slide-${index}`}
+              onClick={() => goToSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-500 ease-out border border-white/30 ${
+                currentSlide === index
+                  ? "bg-white scale-125 shadow-lg shadow-white/20"
+                  : "bg-white/20 hover:bg-white/50 hover:scale-110"
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Content */}
       <div className="absolute bottom-4 left-0 right-0 z-10 w-full flex gap-12 px-4 md:px-8 pb-2">
@@ -175,9 +248,35 @@ const HeroBanner = () => {
           ref={leftColRef}
           className="flex lg:flex-[0.7] flex-col justify-end items-start text-left"
         >
-            <h1 className="leading-tight text-[36px] md:text-[48px] lg:text-[70px]">
-            {currentSlideData.title}
-          </h1>
+          {currentSlideData && (
+            <div className="space-y-4">
+              <h1 className="leading-tight text-[36px] md:text-[48px] lg:text-[70px]">
+                {currentSlideData.title}
+              </h1>
+              {'description' in currentSlideData && currentSlideData.description && (
+                <p className="text-lg md:text-xl text-white/90 max-w-2xl">
+                  {currentSlideData.description}
+                </p>
+              )}
+              {'linkUrl' in currentSlideData && currentSlideData.linkUrl && (
+                <button
+                  onClick={() => {
+                    if (currentSlideData.linkUrl.startsWith('http')) {
+                      window.open(currentSlideData.linkUrl, '_blank');
+                    } else {
+                      router.push(currentSlideData.linkUrl);
+                    }
+                  }}
+                  className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground rounded-lg font-medium hover:bg-primary/90 transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  Learn More
+                  <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Right column */}
@@ -185,10 +284,26 @@ const HeroBanner = () => {
           ref={rightColRef}
           className="flex lg:flex-[0.3] items-center justify-center hidden lg:block"
         >
-          <EventCard
-            {...currentEventCardData}
-            state="heropage"
-          />
+          {eventLoading ? (
+            <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              <p className="mt-2 text-sm text-muted-foreground">Loading event...</p>
+            </div>
+          ) : eventError ? (
+            <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
+              <p className="text-sm text-red-500 text-center">Failed to load upcoming event</p>
+            </div>
+          ) : upcomingEvent ? (
+            <EventCard
+              {...upcomingEvent}
+              state="heropage"
+              onReadMore={() => router.push(`/event/${upcomingEvent.id}`)}
+            />
+          ) : (
+            <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
+              <p className="text-sm text-muted-foreground text-center">No upcoming events</p>
+            </div>
+          )}
         </div>
       </div>
     </section>
