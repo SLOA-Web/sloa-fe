@@ -162,7 +162,7 @@ const Footer = () => {
 
         {/* Copyright Section */}
         <div className="pt-10 pb-4 flex flex-col items-center justify-between font-poppins text-[#122D1E] text-[12px] gap-2 lg:flex-row lg:pt-16">
-          <p>© {new Date().getFullYear()} SLOA. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Sri Lanka Orthopedic Association. All rights reserved.</p>
           <Link href="https://axle.global/" target="_blank" rel="noopener noreferrer" className="hover:underline">
             Designed and Developed by Axle Global
           </Link>

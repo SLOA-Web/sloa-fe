@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import logo from "../../public/assets/images/logo.png";
 import { NAVBAR, TOP_BAR_LINKS } from "@/data/index";
+import { useAuth } from "@/context/AuthContext";
 
 // Type definitions
 interface NavbarChild {
@@ -22,6 +23,7 @@ interface NavbarItem {
 
 const Navbar = () => {
   const pathname = usePathname();
+  const { user, isLoading } = useAuth();
   const navLinksRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
@@ -120,6 +122,30 @@ const Navbar = () => {
     return pathname === item.href;
   };
 
+  // Generate dynamic top bar links based on authentication status
+  const getTopBarLinks = () => {
+    if (isLoading) {
+      // Show loading state
+      return TOP_BAR_LINKS.map(link => 
+        link.title === "Log In" 
+          ? { ...link, title: "Loading..." }
+          : link
+      );
+    }
+
+    if (user) {
+      // User is authenticated, replace "Log In" with "Profile"
+      return TOP_BAR_LINKS.map(link => 
+        link.title === "Log In" 
+          ? { title: "Profile", href: "/member-portal" }
+          : link
+      );
+    }
+
+    // User is not authenticated, show default links
+    return TOP_BAR_LINKS;
+  };
+
   if (!hasMounted) return null;
 
   // Return null if pathname includes "member-portal"
@@ -152,11 +178,15 @@ const Navbar = () => {
             {/* Top Light Bar */}
             {!isScrolled && (
               <div className="w-full text-[#122D1E]/50 text-[13px] py-2 px-3 lg:px-6 flex justify-end gap-6 font-light z-[1001] border-b-2 border-gray-300">
-                {TOP_BAR_LINKS.map((link) => (
+                {getTopBarLinks().map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="hover:underline"
+                    className={`hover:underline transition-colors ${
+                      link.title === "Profile" 
+                        ? " hover:text-black/80" 
+                        : ""
+                    }`}
                   >
                     {link.title}
                   </Link>
@@ -253,11 +283,15 @@ const Navbar = () => {
             {/* Top Bar Links on Mobile */}
             <div className="w-full max-w-md mt-8 pt-6 border-t border-gray-200">
               <div className="grid grid-cols-1 gap-3">
-                {TOP_BAR_LINKS.map((link) => (
+                {getTopBarLinks().map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className="block text-base sm:text-lg text-gray-700 hover:text-black transition-colors"
+                    className={`block text-base sm:text-lg text-gray-700 hover:text-black transition-colors ${
+                      link.title === "Profile" 
+                        ? "text-primary font-medium hover:text-primary/80" 
+                        : ""
+                    }`}
                     onClick={closeMobileMenu}
                   >
                     {link.title}
@@ -281,7 +315,7 @@ const Navbar = () => {
                 }
               }}
             >
-              <p>© {new Date().getFullYear()} EduSight. All rights reserved.</p>
+              <p>© {new Date().getFullYear()} Sri Lanka Orthopedic Association. All rights reserved.</p>
             </div>
           </div>
         </div>
