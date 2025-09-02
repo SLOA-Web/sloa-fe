@@ -264,9 +264,9 @@ export const bookEventData: BookEventData[] = [
 export const NAVBAR = [
   { title: "Home", href: "/" },
   { title: "About Us", href: "/about" },
-  { title: "Event", href: "/event" },
+  { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
-  { title: "Get Involved", href: "/membership" },
+  { title: "Get Involved", href: "/get-involved" },
 ];
 
 export const TOP_BAR_LINKS = [

@@ -1,17 +1,22 @@
-import CommonBanner from "@/components/CommonBanner";
-import InfoSection from "@/components/home/InfoSection";
-import CTASection from "@/components/home/CTASection";
-import Benefits from "@/components/membership/Benefits";
-import BenefitsList from "@/components/membership/BenefitsList";
+"use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export default function MembershipPage() {
+export default function MembershipRedirectPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirect to the new get-involved page
+    router.replace('/get-involved');
+  }, [router]);
+
+  // Show a loading message while redirecting
   return (
-    <main>
-      <CommonBanner imageUrl="assets/images/membership.svg" text="Membership" />
-      <BenefitsList />
-      <Benefits />
-      <InfoSection headerText="new member" />
-      <CTASection />
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+        <p className="text-muted-foreground">Redirecting to Get Involved...</p>
+      </div>
+    </div>
   );
 }
