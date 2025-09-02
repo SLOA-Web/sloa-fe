@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import ProtectedRoute from '@/components/ProtectedRoute';
 
+
 import { 
   User, 
   Crown,
@@ -57,27 +58,6 @@ export default function MemberPortalLayout({
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-background">
-        {/* <Header /> */}
-        
-        {/* Breadcrumbs */}
-        <div className="bg-muted/30 border-b border-border pt-20">
-          <div className="container mx-auto px-4 py-3">
-            <nav className="flex items-center space-x-2 text-sm">
-              <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
-                Homepage
-              </Link>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              <span className="text-foreground font-medium">My Account</span>
-            </nav>
-          </div>
-        </div>
-
-        {/* Page Title */}
-        <div className="bg-muted/30 border-b border-border">
-          <div className="container mx-auto px-4 py-6">
-            <h1 className="text-3xl font-bold text-center">My Account</h1>
-          </div>
-        </div>
 
         {/* Main Content Area */}
         <div className="container mx-auto px-4 py-8 mb-16">
@@ -89,7 +69,7 @@ export default function MemberPortalLayout({
                 {user && (
                   <div className="p-6 border-b border-border">
                     <div className="flex items-center space-x-3">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 text-primary-foreground text-sm font-medium shadow-lg">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm font-medium">
                         {user.user_metadata?.full_name?.[0] || user.email?.[0] || 'M'}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -159,7 +139,6 @@ export default function MemberPortalLayout({
             </main>
           </div>
         </div>
-        
       </div>
     </ProtectedRoute>
   );

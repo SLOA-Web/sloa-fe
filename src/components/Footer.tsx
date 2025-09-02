@@ -16,7 +16,6 @@ const Footer = () => {
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  if (pathname?.includes("member-portal")) return null;
   
   const handleSubscribe = async (e: FormEvent) => {
     e.preventDefault();
