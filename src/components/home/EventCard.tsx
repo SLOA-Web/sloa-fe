@@ -23,6 +23,7 @@ const EventCard: React.FC<any> = (props) => {
   const onReadMore = props.onReadMore;
   const state = props.state;
   const loading = props.loading;
+  const disableAnimations = props.disableAnimations || false; // New prop to disable individual animations
 
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -32,7 +33,11 @@ const EventCard: React.FC<any> = (props) => {
   const summaryRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
+    // Only run individual animations if not disabled (parent isn't handling animations)
+    if (disableAnimations) return;
+
     const triggers: ScrollTrigger[] = [];
+    
     if (cardRef.current) {
       const anim = gsap.fromTo(
         cardRef.current,
@@ -49,8 +54,9 @@ const EventCard: React.FC<any> = (props) => {
           },
         }
       );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
     }
+    
     if (imageRef.current) {
       const anim = gsap.fromTo(
         imageRef.current,
@@ -68,8 +74,9 @@ const EventCard: React.FC<any> = (props) => {
           },
         }
       );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
     }
+    
     if (titleRef.current) {
       const anim = gsap.fromTo(
         titleRef.current,
@@ -87,8 +94,9 @@ const EventCard: React.FC<any> = (props) => {
           },
         }
       );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
     }
+    
     if (dateRef.current) {
       const anim = gsap.fromTo(
         dateRef.current,
@@ -106,8 +114,9 @@ const EventCard: React.FC<any> = (props) => {
           },
         }
       );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
     }
+    
     if (summaryRef.current) {
       const anim = gsap.fromTo(
         summaryRef.current,
@@ -125,12 +134,13 @@ const EventCard: React.FC<any> = (props) => {
           },
         }
       );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
     }
+    
     return () => {
       triggers.forEach(trigger => trigger && trigger.kill());
     };
-  }, []);
+  }, [disableAnimations]);
   if (state === "heropage") {
     return (
       <div className="relative bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-sm min-h-[320px] text-black">

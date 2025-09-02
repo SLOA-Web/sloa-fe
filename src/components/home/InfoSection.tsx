@@ -19,39 +19,61 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
 
   useEffect(() => {
     if (!sectionRef.current || !imgRef.current || !pRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        imgRef.current,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-      gsap.fromTo(
-        pRef.current,
-        { opacity: 0, x: 40 },
-        {
-          opacity: 1,
-          x: 0,
-          duration: 1,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 80%",
-            toggleActions: "play none none none",
-          },
-        }
-      );
-    }, sectionRef);
-    return () => ctx.revert();
+    
+    const section = sectionRef.current;
+    const img = imgRef.current;
+    const p = pRef.current;
+
+    // Add a small delay to ensure elements are properly mounted
+    const timer = setTimeout(() => {
+      if (!section || !img || !p) return;
+      
+      const ctx = gsap.context(() => {
+        // Set initial states explicitly
+        gsap.set([img, p], { clearProps: "all" });
+        
+        gsap.fromTo(
+          img,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              toggleActions: "play none none none",
+              refreshPriority: 1,
+            },
+          }
+        );
+        
+        gsap.fromTo(
+          p,
+          { opacity: 0, x: 40 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 1,
+            delay: 0.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: section,
+              start: "top 80%",
+              toggleActions: "play none none none",
+              refreshPriority: 1,
+            },
+          }
+        );
+      }, section);
+      
+      return () => ctx.revert();
+    }, 100);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   return (

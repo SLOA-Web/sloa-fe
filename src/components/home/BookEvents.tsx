@@ -54,70 +54,74 @@ const BookEvents: React.FC = () => {
     fetchEvents();
   }, [router]);
 
+  // Animate heading - runs once on mount
   useEffect(() => {
-    if (sectionRef.current) {
-      // Animate heading
-      if (headingRef.current) {
-        gsap.fromTo(
-          headingRef.current,
-          { autoAlpha: 0, y: 80 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 80%",
-            },
-          }
-        );
-      }
+    if (sectionRef.current && headingRef.current) {
+      gsap.fromTo(
+        headingRef.current,
+        { autoAlpha: 0, y: 80 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+          },
+        }
+      );
+    }
 
-      // Animate cards after heading
-      if (cardsRef.current.length) {
-        gsap.fromTo(
-          cardsRef.current,
-          { autoAlpha: 0, y: 60 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.8,
-            stagger: 0.18,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 80%",
-            },
-            delay: 0.2,
-          }
-        );
-      }
-
-      // Animate image aside from right to left
-      if (imageAsideRef.current) {
-        gsap.fromTo(
-          imageAsideRef.current,
-          { autoAlpha: 0, x: 120 },
-          {
-            autoAlpha: 1,
-            x: 0,
-            duration: 1,
-            ease: "power3.out",
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: "top 80%",
-            },
-            delay: 0.4,
-          }
-        );
-      }
+    // Animate image aside from right to left
+    if (sectionRef.current && imageAsideRef.current) {
+      gsap.fromTo(
+        imageAsideRef.current,
+        { autoAlpha: 0, x: 120 },
+        {
+          autoAlpha: 1,
+          x: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+          },
+          delay: 0.4,
+        }
+      );
     }
 
     return () => {
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+
+  // Animate cards - runs when events data changes
+  useEffect(() => {
+    if (!loading && events.length > 0 && sectionRef.current && cardsRef.current.length > 0) {
+      // Clear any existing animations on these elements
+      gsap.set(cardsRef.current, { clearProps: "all" });
+      
+      gsap.fromTo(
+        cardsRef.current,
+        { autoAlpha: 0, y: 60 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.18,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            refreshPriority: 1,
+          },
+          delay: 0.2,
+        }
+      );
+    }
+  }, [loading, events]);
 
   return (
     <section className="min-h-screen py-12 lg:py-24 overflow-x-hidden" ref={sectionRef}>

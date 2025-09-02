@@ -164,6 +164,7 @@ const RecentEvents: React.FC = () => {
                         summary={event.shortDesc}
                         doctor={event.speaker}
                         state="upcoming"
+                        disableAnimations={true}
                         onReadMore={() => {
                           setLoadingSlug(eventId);
                           setTimeout(() => {
