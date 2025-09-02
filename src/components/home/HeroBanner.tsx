@@ -157,20 +157,20 @@ const HeroBanner = () => {
     }
   };
 
-  // const nextSlide = () => {
-  //   if (!isAnimatingRef.current) {
-  //     setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-  //   }
-  // };
+  const nextSlide = () => {
+    if (!isAnimatingRef.current) {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }
+  };
 
   // Auto-advance slides every 5 seconds
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     nextSlide();
-  //   }, 5000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
 
-  //   return () => clearInterval(interval);
-  // }, []);
+    return () => clearInterval(interval);
+  }, []);
 
   // Use banners if available, fallback to static slides
   const slidesData = banners.length > 0 ? banners : heroSlides;
@@ -284,26 +284,36 @@ const HeroBanner = () => {
           ref={rightColRef}
           className="flex lg:flex-[0.3] items-center justify-center hidden lg:block"
         >
-          {eventLoading ? (
-            <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-              <p className="mt-2 text-sm text-muted-foreground">Loading event...</p>
-            </div>
-          ) : eventError ? (
-            <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
-              <p className="text-sm text-red-500 text-center">Failed to load upcoming event</p>
-            </div>
-          ) : upcomingEvent ? (
-            <EventCard
-              {...upcomingEvent}
-              state="heropage"
-              onReadMore={() => router.push(`/event/${upcomingEvent.id}`)}
-            />
-          ) : (
-            <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
-              <p className="text-sm text-muted-foreground text-center">No upcoming events</p>
-            </div>
-          )}
+          {(() => {
+            if (eventLoading) {
+              return (
+                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                  <p className="mt-2 text-sm text-muted-foreground">Loading event...</p>
+                </div>
+              );
+            } else if (eventError) {
+              return (
+                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
+                  <p className="text-sm text-red-500 text-center">Failed to load upcoming event</p>
+                </div>
+              );
+            } else if (upcomingEvent) {
+              return (
+                <EventCard
+                  {...upcomingEvent}
+                  state="heropage"
+                  onReadMore={() => router.push(`/event/${upcomingEvent.id}`)}
+                />
+              );
+            } else {
+              return (
+                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
+                  <p className="text-sm text-muted-foreground text-center">No upcoming events</p>
+                </div>
+              );
+            }
+          })()}
         </div>
       </div>
     </section>
