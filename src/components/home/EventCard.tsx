@@ -15,7 +15,7 @@ gsap.registerPlugin(ScrollTrigger);
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EventCard: React.FC<any> = (props) => {
   // Handle both old and new data structures
-  const image = props.image;
+  const image = props.image || "/assets/images/logo.png";
   const date = props.date;
   const title = props.title;
   const summary = props.summary || props.shortDesc || "";
