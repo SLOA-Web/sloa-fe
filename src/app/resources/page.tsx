@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { ExternalLink, Search, BookOpen, Download, Play, FileText, Link as LinkIcon } from "lucide-react";
 import { api } from "@/utils/api";
-import Link from "next/link";
 import { Resource } from "@/types";
 
 const ResourcesPage = () => {
@@ -16,7 +15,7 @@ const ResourcesPage = () => {
   
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement[]>([]);
+  const cardsRef = useRef<HTMLElement[]>([]);
 
   const fetchResources = async () => {
     try {
@@ -95,7 +94,7 @@ const ResourcesPage = () => {
     setFilteredResources(filtered);
   }, [searchTerm, selectedCategory, resources]);
 
-  const addToRefs = (el: HTMLDivElement | null) => {
+  const addToRefs = (el: HTMLElement | null) => {
     if (el && !cardsRef.current.includes(el)) {
       cardsRef.current.push(el);
     }
@@ -186,10 +185,13 @@ const ResourcesPage = () => {
         {!error && filteredResources.length > 0 && (
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {filteredResources.map((resource) => (
-              <div
+              <a
                 key={resource.id}
+                href={resource.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 ref={addToRefs}
-                className="group bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 p-6 hover:shadow-xl hover:shadow-primary-500/10 hover:border-primary-300 transition-all duration-300 hover:-translate-y-1"
+                className="group bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 p-6 hover:shadow-xl hover:shadow-primary-500/10 hover:border-primary-300 transition-all duration-300 hover:-translate-y-1 block cursor-pointer"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -202,15 +204,7 @@ const ResourcesPage = () => {
                       </span>
                     </div>
                   </div>
-                  <Link
-                    href={resource.link}
-                    passHref
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="ml-2"
-                  >
-                    <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-primary-500 transition-colors" />
-                  </Link>
+                  <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-primary-500 transition-colors ml-2" />
                 </div>
                 
                 <h3 className="font-semibold text-slate-800 mb-2 group-hover:text-primary-600 transition-colors">
@@ -221,16 +215,11 @@ const ResourcesPage = () => {
                   {(resource.type ? resource.type.replace('_', ' ') : '')}
                 </p>
                 
-                <a
-                  href={resource.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
-                >
+                <div className="inline-flex items-center space-x-2 text-primary-600 group-hover:text-primary-700 font-medium transition-colors">
                   <span>Explore Resource</span>
                   <ExternalLink className="w-4 h-4" />
-                </a>
-              </div>
+                </div>
+              </a>
             ))}
           </div>
         )}
