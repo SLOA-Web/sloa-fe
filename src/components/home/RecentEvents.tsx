@@ -57,7 +57,7 @@ const RecentEvents: React.FC = () => {
     Autoplay({
       delay: 2500,
       stopOnInteraction: true,
-      playOnInit: true, // Plugin plays if active
+      playOnInit: true,
     })
   );
 
@@ -65,20 +65,19 @@ const RecentEvents: React.FC = () => {
     // Check screen size on mount and resize
     const checkScreenSize = () => {
       if (typeof window !== "undefined") {
-        setIsMdScreen(window.innerWidth >= 768); // Tailwind's md breakpoint
+        setIsMdScreen(window.innerWidth >= 768);
       }
     };
-    checkScreenSize(); // Initial check
+    checkScreenSize();
     if (typeof window !== "undefined") {
       window.addEventListener("resize", checkScreenSize);
       return () => window.removeEventListener("resize", checkScreenSize);
     }
-  }, []); // Runs once on mount
+  }, []);
 
   useEffect(() => {
     if (!carouselApi) return;
 
-    // Set count and current on mount and reInit
     const updateCountAndCurrent = () => {
       setCount(carouselApi.scrollSnapList().length);
       setCurrent(carouselApi.selectedScrollSnap());
@@ -101,7 +100,6 @@ const RecentEvents: React.FC = () => {
     carouselApi.on("select", onSelectCallback);
     carouselApi.on("reInit", onReInitCallback);
 
-    // Defensive: update on resize (in case Embla doesn't reInit)
     const handleResize = () => {
       updateCountAndCurrent();
     };
@@ -119,13 +117,8 @@ const RecentEvents: React.FC = () => {
       <SectionHeader text="recent events" />
 
       <div className="my-12">
-        <Carousel
-          setApi={setCarouselApi}
-          opts={{ align: "start", loop: true }}
-          plugins={isMdScreen ? [autoplay.current] : []} // Conditionally add autoplay plugin
-          className="w-full mx-4 md:mx-10 lg:mx-16 "
-        >
-          <h1 className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto">
+        <div className="mx-4 md:mx-10 lg:mx-16">
+          <h1 className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto mb-8">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           </h1>
           
@@ -135,48 +128,61 @@ const RecentEvents: React.FC = () => {
             <div className="text-center text-gray-500">No events found.</div>
           )}
 
-          <CarouselContent className="my-8 gap-x-5">
-            {!loading &&
-              !error &&
-              events.map((event) => {
-                const eventId = event.id;
-                const dateObj = new Date(event.date);
-                const dateStr = !isNaN(dateObj.getTime())
-                  ? dateObj.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })
-                  : event.date;
-                
-                return (
-                  <CarouselItem
-                    key={event.id}
-                    className="basis-full md:basis-1/3 lg:basis-1/3"
-                  >
-                    <EventCard
-                      image={event.image}
-                      date={dateStr}
-                      title={event.title}
-                      summary={event.shortDesc}
-                      doctor={event.speaker}
-                      state="upcoming"
-                      onReadMore={() => {
-                        setLoadingSlug(eventId);
-                        setTimeout(() => {
-                          router.push(`/event/${eventId}`);
-                        }, 500);
-                      }}
-                      loading={loadingSlug === eventId}
-                    />
-                  </CarouselItem>
-                );
-              })}
-          </CarouselContent>
-        </Carousel>
+          {!loading && !error && events.length > 0 && (
+            <Carousel
+              setApi={setCarouselApi}
+              opts={{ 
+                align: "start", 
+                loop: true,
+                // Add consistent spacing through Embla options
+                containScroll: "trimSnaps"
+              }}
+              plugins={isMdScreen ? [autoplay.current] : []}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-4 md:-ml-6 lg:-ml-8">
+                {events.map((event) => {
+                  const eventId = event.id;
+                  const dateObj = new Date(event.date);
+                  const dateStr = !isNaN(dateObj.getTime())
+                    ? dateObj.toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : event.date;
+                  
+                  return (
+                    <CarouselItem
+                      key={event.id}
+                      className="pl-4 md:pl-6 lg:pl-8 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3"
+                    >
+                      <EventCard
+                        image={event.image}
+                        date={dateStr}
+                        title={event.title}
+                        summary={event.shortDesc}
+                        doctor={event.speaker}
+                        state="upcoming"
+                        onReadMore={() => {
+                          setLoadingSlug(eventId);
+                          setTimeout(() => {
+                            router.push(`/event/${eventId}`);
+                          }, 500);
+                        }}
+                        loading={loadingSlug === eventId}
+                      />
+                    </CarouselItem>
+                  );
+                })}
+              </CarouselContent>
+            </Carousel>
+          )}
+        </div>
+
         {/* Progress Bar */}
         {count > 0 && (
-          <div className="m-4 mx-4 lg:mx-16">
+          <div className="mx-4 md:mx-10 lg:mx-16 mt-8">
             <div className="h-[2px] bg-primary/25 rounded relative overflow-hidden w-full">
               <div
                 className="h-full bg-primary transition-all duration-300"
