@@ -123,7 +123,7 @@ const RecentEvents: React.FC = () => {
           setApi={setCarouselApi}
           opts={{ align: "start", loop: true }}
           plugins={isMdScreen ? [autoplay.current] : []} // Conditionally add autoplay plugin
-          className="w-full mx-4 lg:ml-16"
+          className="w-full mx-4 md:mx-10 lg:mx-16 "
         >
           <h1 className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -135,8 +135,7 @@ const RecentEvents: React.FC = () => {
             <div className="text-center text-gray-500">No events found.</div>
           )}
 
-
-          <CarouselContent className="my-8 ml-0 gap-x-12">
+          <CarouselContent className="my-8 gap-x-5">
             {!loading &&
               !error &&
               events.map((event) => {
@@ -153,7 +152,7 @@ const RecentEvents: React.FC = () => {
                 return (
                   <CarouselItem
                     key={event.id}
-                    className="basis-[100%] md:basis-1/3 lg:basis-1/3"
+                    className="basis-full md:basis-1/3 lg:basis-1/3"
                   >
                     <EventCard
                       image={event.image}
@@ -177,7 +176,7 @@ const RecentEvents: React.FC = () => {
         </Carousel>
         {/* Progress Bar */}
         {count > 0 && (
-          <div className="m-4 mx-16">
+          <div className="m-4 mx-4 lg:mx-16">
             <div className="h-[2px] bg-primary/25 rounded relative overflow-hidden w-full">
               <div
                 className="h-full bg-primary transition-all duration-300"
