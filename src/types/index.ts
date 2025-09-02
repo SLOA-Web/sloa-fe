@@ -54,6 +54,7 @@ export type Resource = {
   category: string;
   type: string;
   link: string;
+  shortDesc?: string;
 };
 
 export interface SectionHeaderProps {

@@ -87,7 +87,8 @@ const ResourcesPage = () => {
 
   useEffect(() => {
     const filtered = resources.filter(resource => {
-      const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           (resource.shortDesc && resource.shortDesc.toLowerCase().includes(searchTerm.toLowerCase()));
       const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
@@ -191,7 +192,7 @@ const ResourcesPage = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 ref={addToRefs}
-                className="group bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 p-6 hover:shadow-xl hover:shadow-primary-500/10 hover:border-primary-300 transition-all duration-300 hover:-translate-y-1 block cursor-pointer"
+                className="group bg-white/70 backdrop-blur-sm rounded-xl border border-slate-200 p-6 hover:shadow-xl hover:shadow-primary-500/10 hover:border-primary-300 transition-all duration-300 hover:-translate-y-1 block cursor-pointer flex flex-col min-h-[200px]"
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
@@ -211,13 +212,25 @@ const ResourcesPage = () => {
                   {resource.name}
                 </h3>
                 
-                <p className="text-sm text-slate-500 mb-4 capitalize">
+                {resource.shortDesc && (
+                  <p className="text-sm text-slate-600 mb-3 overflow-hidden" style={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical'
+                  }}>
+                    {resource.shortDesc}
+                  </p>
+                )}
+                
+                <p className="text-xs text-slate-400 mb-4 capitalize">
                   {(resource.type ? resource.type.replace('_', ' ') : '')}
                 </p>
                 
-                <div className="inline-flex items-center space-x-2 text-primary-600 group-hover:text-primary-700 font-medium transition-colors">
-                  <span>Explore Resource</span>
-                  <ExternalLink className="w-4 h-4" />
+                <div className="mt-auto">
+                  <div className="inline-flex items-center space-x-2 text-primary-600 group-hover:text-primary-700 font-medium transition-colors">
+                    <span>Explore Resource</span>
+                    <ExternalLink className="w-4 h-4" />
+                  </div>
                 </div>
               </a>
             ))}
