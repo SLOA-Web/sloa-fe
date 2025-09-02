@@ -137,18 +137,20 @@ const Footer = () => {
           {/* --- MODIFIED Email Input Section --- */}
           <div className="w-full lg:w-[40%] flex flex-col justify-end self-end">
             <form ref={formRef} onSubmit={handleSubscribe} className="flex flex-col gap-2 font-poppins text-[18px]">
-              <div className="flex flex-col gap-2 lg:flex-row">
+                <div className="flex flex-col gap-2 lg:flex-row bg-[#FBFBFB] p-2 rounded">
                 <input
                   type="email"
                   placeholder="YOUR EMAIL"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
-                  className="border-b border-black border-b-[1px] w-full rounded px-3 py-2 focus:outline-none focus:border-primary font-poppins text-[18px] disabled:opacity-50"
+                  className="border-b border-black border-b-[1px] w-full px-3 py-2 focus:outline-none focus:border-primary font-poppins text-[18px] disabled:opacity-50 bg-[#FBFBFB]"
                 />
-                <CustomButton onClick={handleButtonClick} 
-                className="border-none font-poppins text-[18px] mt-2 lg:mt-0" />
-              </div>
+                <CustomButton
+                  onClick={handleButtonClick}
+                  className="border-none font-poppins text-[18px] mt-2 lg:mt-0"
+                />
+                </div>
               {/* Success/Error Message Area */}
               <div className="text-sm h-5 text-left">
                   {success && <p className="text-green-600">{success}</p>}

@@ -133,8 +133,8 @@ const EventCard: React.FC<any> = (props) => {
   }, []);
   if (state === "heropage") {
     return (
-      <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black">
-        {/* Top half image */}
+      <div className="relative bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-sm min-h-[320px] text-black">
+        {/* Top half image with overlay and Upcoming text */}
         <div className="w-full h-52 relative">
           <Image
             src={image}
@@ -143,6 +143,10 @@ const EventCard: React.FC<any> = (props) => {
             className="object-cover object-center"
             sizes="100vw"
           />
+          <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-black/20 via-transparent to-transparent" />
+          <p className="text-[14px] font-poppins absolute top-3 left-3 z-20 text-white drop-shadow">
+            Upcoming
+          </p>
         </div>
         {/* Content */}
         <div className="p-4 flex flex-col w-full flex-1">
@@ -151,7 +155,7 @@ const EventCard: React.FC<any> = (props) => {
             {date} | {doctor}
           </p>
           <div className="flex-1" />
-          <div className="flex justify-end mt-2">
+          <div className="flex justify-end">
             <CustomButton text="Book Now" className="border-none px-0 py-0" />
           </div>
         </div>

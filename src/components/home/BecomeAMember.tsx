@@ -13,8 +13,8 @@ const BecomeAMember = () => {
           "linear-gradient(45deg, rgba(18,45,30,0.94) 0%, rgba(18,45,30,0.92) 42%, rgba(18,45,30,1) 100%)",
       }}
     >
-      <SectionHeader text="become a member" />
-      <div className="flex flex-col lg:flex-row gap-2 lg:items-end justify-between text-left mx-4 md:mx-10 lg:mx-16 my-10">
+      <SectionHeader text="become a member" className="mt-8 lg:mt-0" />
+      <div className="flex flex-col lg:flex-row gap-2 lg:items-end justify-between text-left mx-4 md:mx-10 lg:mx-16 my-5 lg:my-10">
         <span className="font-roboto text-[32px] md:text-[40px] lg:text-[55px]  basis-[72.5%]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum
           dolor sit amet, consectetur adipiscing elit.
