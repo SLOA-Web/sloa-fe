@@ -61,7 +61,7 @@ export default function MemberPortalLayout({
 
         {/* Main Content Area */}
         <div className="container mx-auto px-4 py-8 mb-16">
-          <div className="flex flex-col lg:flex-row gap-8">
+          <div className="flex flex-col lg:flex-row gap-8 mt-[10%]">
             {/* Left Sidebar */}
             <aside className="lg:w-80 flex-shrink-0">
               <div className="bg-card rounded-lg border border-border shadow-sm">
