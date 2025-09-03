@@ -209,7 +209,7 @@ const BookEvents: React.FC = () => {
                       onClick={() => {
                         setLoadingEventId(event.id);
                         setTimeout(() => {
-                        router.push(`/event/${event.id}`);
+                        router.push(`/events/${event.id}`);
                         }, 500);
                       }}
                       />

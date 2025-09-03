@@ -23,7 +23,9 @@ export default function EventDetailPage({
   const { user } = useAuth();
   const [event, setEvent] = useState<EventApiType | null | undefined>(undefined);
   const [registerLoading, setRegisterLoading] = useState(false);
+  const [checkingRegistration, setCheckingRegistration] = useState(true); // <-- new state
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const containerRef = useRef(null);
   const heroRef = useRef(null);
@@ -55,8 +57,10 @@ export default function EventDetailPage({
   useEffect(() => {
     // Check if user already registered for this event
     const fetchUserRegistrations = async () => {
+      setCheckingRegistration(true); // <-- start loading
       if (!user) {
         console.log("No user found, skipping registration check.");
+        setCheckingRegistration(false); // <-- stop loading
         return;
       }
       try {
@@ -76,6 +80,8 @@ export default function EventDetailPage({
         setIsRegistered(registered);
       } catch (err) {
         console.error("Error fetching user registrations:", err);
+      } finally {
+        setCheckingRegistration(false); // <-- stop loading
       }
     };
     fetchUserRegistrations();
@@ -200,12 +206,14 @@ export default function EventDetailPage({
     if (!user) return;
     setRegisterLoading(true);
     setRegisterError(null);
+    setRegisterSuccess(null);
     try {
       await api.post(`/api/v1/events/${params.id}/register`, {
         userId: user.id,
         eventId: params.id,
       });
       setIsRegistered(true);
+      setRegisterSuccess("Registered successfully!");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setRegisterError(err.message);
@@ -221,9 +229,11 @@ export default function EventDetailPage({
     if (!user) return;
     setRegisterLoading(true);
     setRegisterError(null);
+    setRegisterSuccess(null);
     try {
       await api.delete(`/api/v1/events/${params.id}/register`);
       setIsRegistered(false);
+      setRegisterSuccess("Unregistered successfully!");
     } catch (err: unknown) {
       if (err instanceof Error) {
         setRegisterError(err.message);
@@ -414,16 +424,20 @@ export default function EventDetailPage({
               {/* Extracted button text logic to a variable */}
               {(() => {
                 let buttonText = "";
-                if (registerLoading) {
+                let isBtnLoading = registerLoading || checkingRegistration;
+                if (checkingRegistration) {
+                  buttonText = "Loading...";
+                } else if (registerLoading) {
                   buttonText = isRegistered ? "Unregistering..." : "Registering...";
                 } else {
                   buttonText = isRegistered ? "Unregister" : "Register Now";
+                  isBtnLoading = false;
                 }
                 return (
                   <button
                     className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
                     onClick={handleRegisterClick}
-                    disabled={registerLoading}
+                    disabled={isBtnLoading}
                   >
                     <span className="relative z-10">
                       {buttonText}
@@ -432,6 +446,14 @@ export default function EventDetailPage({
                   </button>
                 );
               })()}
+              {/* Success Message */}
+              {registerSuccess && (
+                <div className="w-full mt-2 flex justify-center">
+                  <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
+                    {registerSuccess}
+                  </span>
+                </div>
+              )}
               {/* Error Message */}
               {registerError && (
                 <div className="w-full mt-2 flex justify-center">
