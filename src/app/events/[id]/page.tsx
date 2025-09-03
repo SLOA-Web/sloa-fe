@@ -6,9 +6,10 @@ import { notFound } from "next/navigation";
 import { api } from "@/utils/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { EventApiType } from "@/types";
+import { Attendee, EventApiType } from "@/types";
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useAuth } from "@/context/AuthContext";
+import { formatDeadline } from "@/utils/helper";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -49,20 +50,7 @@ export default function EventDetailPage({
     fetchEvent();
   }, [params]);
   // Attendee type
-  interface Attendee {
-    id: string;
-    userId: string;
-    eventId: string;
-    registeredAt: string;
-    user: {
-      id: string;
-      fullName: string;
-      email: string;
-      membershipId: string | null;
-      userRole: string;
-      // ...other user fields if needed
-    };
-  }
+
 
   useEffect(() => {
     // Check if user already registered for this event
@@ -267,12 +255,11 @@ export default function EventDetailPage({
 
   return (
     <div ref={containerRef}>
-      <main className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 min-h-screen pb-20 relative overflow-hidden">
-        {" "}
+      <main className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 min-h-screen pb-10 md:pb-20 relative overflow-hidden">
         {/* Hero Banner Section */}
         <section
           ref={heroRef}
-          className="relative w-full h-[340px] md:h-[420px] flex items-end justify-center overflow-hidden"
+          className="relative w-full h-[220px] sm:h-[300px] md:h-[340px] lg:h-[420px] flex items-end justify-center overflow-hidden"
         >
           <Image
             ref={imageRef}
@@ -284,11 +271,11 @@ export default function EventDetailPage({
             sizes="100vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
-          <div className="relative z-20 w-full px-6 lg:px-12 pb-10 md:pb-16">
-            <h1 className="text-4xl md:text-5xl font-bold text-white drop-shadow-lg font-roboto mb-2">
+          <div className="relative z-20 w-full px-4 sm:px-6 lg:px-12 pb-6 sm:pb-10 md:pb-16">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg font-roboto mb-2">
               {event.title}
             </h1>
-            <div className="flex flex-wrap gap-4 text-white/90 text-lg font-medium">
+            <div className="flex flex-wrap gap-2 sm:gap-4 text-white/90 text-base sm:text-lg font-medium">
               <div className="flex items-center gap-2">
                   <span>📅</span> {event.date ? new Date(event.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "-"}
               </div>
@@ -320,12 +307,12 @@ export default function EventDetailPage({
           </div>
         </section>
         {/* Main Content Section */}
-        <section className="mx-auto mt-12 px-6 lg:px-12">
-          <div ref={contentRef} className="space-y-10">
+        <section className="mx-auto mt-6 sm:mt-10 md:mt-12 px-2 sm:px-4 md:px-6 lg:px-12">
+          <div ref={contentRef} className="space-y-6 sm:space-y-8 md:space-y-10">
             {/* Additional Info */}
             {(typeof event._count?.registrations === "number" ||
               event.registrationDeadline) && (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 {typeof event._count?.registrations === "number" && (
                   <div className="flex items-center gap-3 p-5 bg-green-50 border border-green-200">
                     <span className="text-2xl">📝</span>
@@ -363,7 +350,7 @@ export default function EventDetailPage({
                         Registration Deadline
                       </p>
                       <p className="text-orange-700 text-lg font-bold">
-                        {event.registrationDeadline}
+                        {formatDeadline(event.registrationDeadline)}
                       </p>
                     </div>
                   </div>
@@ -373,8 +360,8 @@ export default function EventDetailPage({
 
             {/* Summary */}
             <div className="detail-item">
-              <div className="prose prose-lg max-w-none bg-white/80 p-8 shadow-sm">
-                <p className="text-gray-700 leading-relaxed text-lg font-poppins">
+              <div className="prose prose-base sm:prose-lg max-w-none bg-white/80 p-4 sm:p-6 md:p-8 shadow-sm">
+                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-poppins">
                   {event.description}
                 </p>
               </div>
@@ -383,28 +370,28 @@ export default function EventDetailPage({
             {/* Agenda Section */}
             {event.agenda && event.agenda.length > 0 && (
               <div ref={agendaRef} className="detail-item">
-                <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-8">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <span className="w-8 h-8 bg-primary/10 flex items-center justify-center">
+                <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-4 sm:p-6 md:p-8">
+                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 flex items-center justify-center">
                       📋
                     </span>{" "}
                     Event Agenda
                   </h3>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {event.agenda.map((item) => (
                       <div
                         key={item.time + item.topic}
-                        className="agenda-item flex items-start gap-4 p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+                        className="agenda-item flex flex-col sm:flex-row items-start gap-2 sm:gap-4 p-3 sm:p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
                       >
-                        <div className="bg-primary/10 text-primary font-bold px-3 py-2 text-sm min-w-fit">
+                        <div className="bg-primary/10 text-primary font-bold px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm min-w-fit">
                           {item.time}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 mb-1">
+                          <h4 className="font-semibold text-gray-900 mb-1 text-base sm:text-lg">
                             {item.topic}
                           </h4>
                           {item.speaker && (
-                            <p className="text-gray-600 text-sm">
+                            <p className="text-gray-600 text-xs sm:text-sm">
                               Speaker:{" "}
                               <span className="font-medium">
                                 {item.speaker}
@@ -422,28 +409,33 @@ export default function EventDetailPage({
             {/* Action Buttons */}
             <div
               ref={buttonsRef}
-              className="pt-8 flex flex-col gap-4 justify-center items-center"
+              className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
             >
-              <button
-                className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
-                onClick={handleRegisterClick}
-                disabled={registerLoading}
-              >
-                <span className="relative z-10">
-                  {registerLoading
-                    ? isRegistered
-                      ? "Unregistering..."
-                      : "Registering..."
-                    : isRegistered
-                      ? "Unregister"
-                      : "Register Now"}
-                </span>
-                <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-              </button>
+              {/* Extracted button text logic to a variable */}
+              {(() => {
+                let buttonText = "";
+                if (registerLoading) {
+                  buttonText = isRegistered ? "Unregistering..." : "Registering...";
+                } else {
+                  buttonText = isRegistered ? "Unregister" : "Register Now";
+                }
+                return (
+                  <button
+                    className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                    onClick={handleRegisterClick}
+                    disabled={registerLoading}
+                  >
+                    <span className="relative z-10">
+                      {buttonText}
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+                  </button>
+                );
+              })()}
               {/* Error Message */}
               {registerError && (
                 <div className="w-full mt-2 flex justify-center">
-                  <span className="bg-red-100 text-red-700 px-4 py-2 rounded shadow text-sm font-medium border border-red-200">
+                  <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
                     {registerError}
                   </span>
                 </div>
