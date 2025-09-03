@@ -52,12 +52,13 @@ export default function EventPage() {
     return acc;
   }, {} as Record<string, EventApiType[]>);
 
-  // Refs for month headings
+  // Refs for month headings and lines
   const monthRefs = useRef<Record<string, HTMLHeadingElement | null>>({});
+  const lineRefs = useRef<Record<string, HTMLSpanElement | null>>({});
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
-    Object.values(monthRefs.current).forEach((el) => {
+    Object.entries(monthRefs.current).forEach(([month, el]) => {
       if (el) {
         const anim = gsap.fromTo(
           el,
@@ -74,7 +75,27 @@ export default function EventPage() {
             },
           }
         );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+        if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+
+        // Animate the line next to the heading
+        const lineEl = lineRefs.current[month];
+        if (lineEl) {
+          gsap.fromTo(
+            lineEl,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 0.7,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 90%",
+                toggleActions: "play none none none",
+              },
+              transformOrigin: "left",
+            }
+          );
+        }
       }
     });
     return () => {
@@ -90,12 +111,19 @@ export default function EventPage() {
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {!loading && !error && Object.entries(grouped).map(([month, events]) => (
           <div key={month} className="mb-12">
-            <h2
-              className="text-2xl font-bold mb-6 capitalize opacity-0"
-              ref={el => { monthRefs.current[month] = el; }}
-            >
-              {month}
-            </h2>
+            <div className="flex items-center mb-8">
+              <hr
+                className="w-4 lg:w-8 h-1 mt-1 bg-black rounded-full border-none mr-4"
+                ref={el => { lineRefs.current[month] = el as HTMLSpanElement; }}
+                style={{ display: "block", transform: "scaleX(0)" }}
+              />
+              <h2
+                className="text-3xl lg:text-4xl font-extrabold tracking-tight capitalize text-black opacity-0"
+                ref={el => { monthRefs.current[month] = el; }}
+              >
+                {month}
+              </h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event: EventApiType) => {
                 const eventId = event.id;
