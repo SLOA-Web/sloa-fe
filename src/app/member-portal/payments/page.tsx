@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { api } from "@/utils/api";
 import { toast } from "react-hot-toast";
-import { Payment, normalizePaymentData } from "@/utils/payment";
+import { Payment, normalizePaymentData, PaymentResponse } from "@/utils/payment";
 
 const PaymentsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,7 +24,7 @@ const PaymentsPage = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const data = await api.get("/api/v1/payments/history");
+        const data = await api.get("/api/v1/payments/history") as PaymentResponse;
         setPayments(normalizePaymentData(data));
       } catch (error) {
         console.error("Failed to fetch payment history:", error);

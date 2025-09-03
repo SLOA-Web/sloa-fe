@@ -25,12 +25,18 @@ export interface Payment {
   category?: string;
 }
 
-export const normalizePaymentData = (data: unknown): Payment[] => {
+export type PaymentResponse = Payment[] | {
+  payments?: Payment[];
+  history?: Payment[];
+  items?: Payment[];
+};
+
+export const normalizePaymentData = (data: PaymentResponse): Payment[] => {
   if (Array.isArray(data)) {
     return data;
   }
   if (data && typeof data === "object") {
-    return (data as any).payments || (data as any).history || (data as any).items || [];
+    return data.payments || data.history || data.items || [];
   }
   return [];
 };
