@@ -168,7 +168,7 @@ const RecentEvents: React.FC = () => {
                         onReadMore={() => {
                           setLoadingSlug(eventId);
                           setTimeout(() => {
-                            router.push(`/event/${eventId}`);
+                            router.push(`/events/${eventId}`);
                           }, 500);
                         }}
                         loading={loadingSlug === eventId}
