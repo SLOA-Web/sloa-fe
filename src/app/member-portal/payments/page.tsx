@@ -11,33 +11,7 @@ import {
 } from "lucide-react";
 import { api } from "@/utils/api";
 import { toast } from "react-hot-toast";
-
-interface Payment {
-  status?: string;
-  date?: string;
-  createdAt?: string;
-  paidAt?: string;
-  updatedAt?: string;
-  amount?: number | string;
-  total?: number | string;
-  totalAmount?: number | string;
-  currency?: string;
-  currencyCode?: string;
-  description?: string;
-  note?: string;
-  title?: string;
-  reference?: string;
-  ref?: string;
-  code?: string;
-  id?: string;
-  method?: string;
-  channel?: string;
-  source?: string;
-  receipt?: string;
-  receiptUrl?: string;
-  invoiceUrl?: string;
-  category?: string;
-}
+import { Payment, normalizePaymentData } from "@/utils/payment";
 
 const PaymentsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -50,11 +24,8 @@ const PaymentsPage = () => {
   useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const data = await api.get<Payment[] | { payments?: Payment[]; history?: Payment[]; items?: Payment[] }>("/api/v1/payments/history");
-        const list = Array.isArray(data)
-          ? data
-          : (data?.payments || data?.history || data?.items || []);
-        setPayments(list);
+        const data = await api.get("/api/v1/payments/history");
+        setPayments(normalizePaymentData(data));
       } catch (error) {
         console.error("Failed to fetch payment history:", error);
         toast.error("Failed to fetch payment history.");
