@@ -55,7 +55,8 @@ const PaymentsPage = () => {
           ? data
           : (data?.payments || data?.history || data?.items || []);
         setPayments(list);
-      } catch {
+      } catch (error) {
+        console.error("Failed to fetch payment history:", error);
         toast.error("Failed to fetch payment history.");
       } finally {
         setLoading(false);
