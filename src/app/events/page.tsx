@@ -19,45 +19,60 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data: { events?: EventApiType[] } | EventApiType[] = await api.get('/api/v1/events');
-        if (data && typeof data === "object" && "events" in data && Array.isArray(data.events)) {
-          setEvents(data.events);
-        } else if (Array.isArray(data)) {
-          setEvents(data);
-        } else {
-          setEvents([]);
-        }
-      } catch (err: unknown) {
-        const errorMessage = handleApiError(err, router);
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
+  // Fetch events
+  const fetchEvents = async () => {
+    try {
+      const data: { events?: EventApiType[] } | EventApiType[] = await api.get('/api/v1/events');
+      if (data && typeof data === "object" && "events" in data && Array.isArray(data.events)) {
+        setEvents(data.events);
+      } else if (Array.isArray(data)) {
+        setEvents(data);
+      } else {
+        setEvents([]);
       }
-    };
+    } catch (err: unknown) {
+      const errorMessage = handleApiError(err, router);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Group events by month
+  const getGroupedEvents = (events: EventApiType[]) => {
+    return events.reduce((acc: Record<string, EventApiType[]>, event) => {
+      const dateObj = new Date(event.date);
+      if (isNaN(dateObj.getTime())) return acc;
+      const monthName = dateObj.toLocaleString("default", { month: "long" });
+      const yearNum = dateObj.getFullYear();
+      const key = `${monthName} ${yearNum}`;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(event);
+      return acc;
+    }, {} as Record<string, EventApiType[]>);
+  };
+
+  // Handle read more
+  const handleReadMore = (eventId: string) => {
+    setLoadingSlug(eventId);
+    setTimeout(() => {
+      router.push(`/events/${eventId}`);
+    }, 500);
+  };
+
+  // Refs for month headings and lines
+  const monthRefs = useRef<Record<string, HTMLHeadingElement | null>>({});
+  const lineRefs = useRef<Record<string, HTMLSpanElement | null>>({});
+
+  useEffect(() => {
     fetchEvents();
   }, [router]);
 
-  // Group events by month (handle ISO date string)
-  const grouped = events.reduce((acc: Record<string, EventApiType[]>, event) => {
-    const dateObj = new Date(event.date);
-    if (isNaN(dateObj.getTime())) return acc; // skip invalid dates
-    const monthName = dateObj.toLocaleString("default", { month: "long" });
-    const yearNum = dateObj.getFullYear();
-    const key = `${monthName} ${yearNum}`;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(event);
-    return acc;
-  }, {} as Record<string, EventApiType[]>);
-
-  // Refs for month headings
-  const monthRefs = useRef<Record<string, HTMLHeadingElement | null>>({});
+  const grouped = getGroupedEvents(events);
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
-    Object.values(monthRefs.current).forEach((el) => {
+    Object.entries(monthRefs.current).forEach(([month, el]) => {
       if (el) {
         const anim = gsap.fromTo(
           el,
@@ -74,11 +89,31 @@ export default function EventPage() {
             },
           }
         );
-  if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+        if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
+
+        // Animate the line next to the heading
+        const lineEl = lineRefs.current[month];
+        if (lineEl) {
+          gsap.fromTo(
+            lineEl,
+            { scaleX: 0 },
+            {
+              scaleX: 1,
+              duration: 0.7,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: el,
+                start: "top 90%",
+                toggleActions: "play none none none",
+              },
+              transformOrigin: "left",
+            }
+          );
+        }
       }
     });
     return () => {
-      triggers.forEach(trigger => trigger && trigger.kill());
+      triggers.forEach(trigger => trigger?.kill());
     };
   }, [loading, error, grouped]);
 
@@ -90,12 +125,19 @@ export default function EventPage() {
         {error && <div className="text-red-500 mb-4">{error}</div>}
         {!loading && !error && Object.entries(grouped).map(([month, events]) => (
           <div key={month} className="mb-12">
-            <h2
-              className="text-2xl font-bold mb-6 capitalize opacity-0"
-              ref={el => { monthRefs.current[month] = el; }}
-            >
-              {month}
-            </h2>
+            <div className="flex items-center mb-8">
+              <hr
+                className="w-4 lg:w-8 h-1 mt-1 bg-black rounded-full border-none mr-4"
+                ref={el => { lineRefs.current[month] = el as HTMLSpanElement; }}
+                style={{ display: "block", transform: "scaleX(0)" }}
+              />
+              <h2
+                className="text-3xl lg:text-4xl font-extrabold tracking-tight capitalize text-black opacity-0"
+                ref={el => { monthRefs.current[month] = el; }}
+              >
+                {month}
+              </h2>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {events.map((event: EventApiType) => {
                 const eventId = event.id;
@@ -122,12 +164,7 @@ export default function EventPage() {
                     summary={summary}
                     doctor={doctor}
                     state={isUpcoming ? "upcoming" : undefined}
-                    onReadMore={() => {
-                      setLoadingSlug(eventId);
-                      setTimeout(() => {
-                        router.push(`/event/${eventId}`);
-                      }, 500);
-                    }}
+                    onReadMore={() => handleReadMore(eventId)}
                     loading={loadingSlug === eventId}
                   />
                 );

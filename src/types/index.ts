@@ -5,7 +5,6 @@ export interface HeroSlide {
   content?: string;
 }
 
-
 export interface EventAgendaItem {
   time: string;
   topic: string;
@@ -36,7 +35,12 @@ export interface EventApiType {
   time?: string;
   location?: string;
   posterUrl?: string | null;
-  agenda?: { time: string; topic: string; speaker?: string; description?: string }[];
+  agenda?: {
+    time: string;
+    topic: string;
+    speaker?: string;
+    description?: string;
+  }[];
   externalRegistrationUrl?: string | null;
   criteria?: unknown;
   isRegistrationOpen: boolean;
@@ -65,9 +69,8 @@ export interface SectionHeaderProps {
 
 export interface CustomImageProps {
   imageUrl: string; // Optional image URL for the hero section
-  imageClassname?: string; 
+  imageClassname?: string;
 }
-
 
 export type BookEventData = {
   id: string;
@@ -164,4 +167,19 @@ export interface PublicMembersResponse {
   users: PublicMember[];
   total: number;
   pages: number;
+}
+
+export interface Attendee {
+  id: string;
+  userId: string;
+  eventId: string;
+  registeredAt: string;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    membershipId: string | null;
+    userRole: string;
+    // ...other user fields if needed
+  };
 }
