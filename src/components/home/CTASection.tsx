@@ -29,6 +29,7 @@ const CTASection: React.FC<CTASectionProps> = ({
         <CustomButton
           text={buttonText}
           onClick={onClick}
+          variant="white"
           className="px-8 py-3 text-lg font-semibold mt-8"
         />
       </div>

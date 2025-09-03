@@ -12,6 +12,7 @@ interface CustomButtonProps {
   onClick?: () => void;
   className?: string;
   hideIcon?: boolean;
+  variant?: "primary" | "white";
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -20,6 +21,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   onClick,
   className,
   hideIcon,
+  variant = "primary",
 }) => {
   const buttonRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
 
@@ -45,7 +47,16 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     };
   }, []);
 
-  const buttonClass = `group font-roboto capitalize px-6 py-2 border border-primary text-primary transition-colors duration-200  hover:bg-primary hover:text-white ${className}`;
+  const baseClasses =
+    "group font-roboto capitalize px-6 py-2 border transition-colors duration-200";
+
+  const variantClasses = {
+    primary: "border-primary text-primary hover:bg-primary hover:text-white",
+    white:
+      "border-white text-white hover:bg-primary hover:border-primary hover:text-white",
+  };
+
+  const buttonClass = `${baseClasses} ${variantClasses[variant]} ${className}`;
 
   const content = (
     <span className="flex items-center gap-3">
@@ -56,7 +67,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           alt="arrow"
           width={16}
           height={20}
-          className="w-4 h-4 inline-block transition-transform duration-200 group-hover:rotate-45 group-hover:invert group-hover:brightness-0"
+          className={`w-4 h-4 inline-block transition-transform duration-200 group-hover:rotate-45 ${
+            variant === "white"
+              ? "brightness-0 invert"
+              : "group-hover:brightness-0 group-hover:invert"
+          }`}
           priority
         />
       )}
