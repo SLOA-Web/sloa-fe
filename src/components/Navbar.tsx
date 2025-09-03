@@ -149,7 +149,6 @@ const Navbar = () => {
   if (!hasMounted) return null;
 
   // Return null if pathname includes "member-portal"
-  if (pathname?.includes("member-portal")) return null;
 
   // Helper for mobile nav keys
   const getNavKey = (item: NavbarItem) => item.href || item.title;

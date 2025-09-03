@@ -222,7 +222,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 mx-auto">
       {/* Enhanced Page Header */}
       <div className="relative overflow-hidden bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-2xl p-8 border border-primary/20">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-50"></div>
@@ -255,7 +255,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      <div className="space-y-8 max-w-4xl mx-auto">
+      <div className="space-y-8 mx-auto">
         {/* Personal Information Section */}
         <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
           <div className="bg-gradient-to-r from-primary/10 to-primary/5 px-6 py-4 border-b border-border">
