@@ -150,7 +150,12 @@ const PaymentsPage = () => {
           </p>
         </div>
         {/* Optional: Hook up to /payments/create later */}
-        <button className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2" disabled>
+        <button
+          className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors flex items-center gap-2"
+          disabled
+          title="Making payments is currently unavailable"
+          aria-label="Make Payment (currently unavailable)"
+        >
           <Plus className="h-4 w-4" />
           Make Payment
         </button>
