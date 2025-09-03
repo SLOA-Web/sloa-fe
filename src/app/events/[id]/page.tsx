@@ -8,6 +8,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { EventApiType } from "@/types";
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import { useAuth } from "@/context/AuthContext";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -18,7 +19,11 @@ export default function EventDetailPage({
 }: {
   readonly params: { readonly id: string };
 }) {
+  const { user } = useAuth();
   const [event, setEvent] = useState<EventApiType | null | undefined>(undefined);
+  const [registerLoading, setRegisterLoading] = useState(false);
+  const [registerError, setRegisterError] = useState<string | null>(null);
+  const [isRegistered, setIsRegistered] = useState<boolean>(false);
   const containerRef = useRef(null);
   const heroRef = useRef(null);
   const contentRef = useRef(null);
@@ -26,7 +31,7 @@ export default function EventDetailPage({
   const agendaRef = useRef(null);
   const buttonsRef = useRef<HTMLDivElement | null>(null);
 
-  console.log("id - ", params.id);
+  console.log("user - ", user);
 
   useEffect(() => {
     console.log("Fetching event with id:", params.id);
@@ -43,6 +48,50 @@ export default function EventDetailPage({
     };
     fetchEvent();
   }, [params]);
+  // Attendee type
+  interface Attendee {
+    id: string;
+    userId: string;
+    eventId: string;
+    registeredAt: string;
+    user: {
+      id: string;
+      fullName: string;
+      email: string;
+      membershipId: string | null;
+      userRole: string;
+      // ...other user fields if needed
+    };
+  }
+
+  useEffect(() => {
+    // Check if user already registered for this event
+    const fetchUserRegistrations = async () => {
+      if (!user) {
+        console.log("No user found, skipping registration check.");
+        return;
+      }
+      try {
+        console.log(`Fetching registrations for event ${params.id} and user ${user.id}`);
+        const data = await api.get(`/api/v1/events/${params.id}/attendees`);
+        console.log("Fetched attendee data:", data);
+        // Use proper type for attendees
+        const attendees = (typeof data === "object" && data !== null && "attendees" in data)
+          ? (data as { attendees?: Attendee[] }).attendees
+          : undefined;
+        const registered = Array.isArray(attendees)
+          ? attendees.some(
+              (r) => r.userId === user.id
+            )
+          : false;
+        console.log("Is user registered?", registered);
+        setIsRegistered(registered);
+      } catch (err) {
+        console.error("Error fetching user registrations:", err);
+      }
+    };
+    fetchUserRegistrations();
+  }, [user, params.id]);
 
   // FloatingDiv type for animation
   interface FloatingDiv extends HTMLDivElement {
@@ -158,6 +207,57 @@ export default function EventDetailPage({
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, [event]);
+
+  const handleRegister = async () => {
+    if (!user) return;
+    setRegisterLoading(true);
+    setRegisterError(null);
+    try {
+      await api.post(`/api/v1/events/${params.id}/register`, {
+        userId: user.id,
+        eventId: params.id,
+      });
+      setIsRegistered(true);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setRegisterError(err.message);
+      } else {
+        setRegisterError("An unexpected error occurred.");
+      }
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
+  const handleUnregister = async () => {
+    if (!user) return;
+    setRegisterLoading(true);
+    setRegisterError(null);
+    try {
+      await api.delete(`/api/v1/events/${params.id}/register`);
+      setIsRegistered(false);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setRegisterError(err.message);
+      } else {
+        setRegisterError("An unexpected error occurred.");
+      }
+    } finally {
+      setRegisterLoading(false);
+    }
+  };
+
+  const handleRegisterClick = () => {
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
+    if (isRegistered) {
+      handleUnregister();
+    } else {
+      handleRegister();
+    }
+  };
 
   // Only show notFound if event is null after fetch
   // Show loading while fetching
@@ -322,15 +422,32 @@ export default function EventDetailPage({
             {/* Action Buttons */}
             <div
               ref={buttonsRef}
-              className="pt-8 flex flex-col sm:flex-row gap-4 justify-center"
+              className="pt-8 flex flex-col gap-4 justify-center items-center"
             >
-              <button className="group relative overflow-hidden bg-primary text-white px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98]">
-                <span className="relative z-10">Register Now</span>
+              <button
+                className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                onClick={handleRegisterClick}
+                disabled={registerLoading}
+              >
+                <span className="relative z-10">
+                  {registerLoading
+                    ? isRegistered
+                      ? "Unregistering..."
+                      : "Registering..."
+                    : isRegistered
+                      ? "Unregister"
+                      : "Register Now"}
+                </span>
                 <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
               </button>
-              <button className="group bg-white border-2 border-gray-200 text-gray-700 px-8 py-4 font-semibold shadow-lg hover:shadow-xl hover:border-primary/30 hover:text-primary transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98]">
-                Contact Organizer
-              </button>
+              {/* Error Message */}
+              {registerError && (
+                <div className="w-full mt-2 flex justify-center">
+                  <span className="bg-red-100 text-red-700 px-4 py-2 rounded shadow text-sm font-medium border border-red-200">
+                    {registerError}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </section>

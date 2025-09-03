@@ -125,7 +125,7 @@ export default function EventPage() {
                     onReadMore={() => {
                       setLoadingSlug(eventId);
                       setTimeout(() => {
-                        router.push(`/event/${eventId}`);
+                        router.push(`/events/${eventId}`);
                       }, 500);
                     }}
                     loading={loadingSlug === eventId}
