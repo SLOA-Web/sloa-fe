@@ -7,9 +7,10 @@ import { api } from "@/utils/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Attendee, EventApiType } from "@/types";
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
-import { formatDeadline } from "@/utils/helper";
+import { formatDate, formatTime } from "@/utils/helper";
+import { HiArrowLeft } from "react-icons/hi";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -21,7 +22,9 @@ export default function EventDetailPage({
   readonly params: { readonly id: string };
 }) {
   const { user } = useAuth();
-  const [event, setEvent] = useState<EventApiType | null | undefined>(undefined);
+  const [event, setEvent] = useState<EventApiType | null | undefined>(
+    undefined
+  );
   const [registerLoading, setRegisterLoading] = useState(false);
   const [checkingRegistration, setCheckingRegistration] = useState(true); // <-- new state
   const [registerError, setRegisterError] = useState<string | null>(null);
@@ -51,8 +54,6 @@ export default function EventDetailPage({
     };
     fetchEvent();
   }, [params]);
-  // Attendee type
-
 
   useEffect(() => {
     // Check if user already registered for this event
@@ -64,17 +65,18 @@ export default function EventDetailPage({
         return;
       }
       try {
-        console.log(`Fetching registrations for event ${params.id} and user ${user.id}`);
+        console.log(
+          `Fetching registrations for event ${params.id} and user ${user.id}`
+        );
         const data = await api.get(`/api/v1/events/${params.id}/attendees`);
         console.log("Fetched attendee data:", data);
         // Use proper type for attendees
-        const attendees = (typeof data === "object" && data !== null && "attendees" in data)
-          ? (data as { attendees?: Attendee[] }).attendees
-          : undefined;
+        const attendees =
+          typeof data === "object" && data !== null && "attendees" in data
+            ? (data as { attendees?: Attendee[] }).attendees
+            : undefined;
         const registered = Array.isArray(attendees)
-          ? attendees.some(
-              (r) => r.userId === user.id
-            )
+          ? attendees.some((r) => r.userId === user.id)
           : false;
         console.log("Is user registered?", registered);
         setIsRegistered(registered);
@@ -259,7 +261,8 @@ export default function EventDetailPage({
 
   // Only show notFound if event is null after fetch
   // Show loading while fetching
-  if (event === undefined) return <LoadingSpinner text="Loading event details..." />;
+  if (event === undefined)
+    return <LoadingSpinner text="Loading event details..." />;
   // Only show notFound if event is null after fetch
   if (event === null) return notFound();
 
@@ -269,47 +272,39 @@ export default function EventDetailPage({
         {/* Hero Banner Section */}
         <section
           ref={heroRef}
-          className="relative w-full h-[220px] sm:h-[300px] md:h-[340px] lg:h-[420px] flex items-end justify-center overflow-hidden"
+          className="relative w-full bg-secondary h-[220px] md:h-[320px] lg:h-[400px] flex items-end justify-center overflow-hidden shadow-lg"
         >
-          <Image
-            ref={imageRef}
-            src={event.posterUrl ?? ""}
-            alt={event.title}
-            fill
-            className="absolute inset-0 w-full h-full object-cover object-center z-0 transition-transform duration-700"
-            priority
-            sizes="100vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent z-10"></div>
-          <div className="relative z-20 w-full px-4 sm:px-6 lg:px-12 pb-6 sm:pb-10 md:pb-16">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow-lg font-roboto mb-2">
-              {event.title}
-            </h1>
-            <div className="flex flex-wrap gap-2 sm:gap-4 text-white/90 text-base sm:text-lg font-medium">
-              <div className="flex items-center gap-2">
-                  <span>📅</span> {event.date ? new Date(event.date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) : "-"}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent z-10" />
+          <div className="relative z-20 w-full px-4 sm:px-8 lg:px-16 pb-6 sm:pb-10 md:pb-14">
+            <div className="flex items-center gap-3 mb-2">
+              {/* Back Icon Button */}
+              <button
+                onClick={() => (window.location.href = "/events")}
+                className="bg-white/10 hover:bg-white/20 text-white p-2 rounded transition shadow focus:outline-none focus:ring-2 focus:ring-white/40"
+                aria-label="Back"
+              >
+                <HiArrowLeft className="w-6 h-6" />
+              </button>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow font-roboto">
+                {event.title}
+              </h1>
+            </div>
+            <div className="flex flex-wrap gap-4 text-white/90 text-base sm:text-lg font-medium mt-2">
+              <div className="flex items-center gap-2 px-3 py-1 rounded bg-black/20">
+                <span>📅</span> {event.date ? formatDate(event.date) : "-"}
               </div>
-                {event.time && event.time !== "1970-01-01T00:00:00.000Z" && (
-                  <div className="flex items-center gap-2">
-                    <span>⏰</span> {(() => {
-                      // Try to parse time as ISO and format as HH:mm or h:mm A
-                      const d = new Date(event.time);
-                      if (!isNaN(d.getTime())) {
-                        // If time is 1970-01-01T09:00:00.000Z, show 09:00 AM
-                        return d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-                      }
-                      // fallback: show as is
-                      return event.time;
-                    })()}
-                  </div>
-                )}
+              {event.time && event.time !== "1970-01-01T00:00:00.000Z" && (
+                <div className="flex items-center gap-2 px-3 py-1 rounded bg-black/20">
+                  <span>⏰</span> {formatTime(event.time)}
+                </div>
+              )}
               {event.location && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1 rounded bg-black/20">
                   <span>📍</span> {event.location}
                 </div>
               )}
               {typeof event.maxCapacity === "number" && (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1 rounded bg-black/20">
                   <span>👥</span> {event.maxCapacity}
                 </div>
               )}
@@ -317,154 +312,329 @@ export default function EventDetailPage({
           </div>
         </section>
         {/* Main Content Section */}
-        <section className="mx-auto mt-6 sm:mt-10 md:mt-12 px-2 sm:px-4 md:px-6 lg:px-12">
-          <div ref={contentRef} className="space-y-6 sm:space-y-8 md:space-y-10">
-            {/* Additional Info */}
-            {(typeof event._count?.registrations === "number" ||
-              event.registrationDeadline) && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-                {typeof event._count?.registrations === "number" && (
-                  <div className="flex items-center gap-3 p-5 bg-green-50 border border-green-200">
-                    <span className="text-2xl">📝</span>
-                    <div>
-                      <p className="text-green-800 font-semibold">
-                        Total Registrations
-                      </p>
-                      <p className="text-green-700 text-lg font-bold">
-                        {event._count.registrations}
-                      </p>
-                    </div>
-                  </div>
-                )}
-                {/* Featured Speaker: use first agenda speaker if available */}
-                {event.agenda &&
-                  event.agenda.length > 0 &&
-                  event.agenda[0].speaker && (
-                    <div className="flex items-center gap-3 p-5 bg-blue-50 border border-blue-200">
-                      <span className="text-2xl">🧑‍⚕️</span>
+        {event.posterUrl ? (
+          <section className="mx-auto mt-6 sm:mt-10 md:mt-12 px-2 sm:px-4 md:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Image Column: 1/3 on large screens */}
+            <div className="w-full flex justify-center lg:justify-start mb-8 lg:mb-0 col-span-1">
+              <div
+                ref={imageRef}
+                className="w-full max-w-md aspect-[4/5] overflow-hidden shadow-lg bg-white flex items-center justify-center"
+              >
+                <Image
+                  src={event.posterUrl ?? ""}
+                  alt={event.title}
+                  width={400}
+                  height={500}
+                  className="object-cover object-center w-full h-full"
+                  style={{ width: "100%", height: "100%" }}
+                  priority
+                />
+              </div>
+            </div>
+            {/* Main Content Column: 2/3 on large screens */}
+            <div
+              ref={contentRef}
+              className="space-y-6 sm:space-y-8 md:space-y-10 lg:col-span-2"
+            >
+              {/* Additional Info */}
+              {(typeof event._count?.registrations === "number" ||
+                event.registrationDeadline) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                  {typeof event._count?.registrations === "number" && (
+                    <div className="flex items-center gap-3 p-5 bg-green-50 border border-green-200">
+                      <span className="text-2xl">📝</span>
                       <div>
-                        <p className="text-blue-800 font-semibold">
-                          Featured Speaker
+                        <p className="text-green-800 font-semibold">
+                          Total Registrations
                         </p>
-                        <p className="text-blue-700 text-lg font-bold">
-                          {event.agenda[0].speaker}
+                        <p className="text-green-700 text-lg font-bold">
+                          {event._count.registrations}
                         </p>
                       </div>
                     </div>
                   )}
-                {event.registrationDeadline && (
-                  <div className="flex items-center gap-3 p-5 bg-orange-50 border border-orange-200">
-                    <span className="text-2xl">⏳</span>
-                    <div>
-                      <p className="text-orange-800 font-semibold">
-                        Registration Deadline
-                      </p>
-                      <p className="text-orange-700 text-lg font-bold">
-                        {formatDeadline(event.registrationDeadline)}
-                      </p>
+                  {/* Featured Speaker: use first agenda speaker if available */}
+                  {event.agenda &&
+                    event.agenda.length > 0 &&
+                    event.agenda[0].speaker && (
+                      <div className="flex items-center gap-3 p-5 bg-blue-50 border border-blue-200">
+                        <span className="text-2xl">🧑‍⚕️</span>
+                        <div>
+                          <p className="text-blue-800 font-semibold">
+                            Featured Speaker
+                          </p>
+                          <p className="text-blue-700 text-lg font-bold">
+                            {event.agenda[0].speaker}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  {event.registrationDeadline && (
+                    <div className="flex items-center gap-3 p-5 bg-orange-50 border border-orange-200">
+                      <span className="text-2xl">⏳</span>
+                      <div>
+                        <p className="text-orange-800 font-semibold">
+                          Registration Deadline
+                        </p>
+                        <p className="text-orange-700 text-lg font-bold">
+                          {formatDate(event.registrationDeadline)}
+                        </p>
+                      </div>
                     </div>
+                  )}
+                </div>
+              )}
+
+              {/* Summary */}
+              <div className="detail-item">
+                <div className="prose prose-base sm:prose-lg max-w-none bg-white/80 p-4 sm:p-6 md:p-8 shadow-sm">
+                  <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-poppins">
+                    {event.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Agenda Section */}
+              {event.agenda && event.agenda.length > 0 && (
+                <div ref={agendaRef} className="detail-item">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-4 sm:p-6 md:p-8">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+                      <span className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 flex items-center justify-center">
+                        📋
+                      </span>{" "}
+                      Event Agenda
+                    </h3>
+                    <div className="space-y-3 sm:space-y-4">
+                      {event.agenda.map((item) => (
+                        <div
+                          key={item.time + item.topic}
+                          className="agenda-item flex flex-col sm:flex-row items-start gap-2 sm:gap-4 p-3 sm:p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="bg-primary/10 text-primary font-bold px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm min-w-fit">
+                            {item.time}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-900 mb-1 text-base sm:text-lg">
+                              {item.topic}
+                            </h4>
+                            {item.speaker && (
+                              <p className="text-gray-600 text-xs sm:text-sm">
+                                Speaker:{" "}
+                                <span className="font-medium">
+                                  {item.speaker}
+                                </span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div
+                ref={buttonsRef}
+                className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
+              >
+                {/* Extracted button text logic to a variable */}
+                {(() => {
+                  let buttonText = "";
+                  let isBtnLoading = registerLoading || checkingRegistration;
+                  if (checkingRegistration) {
+                    buttonText = "Loading...";
+                  } else if (registerLoading) {
+                    buttonText = isRegistered
+                      ? "Unregistering..."
+                      : "Registering...";
+                  } else {
+                    buttonText = isRegistered ? "Unregister" : "Register Now";
+                    isBtnLoading = false;
+                  }
+                  return (
+                    <button
+                      className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      onClick={handleRegisterClick}
+                      disabled={isBtnLoading}
+                    >
+                      <span className="relative z-10">{buttonText}</span>
+                      <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+                    </button>
+                  );
+                })()}
+                {/* Success Message */}
+                {registerSuccess && (
+                  <div className="w-full mt-2 flex justify-center">
+                    <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
+                      {registerSuccess}
+                    </span>
+                  </div>
+                )}
+                {/* Error Message */}
+                {registerError && (
+                  <div className="w-full mt-2 flex justify-center">
+                    <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
+                      {registerError}
+                    </span>
                   </div>
                 )}
               </div>
-            )}
-
-            {/* Summary */}
-            <div className="detail-item">
-              <div className="prose prose-base sm:prose-lg max-w-none bg-white/80 p-4 sm:p-6 md:p-8 shadow-sm">
-                <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-poppins">
-                  {event.description}
-                </p>
-              </div>
             </div>
-
-            {/* Agenda Section */}
-            {event.agenda && event.agenda.length > 0 && (
-              <div ref={agendaRef} className="detail-item">
-                <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-4 sm:p-6 md:p-8">
-                  <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
-                    <span className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 flex items-center justify-center">
-                      📋
-                    </span>{" "}
-                    Event Agenda
-                  </h3>
-                  <div className="space-y-3 sm:space-y-4">
-                    {event.agenda.map((item) => (
-                      <div
-                        key={item.time + item.topic}
-                        className="agenda-item flex flex-col sm:flex-row items-start gap-2 sm:gap-4 p-3 sm:p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
-                      >
-                        <div className="bg-primary/10 text-primary font-bold px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm min-w-fit">
-                          {item.time}
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 mb-1 text-base sm:text-lg">
-                            {item.topic}
-                          </h4>
-                          {item.speaker && (
-                            <p className="text-gray-600 text-xs sm:text-sm">
-                              Speaker:{" "}
-                              <span className="font-medium">
-                                {item.speaker}
-                              </span>
-                            </p>
-                          )}
+          </section>
+        ) : (
+          <section className="mx-auto mt-6 sm:mt-10 md:mt-12 px-2 sm:px-4 md:px-6 lg:px-12 w-full flex justify-center">
+            <div
+              ref={contentRef}
+              className="space-y-6 sm:space-y-8 md:space-y-10 w-full"
+            >
+              {/* Additional Info */}
+              {(typeof event._count?.registrations === "number" ||
+                event.registrationDeadline) && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                  {typeof event._count?.registrations === "number" && (
+                    <div className="flex items-center gap-3 p-5 bg-green-50 border border-green-200">
+                      <span className="text-2xl">📝</span>
+                      <div>
+                        <p className="text-green-800 font-semibold">
+                          Total Registrations
+                        </p>
+                        <p className="text-green-700 text-lg font-bold">
+                          {event._count.registrations}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {/* Featured Speaker: use first agenda speaker if available */}
+                  {event.agenda &&
+                    event.agenda.length > 0 &&
+                    event.agenda[0].speaker && (
+                      <div className="flex items-center gap-3 p-5 bg-blue-50 border border-blue-200">
+                        <span className="text-2xl">🧑‍⚕️</span>
+                        <div>
+                          <p className="text-blue-800 font-semibold">
+                            Featured Speaker
+                          </p>
+                          <p className="text-blue-700 text-lg font-bold">
+                            {event.agenda[0].speaker}
+                          </p>
                         </div>
                       </div>
-                    ))}
-                  </div>
+                    )}
+                  {event.registrationDeadline && (
+                    <div className="flex items-center gap-3 p-5 bg-orange-50 border border-orange-200">
+                      <span className="text-2xl">⏳</span>
+                      <div>
+                        <p className="text-orange-800 font-semibold">
+                          Registration Deadline
+                        </p>
+                        <p className="text-orange-700 text-lg font-bold">
+                          {formatDate(event.registrationDeadline)}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Summary */}
+              <div className="detail-item">
+                <div className="prose prose-base sm:prose-lg max-w-none bg-white/80 p-4 sm:p-6 md:p-8 shadow-sm">
+                  <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-poppins">
+                    {event.description}
+                  </p>
                 </div>
               </div>
-            )}
 
-            {/* Action Buttons */}
-            <div
-              ref={buttonsRef}
-              className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
-            >
-              {/* Extracted button text logic to a variable */}
-              {(() => {
-                let buttonText = "";
-                let isBtnLoading = registerLoading || checkingRegistration;
-                if (checkingRegistration) {
-                  buttonText = "Loading...";
-                } else if (registerLoading) {
-                  buttonText = isRegistered ? "Unregistering..." : "Registering...";
-                } else {
-                  buttonText = isRegistered ? "Unregister" : "Register Now";
-                  isBtnLoading = false;
-                }
-                return (
-                  <button
-                    className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    onClick={handleRegisterClick}
-                    disabled={isBtnLoading}
-                  >
-                    <span className="relative z-10">
-                      {buttonText}
+              {/* Agenda Section */}
+              {event.agenda && event.agenda.length > 0 && (
+                <div ref={agendaRef} className="detail-item">
+                  <div className="bg-gradient-to-br from-gray-50 to-white border border-gray-200 p-4 sm:p-6 md:p-8">
+                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+                      <span className="w-6 h-6 sm:w-8 sm:h-8 bg-primary/10 flex items-center justify-center">
+                        📋
+                      </span>{" "}
+                      Event Agenda
+                    </h3>
+                    <div className="space-y-3 sm:space-y-4">
+                      {event.agenda.map((item) => (
+                        <div
+                          key={item.time + item.topic}
+                          className="agenda-item flex flex-col sm:flex-row items-start gap-2 sm:gap-4 p-3 sm:p-4 bg-white shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="bg-primary/10 text-primary font-bold px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm min-w-fit">
+                            {item.time}
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="font-semibold text-gray-900 mb-1 text-base sm:text-lg">
+                              {item.topic}
+                            </h4>
+                            {item.speaker && (
+                              <p className="text-gray-600 text-xs sm:text-sm">
+                                Speaker:{" "}
+                                <span className="font-medium">
+                                  {item.speaker}
+                                </span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div
+                ref={buttonsRef}
+                className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
+              >
+                {/* Extracted button text logic to a variable */}
+                {(() => {
+                  let buttonText = "";
+                  let isBtnLoading = registerLoading || checkingRegistration;
+                  if (checkingRegistration) {
+                    buttonText = "Loading...";
+                  } else if (registerLoading) {
+                    buttonText = isRegistered
+                      ? "Unregistering..."
+                      : "Registering...";
+                  } else {
+                    buttonText = isRegistered ? "Unregister" : "Register Now";
+                    isBtnLoading = false;
+                  }
+                  return (
+                    <button
+                      className="group relative overflow-hidden bg-primary text-white px-8 py-4 w-full font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-lg flex-1 hover:scale-[1.02] active:scale-[0.98] rounded focus:outline-none focus:ring-2 focus:ring-primary/50"
+                      onClick={handleRegisterClick}
+                      disabled={isBtnLoading}
+                    >
+                      <span className="relative z-10">{buttonText}</span>
+                      <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
+                    </button>
+                  );
+                })()}
+                {/* Success Message */}
+                {registerSuccess && (
+                  <div className="w-full mt-2 flex justify-center">
+                    <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
+                      {registerSuccess}
                     </span>
-                    <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300"></div>
-                  </button>
-                );
-              })()}
-              {/* Success Message */}
-              {registerSuccess && (
-                <div className="w-full mt-2 flex justify-center">
-                  <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
-                    {registerSuccess}
-                  </span>
-                </div>
-              )}
-              {/* Error Message */}
-              {registerError && (
-                <div className="w-full mt-2 flex justify-center">
-                  <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
-                    {registerError}
-                  </span>
-                </div>
-              )}
+                  </div>
+                )}
+                {/* Error Message */}
+                {registerError && (
+                  <div className="w-full mt-2 flex justify-center">
+                    <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
+                      {registerError}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
     </div>
   );

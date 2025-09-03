@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import CommonBanner from "@/components/CommonBanner"; 
+import CommonBanner from "@/components/CommonBanner";
 import EventCard from "@/components/home/EventCard";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
@@ -22,8 +22,15 @@ export default function EventPage() {
   // Fetch events
   const fetchEvents = async () => {
     try {
-      const data: { events?: EventApiType[] } | EventApiType[] = await api.get('/api/v1/events');
-      if (data && typeof data === "object" && "events" in data && Array.isArray(data.events)) {
+      const data: { events?: EventApiType[] } | EventApiType[] = await api.get(
+        "/api/v1/events"
+      );
+      if (
+        data &&
+        typeof data === "object" &&
+        "events" in data &&
+        Array.isArray(data.events)
+      ) {
         setEvents(data.events);
       } else if (Array.isArray(data)) {
         setEvents(data);
@@ -113,7 +120,7 @@ export default function EventPage() {
       }
     });
     return () => {
-      triggers.forEach(trigger => trigger?.kill());
+      triggers.forEach((trigger) => trigger?.kill());
     };
   }, [loading, error, grouped]);
 
@@ -123,55 +130,68 @@ export default function EventPage() {
       <section className="max-w-7xl mx-auto px-4 py-12 lg:py-24">
         {loading && <LoadingSpinner text="Loading event details..." />}
         {error && <div className="text-red-500 mb-4">{error}</div>}
-        {!loading && !error && Object.entries(grouped).map(([month, events]) => (
-          <div key={month} className="mb-12">
-            <div className="flex items-center mb-8">
-              <hr
-                className="w-4 lg:w-8 h-1 mt-1 bg-black rounded-full border-none mr-4"
-                ref={el => { lineRefs.current[month] = el as HTMLSpanElement; }}
-                style={{ display: "block", transform: "scaleX(0)" }}
-              />
-              <h2
-                className="text-3xl lg:text-4xl font-extrabold tracking-tight capitalize text-black opacity-0"
-                ref={el => { monthRefs.current[month] = el; }}
-              >
-                {month}
-              </h2>
+        {!loading &&
+          !error &&
+          Object.entries(grouped).map(([month, events]) => (
+            <div key={month} className="mb-12">
+              <div className="flex items-center mb-8 w-full">
+                <h2
+                  className="text-3xl lg:text-4xl font-extrabold tracking-tight capitalize text-black opacity-0"
+                  ref={(el) => {
+                    monthRefs.current[month] = el;
+                  }}
+                >
+                  {month}
+                </h2>
+                <hr
+                  className="flex-1 h-[2px] mt-1 bg-black rounded-full border-none ml-4"
+                  ref={(el) => {
+                    lineRefs.current[month] = el as HTMLSpanElement;
+                  }}
+                  style={{ display: "block", transform: "scaleX(0)" }}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {events.map((event: EventApiType) => {
+                  const eventId = event.id;
+                  // Format date for display (e.g., 14 Sep 2023)
+                  const dateObj = new Date(event.date);
+                  const dateStr = !isNaN(dateObj.getTime())
+                    ? dateObj.toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : event.date;
+                  // Use posterUrl or fallback image
+                  const image = event.posterUrl || "/assets/images/backup_card.png";
+                  // Use description as summary
+                  const summary = event.description || "";
+                  // Use first agenda speaker as doctor (if available)
+                  const doctor =
+                    event.agenda && event.agenda.length > 0
+                      ? event.agenda[0].speaker
+                      : "";
+                  // Determine if event is upcoming
+                  const now = new Date();
+                  const isUpcoming = event.isRegistrationOpen && dateObj > now;
+                  return (
+                    <EventCard
+                      key={event.id}
+                      image={image}
+                      date={dateStr}
+                      title={event.title}
+                      summary={summary}
+                      doctor={doctor}
+                      state={isUpcoming ? "upcoming" : undefined}
+                      onReadMore={() => handleReadMore(eventId)}
+                      loading={loadingSlug === eventId}
+                    />
+                  );
+                })}
+              </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event: EventApiType) => {
-                const eventId = event.id;
-                // Format date for display (e.g., 14 Sep 2023)
-                const dateObj = new Date(event.date);
-                const dateStr = !isNaN(dateObj.getTime())
-                  ? dateObj.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-                  : event.date;
-                // Use posterUrl or fallback image
-                const image = event.posterUrl || "/assets/images/cta.svg";
-                // Use description as summary
-                const summary = event.description || "";
-                // Use first agenda speaker as doctor (if available)
-                const doctor = event.agenda && event.agenda.length > 0 ? event.agenda[0].speaker : "";
-                // Determine if event is upcoming
-                const now = new Date();
-                const isUpcoming = event.isRegistrationOpen && dateObj > now;
-                return (
-                  <EventCard
-                    key={event.id}
-                    image={image}
-                    date={dateStr}
-                    title={event.title}
-                    summary={summary}
-                    doctor={doctor}
-                    state={isUpcoming ? "upcoming" : undefined}
-                    onReadMore={() => handleReadMore(eventId)}
-                    loading={loadingSlug === eventId}
-                  />
-                );
-              })}
-            </div>
-          </div>
-        ))}
+          ))}
       </section>
     </main>
   );

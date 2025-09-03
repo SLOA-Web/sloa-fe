@@ -1,21 +1,18 @@
-"use client"
+"use client";
 
 import React, { useRef, useEffect } from "react";
-// Import types are available for future use
 import Image from "next/image";
 import CustomButton from "../ui/CustomButton";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SUMMARY_LIMIT } from "@/utils/constants";
 
-
-
 gsap.registerPlugin(ScrollTrigger);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const EventCard: React.FC<any> = (props) => {
   // Handle both old and new data structures
-  const image = props.image || "/assets/images/logo.png";
+  const image = props.image;
   const date = props.date;
   const title = props.title;
   const summary = props.summary || props.shortDesc || "";
@@ -32,17 +29,27 @@ const EventCard: React.FC<any> = (props) => {
   const dateRef = useRef<HTMLSpanElement>(null);
   const summaryRef = useRef<HTMLParagraphElement>(null);
 
+  // Helper to DRY up GSAP animation logic
+  const animateElement = (
+    ref: React.RefObject<HTMLElement>,
+    fromVars: gsap.TweenVars,
+    toVars: gsap.TweenVars & { scrollTrigger: ScrollTrigger.Vars }
+  ): ScrollTrigger | null => {
+    if (!ref.current) return null;
+    const anim = gsap.fromTo(ref.current, fromVars, toVars);
+    return anim.scrollTrigger || null;
+  };
+
   useEffect(() => {
-    // Only run individual animations if not disabled (parent isn't handling animations)
     if (disableAnimations) return;
 
     const triggers: ScrollTrigger[] = [];
-    
-    if (cardRef.current) {
-      const anim = gsap.fromTo(
-        cardRef.current,
-        { autoAlpha: 0, y: 40 },
-        {
+
+    const animationConfigs = [
+      {
+        ref: cardRef,
+        from: { autoAlpha: 0, y: 40 },
+        to: {
           autoAlpha: 1,
           y: 0,
           duration: 0.7,
@@ -52,16 +59,12 @@ const EventCard: React.FC<any> = (props) => {
             start: "top 90%",
             toggleActions: "play none none none",
           },
-        }
-      );
-      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
-    }
-    
-    if (imageRef.current) {
-      const anim = gsap.fromTo(
-        imageRef.current,
-        { autoAlpha: 0, scale: 0.95 },
-        {
+        },
+      },
+      {
+        ref: imageRef,
+        from: { autoAlpha: 0, scale: 0.95 },
+        to: {
           autoAlpha: 1,
           scale: 1,
           duration: 0.7,
@@ -72,16 +75,12 @@ const EventCard: React.FC<any> = (props) => {
             start: "top 95%",
             toggleActions: "play none none none",
           },
-        }
-      );
-      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
-    }
-    
-    if (titleRef.current) {
-      const anim = gsap.fromTo(
-        titleRef.current,
-        { autoAlpha: 0, y: 20 },
-        {
+        },
+      },
+      {
+        ref: titleRef,
+        from: { autoAlpha: 0, y: 20 },
+        to: {
           autoAlpha: 1,
           y: 0,
           duration: 0.5,
@@ -92,16 +91,12 @@ const EventCard: React.FC<any> = (props) => {
             start: "top 97%",
             toggleActions: "play none none none",
           },
-        }
-      );
-      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
-    }
-    
-    if (dateRef.current) {
-      const anim = gsap.fromTo(
-        dateRef.current,
-        { autoAlpha: 0, x: -20 },
-        {
+        },
+      },
+      {
+        ref: dateRef,
+        from: { autoAlpha: 0, x: -20 },
+        to: {
           autoAlpha: 1,
           x: 0,
           duration: 0.5,
@@ -112,16 +107,12 @@ const EventCard: React.FC<any> = (props) => {
             start: "top 97%",
             toggleActions: "play none none none",
           },
-        }
-      );
-      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
-    }
-    
-    if (summaryRef.current) {
-      const anim = gsap.fromTo(
-        summaryRef.current,
-        { autoAlpha: 0, y: 20 },
-        {
+        },
+      },
+      {
+        ref: summaryRef,
+        from: { autoAlpha: 0, y: 20 },
+        to: {
           autoAlpha: 1,
           y: 0,
           duration: 0.5,
@@ -132,13 +123,21 @@ const EventCard: React.FC<any> = (props) => {
             start: "top 97%",
             toggleActions: "play none none none",
           },
-        }
+        },
+      },
+    ];
+
+    animationConfigs.forEach(({ ref, from, to }) => {
+      const trigger = animateElement(
+        ref as React.RefObject<HTMLElement>,
+        from,
+        to
       );
-      if (anim.scrollTrigger) triggers.push(anim.scrollTrigger);
-    }
-    
+      if (trigger) triggers.push(trigger);
+    });
+
     return () => {
-      triggers.forEach(trigger => trigger && trigger.kill());
+      triggers.forEach((trigger) => trigger && trigger.kill());
     };
   }, [disableAnimations]);
   if (state === "heropage") {
@@ -176,10 +175,10 @@ const EventCard: React.FC<any> = (props) => {
   return (
     <div
       ref={cardRef}
-      className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-lg min-h-[380px] max-h-[380px]"
+      className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-lg min-h-[425px] max-h-[500px]"
     >
       {/* Top half image */}
-      <div className="w-full h-40 relative" ref={imageRef}>
+      <div className="w-full h-40 flex-shrink-0 relative" ref={imageRef}>
         <Image
           src={image}
           alt={title}
@@ -196,10 +195,7 @@ const EventCard: React.FC<any> = (props) => {
         >
           {date}
         </span>
-        <h3
-          className="text-[24px] font-normal my-3 font-roboto"
-          ref={titleRef}
-        >
+        <h3 className="text-[24px] font-normal my-3 font-roboto" ref={titleRef}>
           {title}
         </h3>
         <p className="text-[12px] mb-4 font-poppins" ref={summaryRef}>
