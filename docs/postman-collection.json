@@ -859,7 +859,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Dr. John Smith\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Spine Surgery\",\n  \"hospital\": \"General Hospital Colombo\",\n  \"location\": \"local\",\n  \"cv\": \"Updated CV content with recent achievements and publications...\",\n  \"documents\": [\"https://example.com/updated-cv.pdf\", \"https://example.com/new-certificate.pdf\"]\n}"
+							"raw": "{\n  \"fullName\": \"Dr. John Smith\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Spine Surgery\",\n  \"hospital\": \"General Hospital Colombo\",\n  \"location\": \"local\",\n  \"phoneNumber\": \"+94771234567\",\n  \"dateOfBirth\": \"1985-03-15\",\n  \"cv\": \"Updated CV content with recent achievements and publications...\",\n  \"documents\": [\"https://example.com/updated-cv.pdf\", \"https://example.com/new-certificate.pdf\"]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/users/me/details",
@@ -971,7 +971,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Dr. Jane Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"userRole\": \"member\",\n  \"membershipType\": \"consultant\",\n  \"status\": \"active\",\n  \"location\": \"foreign\",\n  \"membershipId\": \"SLOA2024002\",\n  \"nic\": \"987654321V\",\n  \"specialization\": \"Pediatric Orthopedics\",\n  \"hospital\": \"Children's Hospital\",\n  \"cv\": \"Specialist in pediatric orthopedic surgery with international experience...\",\n  \"documents\": [\"https://example.com/international-cert.pdf\"]\n}"
+							"raw": "{\n  \"fullName\": \"Dr. Jane Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"userRole\": \"member\",\n  \"membershipType\": \"consultant\",\n  \"status\": \"active\",\n  \"location\": \"foreign\",\n  \"membershipId\": \"SLOA2024002\",\n  \"nic\": \"987654321V\",\n  \"specialization\": \"Pediatric Orthopedics\",\n  \"hospital\": \"Children's Hospital\",\n  \"phoneNumber\": \"+447123456789\",\n  \"dateOfBirth\": \"1980-07-22\",\n  \"cv\": \"Specialist in pediatric orthopedic surgery with international experience...\",\n  \"documents\": [\"https://example.com/international-cert.pdf\"]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/users/{{userId}}/details",

@@ -272,7 +272,7 @@ export const NAVBAR = [
 export const TOP_BAR_LINKS = [
   { title: "Resources", href: "/resources" },
   { title: "News & Media", href: "/news-media" },
-  { title: "Member Directory", href: "/member-directory" },
+    { title: "Member Directory", href: "/member-directory" },
   { title: "Log In", href: "/login" },
 ];
 

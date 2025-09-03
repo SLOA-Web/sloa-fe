@@ -149,3 +149,19 @@ export interface Banner {
 export interface BannersResponse {
   banners: Banner[];
 }
+
+export interface PublicMember {
+  fullName: string;
+  membershipId: string;
+  membershipType: string;
+  profile: {
+    specialization: string;
+    hospital: string;
+  };
+}
+
+export interface PublicMembersResponse {
+  users: PublicMember[];
+  total: number;
+  pages: number;
+}
