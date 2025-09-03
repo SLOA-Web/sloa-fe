@@ -19,42 +19,56 @@ export default function EventPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const data: { events?: EventApiType[] } | EventApiType[] = await api.get('/api/v1/events');
-        if (data && typeof data === "object" && "events" in data && Array.isArray(data.events)) {
-          setEvents(data.events);
-        } else if (Array.isArray(data)) {
-          setEvents(data);
-        } else {
-          setEvents([]);
-        }
-      } catch (err: unknown) {
-        const errorMessage = handleApiError(err, router);
-        setError(errorMessage);
-      } finally {
-        setLoading(false);
+  // Fetch events
+  const fetchEvents = async () => {
+    try {
+      const data: { events?: EventApiType[] } | EventApiType[] = await api.get('/api/v1/events');
+      if (data && typeof data === "object" && "events" in data && Array.isArray(data.events)) {
+        setEvents(data.events);
+      } else if (Array.isArray(data)) {
+        setEvents(data);
+      } else {
+        setEvents([]);
       }
-    };
-    fetchEvents();
-  }, [router]);
+    } catch (err: unknown) {
+      const errorMessage = handleApiError(err, router);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // Group events by month (handle ISO date string)
-  const grouped = events.reduce((acc: Record<string, EventApiType[]>, event) => {
-    const dateObj = new Date(event.date);
-    if (isNaN(dateObj.getTime())) return acc; // skip invalid dates
-    const monthName = dateObj.toLocaleString("default", { month: "long" });
-    const yearNum = dateObj.getFullYear();
-    const key = `${monthName} ${yearNum}`;
-    if (!acc[key]) acc[key] = [];
-    acc[key].push(event);
-    return acc;
-  }, {} as Record<string, EventApiType[]>);
+  // Group events by month
+  const getGroupedEvents = (events: EventApiType[]) => {
+    return events.reduce((acc: Record<string, EventApiType[]>, event) => {
+      const dateObj = new Date(event.date);
+      if (isNaN(dateObj.getTime())) return acc;
+      const monthName = dateObj.toLocaleString("default", { month: "long" });
+      const yearNum = dateObj.getFullYear();
+      const key = `${monthName} ${yearNum}`;
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(event);
+      return acc;
+    }, {} as Record<string, EventApiType[]>);
+  };
+
+  // Handle read more
+  const handleReadMore = (eventId: string) => {
+    setLoadingSlug(eventId);
+    setTimeout(() => {
+      router.push(`/events/${eventId}`);
+    }, 500);
+  };
 
   // Refs for month headings and lines
   const monthRefs = useRef<Record<string, HTMLHeadingElement | null>>({});
   const lineRefs = useRef<Record<string, HTMLSpanElement | null>>({});
+
+  useEffect(() => {
+    fetchEvents();
+  }, [router]);
+
+  const grouped = getGroupedEvents(events);
 
   useEffect(() => {
     const triggers: ScrollTrigger[] = [];
@@ -99,7 +113,7 @@ export default function EventPage() {
       }
     });
     return () => {
-      triggers.forEach(trigger => trigger && trigger.kill());
+      triggers.forEach(trigger => trigger?.kill());
     };
   }, [loading, error, grouped]);
 
@@ -150,12 +164,7 @@ export default function EventPage() {
                     summary={summary}
                     doctor={doctor}
                     state={isUpcoming ? "upcoming" : undefined}
-                    onReadMore={() => {
-                      setLoadingSlug(eventId);
-                      setTimeout(() => {
-                        router.push(`/events/${eventId}`);
-                      }, 500);
-                    }}
+                    onReadMore={() => handleReadMore(eventId)}
                     loading={loadingSlug === eventId}
                   />
                 );
