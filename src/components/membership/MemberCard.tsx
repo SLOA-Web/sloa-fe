@@ -3,12 +3,12 @@ import CouncilMemberImage from "../CouncilMemberImage";
 
 const MemberCard = ({ member }: { member: PublicMember }) => (
   <div className="group cursor-pointer">
-    <div className="flex flex-col space-y-6">
+    <div className="flex flex-col space-y-4">
       <div className="relative overflow-hidden rounded-lg bg-gray-100">
         <CouncilMemberImage
           src="/assets/images/member.webp"
           alt={member.fullName}
-          className="w-full h-[300px] lg:h-[405px] object-cover transition-transform duration-300 group-hover:scale-105"
+          className="w-full h-[300px] object-cover transition-transform duration-300 group-hover:scale-105"
         />
         {/* Gradient Overlay */}
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#122D1E]/80 via-[#122D1E]/40 to-transparent rounded-b-lg"></div>

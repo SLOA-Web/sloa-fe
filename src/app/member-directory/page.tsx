@@ -22,7 +22,7 @@ const MemberDirectoryContent = () => {
   const [roleFilter, setRoleFilter] = useState(searchParams.get("role") || "");
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const currentPage = parseInt(searchParams.get("page") || "1", 10);
+  const currentPage = parseInt(searchParams.get("page") || "1", 20);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -96,7 +96,7 @@ const MemberDirectoryContent = () => {
           <div className="text-center text-red-500 min-h-[50vh] flex items-center justify-center">{error}</div>
         ) : members.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {members.map((member) => (
                 <MemberCard key={member.membershipId} member={member} />
               ))}
