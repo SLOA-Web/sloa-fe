@@ -41,7 +41,7 @@ const RecentEvents: React.FC = () => {
       try {
         setLoading(true);
         const data: UpcomingEventsResponse = await api.get("/api/v1/events/upcoming/brief");
-        setEvents(data.events || []);
+        setEvents(Array.isArray(data?.events) ? data.events : []);
       } catch (err: unknown) {
         const errorMessage = handleApiError(err, router);
         setError(errorMessage);
@@ -142,27 +142,30 @@ const RecentEvents: React.FC = () => {
             >
               <CarouselContent className="-ml-4 md:-ml-6 lg:-ml-8">
                 {events.map((event) => {
+                  if (!event || !event.id || !event.title) return null;
                   const eventId = event.id;
-                  const dateObj = new Date(event.date);
-                  const dateStr = !isNaN(dateObj.getTime())
-                    ? dateObj.toLocaleDateString("en-GB", {
+                  let dateStr = event.date;
+                  if (event.date) {
+                    const dateObj = new Date(event.date);
+                    if (!isNaN(dateObj.getTime())) {
+                      dateStr = dateObj.toLocaleDateString("en-GB", {
                         day: "2-digit",
                         month: "short",
                         year: "numeric",
-                      })
-                    : event.date;
-                  
+                      });
+                    }
+                  }
                   return (
                     <CarouselItem
                       key={event.id}
                       className="pl-4 md:pl-6 lg:pl-8 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3"
                     >
                       <EventCard
-                        image={event.image}
-                        date={dateStr}
-                        title={event.title}
-                        summary={event.shortDesc}
-                        doctor={event.speaker}
+                        image={event.image ?? ""}
+                        date={dateStr ?? ""}
+                        title={event.title ?? "Untitled"}
+                        summary={event.shortDesc ?? ""}
+                        doctor={event.speaker ?? ""}
                         state="upcoming"
                         disableAnimations={true}
                         onReadMore={() => {

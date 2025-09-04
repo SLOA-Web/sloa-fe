@@ -1,4 +1,5 @@
 "use client";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import HeroBanner from "../components/home/HeroBanner";
 import { Suspense, lazy, useEffect } from "react";
 
@@ -23,7 +24,7 @@ export default function Home() {
   return (
     <>
       <HeroBanner />
-      <Suspense fallback={null}>
+      <Suspense fallback={<LoadingSpinner />}>
         <RecentEvents />
         <BecomeAMember />
         <BookEvents />
