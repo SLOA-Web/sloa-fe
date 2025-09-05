@@ -13,6 +13,8 @@ interface CustomButtonProps {
   className?: string;
   hideIcon?: boolean;
   variant?: "primary" | "white";
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -22,6 +24,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   className,
   hideIcon,
   variant = "primary",
+  type = "button",
+  disabled = false,
 }) => {
   const buttonRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
 
@@ -86,7 +90,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     );
   }
   return (
-    <button onClick={onClick} className={buttonClass} ref={buttonRef}>
+    <button onClick={onClick} className={buttonClass} ref={buttonRef} type={type} disabled={disabled}>
       {content}
     </button>
   );

@@ -34,10 +34,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
         
         gsap.fromTo(
           img,
-          { opacity: 0, y: 40 },
+          { opacity: 0, x: -40 },
           {
             opacity: 1,
-            y: 0,
+            x: 0,
             duration: 1,
             ease: "power2.out",
             scrollTrigger: {
@@ -84,7 +84,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 items-center">
         {/* Left side: Image */}
         <div ref={imgRef} className="flex justify-center w-full">
-          <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full rounded-[8px]">
+          <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full overflow-hidden">
             <Image
               src="/assets/images/home_about.svg"
               alt="Info Section"

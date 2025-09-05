@@ -184,12 +184,12 @@ const BookEvents: React.FC = () => {
                   >
                     <aside className="flex items-center justify-center w-full lg:w-36 h-24 lg:h-36 mr-2 flex-shrink-0">
                     <div
-                      className="flex flex-col items-center justify-center text-[32px] text-white font-semibold rounded px-4 py-2 pb-3 w-full h-full"
+                      className="flex flex-row lg:flex-col items-center justify-center text-[32px] text-white font-semibold rounded px-4 py-2 pb-3 w-full h-full"
                       style={{ backgroundColor }}
                     >
-                      <time dateTime={event.date} className="text-center">
-                      <div>{day}</div>
-                      <div>{month}</div>
+                      <time dateTime={event.date} className="flex flex-row lg:flex-col items-center justify-center w-full h-full text-center">
+                        <div>{day}</div>
+                        <div className="ml-2 lg:ml-0 lg:mt-1">{month}</div>
                       </time>
                     </div>
                     </aside>
@@ -234,18 +234,19 @@ const BookEvents: React.FC = () => {
               onClick={() => router.push('/event')}
             />
             </section>
-          <aside
-            className="lg:w-[45%] rounded-[8px] relative min-h-[300px]"
+            <aside
+            className="lg:w-[45%] rounded-[8px] relative min-h-[300px] overflow-hidden"
             ref={imageAsideRef}
-          >
+            >
             <Image
               src="/assets/images/book_events.svg"
               alt="Book Events"
               fill
               sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-contain"
+              className="object-cover w-full h-full"
+              priority
             />
-          </aside>
+            </aside>
         </div>
       </main>
     </section>

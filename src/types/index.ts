@@ -183,3 +183,11 @@ export interface Attendee {
     // ...other user fields if needed
   };
 }
+
+
+export interface CommonHeroProps {
+  description: string;
+  title: string;
+  imageUrl?: string; // Optional image URL for the hero section
+  imageClassname?: string; 
+}
