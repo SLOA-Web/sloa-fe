@@ -99,15 +99,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
           <SectionHeader text={headerText} />
           <div className="mx-4 lg:ml-12">
             <p ref={pRef} className="text-[24px] my-8">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et
-              sapien non nunc blandit ullamcorper. Pellentesque convallis
-              vestibulum turpis sit amet tempus. Duis rutrum ut dui non semper.
-              Sed sit amet tincidunt ante, vitae hendrerit massa. Nullam nec
-              faucibus diam, et ultricies nisl. Integer mi lacus, ultricies a
-              sollicitudin iaculis, tempus nec magna. Quisque id mauris
-              convallis ipsum vehicula ornare. Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. In et sapien non nunc blandit
-              ullamcorper.
+              The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka.
             </p>
             <CustomButton text="Read our story" />
           </div>

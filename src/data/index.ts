@@ -189,28 +189,28 @@ export const eventCards: EventCardProp[] = [
 export const BENEFITS_LIST = [
   {
     image: "/assets/images/benefit1.svg",
-    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
+    title: "Professional Development & CPD",
+    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
   },
   {
     image: "/assets/images/homepage_hero.svg",
-    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
+    title: "Professional Development & CPD",
+    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
   },
   {
     image: "/assets/images/benefit1.svg",
-    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
+    title: "Professional Development & CPD",
+    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
   },
   {
     image: "/assets/images/homepage_hero.svg",
-    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
+    title: "Professional Development & CPD",
+    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
   },
   {
     image: "/assets/images/benefit1.svg",
-    title: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    para: "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients.",
+    title: "Professional Development & CPD",
+    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
   },
 ];
 
@@ -223,7 +223,7 @@ export const bookEventData: BookEventData[] = [
     by: "Dr. Umapathy",
     cta: "Book Now",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et sapien non nunc blandit ullamcorper.",
+      "Comprehensive workshop on managing neglected trauma cases, focusing on advanced surgical techniques and rehabilitation approaches.",
     dateBg: "bg-[#39604B]",
   },
   {
@@ -234,7 +234,7 @@ export const bookEventData: BookEventData[] = [
     by: "Dr. Smith",
     cta: "Book Now",
     description:
-      "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+      "Advanced seminar covering the latest trauma care protocols, emergency response techniques, and interdisciplinary approaches to complex cases.",
     dateBg: "bg-[#587565]",
   },
   {
@@ -245,7 +245,7 @@ export const bookEventData: BookEventData[] = [
     by: "Dr. Lee",
     cta: "Book Now",
     description:
-      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+      "Community awareness session on trauma prevention, first aid, and the importance of timely medical intervention for orthopaedic injuries.",
     dateBg: "bg-[#122D1E]",
   },
   {
@@ -256,7 +256,7 @@ export const bookEventData: BookEventData[] = [
     by: "Dr. Patel",
     cta: "Book Now",
     description:
-      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      "Interactive workshop on post-trauma healing, rehabilitation techniques, and psychological support for patients recovering from orthopaedic injuries.",
     dateBg: "bg-[#D47045]",
   },
 ];

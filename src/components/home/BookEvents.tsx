@@ -131,9 +131,9 @@ const BookEvents: React.FC = () => {
       <main className="mx-4 md:mx-10 lg:mx-16">
         <h1
           ref={headingRef}
-          className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto"
+          className="text-[24px] md:text-[32px] lg:text-[40px] lg:w-[60%] font-roboto"
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Discover our upcoming orthopaedic events.
         </h1>
         <div className="flex flex-col-reverse lg:flex-row w-full mt-8">
             <section className="lg:w-[55%] p-6 rounded-lg mr-4 flex flex-col justify-center items-center min-h-[400px]">

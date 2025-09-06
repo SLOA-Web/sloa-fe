@@ -15,10 +15,14 @@ const BecomeAMember = () => {
     >
       <SectionHeader text="become a member" className="mt-8 lg:mt-0" />
       <div className="flex flex-col lg:flex-row gap-2 lg:items-end justify-between text-left mx-4 md:mx-10 lg:mx-16 my-5 lg:my-10">
-        <span className="font-roboto text-[32px] md:text-[40px] lg:text-[55px]  basis-[72.5%]">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum
-          dolor sit amet, consectetur adipiscing elit.
-        </span>
+        <div className="basis-[72.5%]">
+          <span className="font-roboto text-[32px] md:text-[40px] lg:text-[55px] block mb-4">
+            Join Sri Lanka&apos;s Leading Orthopaedic Network
+          </span>
+          <p className="text-[18px] md:text-[20px] lg:text-[24px] leading-relaxed">
+            Membership of the Sri Lanka Orthopaedic Association provides access to CPD-accredited courses, clinical guidelines, research opportunities, and a network of local and international experts. Whether you&apos;re a trainee, specialist, or consultant, SLOA supports your career growth and professional development.
+          </p>
+        </div>
         <div className="basis-[27.5%] flex justify-start mt-4 lg:mt-4 lg:justify-end">
           <CustomButton text="Join now" />
         </div>

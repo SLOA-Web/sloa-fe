@@ -5,9 +5,9 @@ import { CTASectionProps } from "@/types";
 import SectionHeader from "../SectionHeader";
 
 const CTASection: React.FC<CTASectionProps> = ({
-  title = "cta head",
-  description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et sapien non nunc blandit ullamcorper.",
-  buttonText = "Join Now",
+  title = "Advance Orthopaedics in Sri Lanka",
+  description = "Advance orthopaedics together — through education, research, and collaboration across Sri Lanka.",
+  buttonText = "Join SLOA",
   onClick,
 }) => {
   return (
@@ -23,7 +23,7 @@ const CTASection: React.FC<CTASectionProps> = ({
 
       <SectionHeader text={title} />
       <div className="relative z-10 flex flex-col items-start mx-4 md:mx-10 lg:mx-16">
-        <p className="text-[32px] md:text-[40px] lg:text-[55px] my-12 text-white mb-8 text-left lg:w-[40%] font-roboto leading-[55px]">
+        <p className="text-[32px] md:text-[40px] lg:text-[55px] my-12 text-white mb-8 text-left lg:w-[60%] font-roboto leading-[55px]">
           {description}
         </p>
         <CustomButton

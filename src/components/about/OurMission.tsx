@@ -21,7 +21,7 @@ interface OurMissionProps {
 
 export default function OurMission({
   title = "Our\nMission",
-  content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  content = "To advance orthopaedic practice in Sri Lanka by providing high-quality education and CPD, enabling research and audit, setting and promoting clinical standards, and advocating for patient safety and musculoskeletal health nationwide.",
   images = [
     {
       src: "/assets/images/our-mission.webp",
@@ -57,7 +57,7 @@ export default function OurMission({
   return (
     <section className="py-16 lg:py-24 bg-white">
       <div className="container mx-auto">
-        <SectionHeader text="Become a member" />
+        <SectionHeader text="our mission" />
 
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16 mx-5 md:mx-10 lg:mx-16 my-12">
           {/* Left Column - Title */}

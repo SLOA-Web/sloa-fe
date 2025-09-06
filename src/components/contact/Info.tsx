@@ -16,24 +16,46 @@ const infoData = [
     title: "Address",
     icon: null,
     items: [
-      { label: "", value: "420 Galle Road, Colombo 3," },
+      { label: "", value: "Sri Lanka Orthopedic Association," },
+      { label: "", value: "C/O The College of Surgeons of Sri Lanka" },
+      { label: "", value: "06, Independence Avenue, Colombo 07," },
       { label: "", value: "Sri Lanka" },
     ],
   },
   {
-    title: "Info",
+    title: "Contact",
     icon: null,
     items: [
       {
-        label: "",
+        label: "Email",
         value: (
           <a
-            href="tel:+94112345678"
-            className="inline-flex items-center gap-1  hover:underline"
+            href="mailto:srilankaortho@gmail.com"
+            className="hover:underline"
           >
-            <Phone className="w-4 h-4" />
-            +94 11 234 5678
+            srilankaortho@gmail.com
           </a>
+        ),
+      },
+      {
+        label: "Phone",
+        value: (
+          <div className="flex flex-col gap-1">
+            <a
+              href="tel:+94762820181"
+              className="inline-flex items-center gap-1 hover:underline"
+            >
+              <Phone className="w-4 h-4" />
+              +94 76 282 0181
+            </a>
+            <a
+              href="tel:+94117460735"
+              className="inline-flex items-center gap-1 hover:underline"
+            >
+              <Phone className="w-4 h-4" />
+              +94 11 746 0735
+            </a>
+          </div>
         ),
       },
     ],
