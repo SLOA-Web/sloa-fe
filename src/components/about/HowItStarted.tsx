@@ -10,9 +10,9 @@ interface HowItStartedProps {
 }
 
 export default function HowItStarted({
-  title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  leftContent = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.. es in our schedule conducted by national and.",
-  rightContent = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.. es in our schedule conducted by national. ",
+  title = "Raising the standard of orthopaedic care across Sri Lanka.",
+  leftContent = "The Sri Lanka Orthopaedic Association (SLOA) is the professional body for orthopaedic surgeons and musculoskeletal specialists in Sri Lanka. From training the next generation to supporting research and quality improvement, we exist to advance safe, effective and compassionate orthopaedic care.",
+  rightContent = "Through national courses, conferences and international partnerships, SLOA promotes evidence-based practice and continuous professional development. Our community shares knowledge, mentors trainees and collaborates on guidelines that improve outcomes for trauma and elective orthopaedic patients.",
   heroImageUrl = "/assets/images/how-it-started.svg",
   heroImageAlt = "Medical professionals working",
 }: HowItStartedProps) {

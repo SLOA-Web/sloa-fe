@@ -31,6 +31,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen overflow-x-hidden relative`}
+        suppressHydrationWarning={true}
       >
         <AuthProvider>
           <div className="max-w-[1560px] mx-auto">
