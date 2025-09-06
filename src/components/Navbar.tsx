@@ -147,17 +147,15 @@ const Navbar = () => {
   const getTopBarLinks = () => {
     if (isLoading) {
       // Show loading state
-      return TOP_BAR_LINKS.map(link => 
-        link.title === "Log In" 
-          ? { ...link, title: "Loading..." }
-          : link
+      return TOP_BAR_LINKS.map((link) =>
+        link.title === "Log In" ? { ...link, title: "Loading..." } : link
       );
     }
 
     if (user) {
       // User is authenticated, replace "Log In" with "Profile"
-      return TOP_BAR_LINKS.map(link => 
-        link.title === "Log In" 
+      return TOP_BAR_LINKS.map((link) =>
+        link.title === "Log In"
           ? { title: "Profile", href: "/member-portal" }
           : link
       );
@@ -194,7 +192,10 @@ const Navbar = () => {
         </Link>
 
         {!isMobile ? (
-          <div className="flex flex-col space-x-2 relative w-full" ref={navLinksRef}>
+          <div
+            className="flex flex-col space-x-2 relative w-full"
+            ref={navLinksRef}
+          >
             {/* Top Light Bar */}
             {!isScrolled && (
               <div className="w-full text-[#122D1E]/50 text-[13px] py-2 px-3 lg:px-6 flex justify-end gap-6 font-light z-[1001] border-b-2 border-gray-300">
@@ -203,9 +204,7 @@ const Navbar = () => {
                     key={link.href}
                     href={link.href}
                     className={`hover:underline transition-colors ${
-                      link.title === "Profile" 
-                        ? " hover:text-black/80" 
-                        : ""
+                      link.title === "Profile" ? " hover:text-black/80" : ""
                     }`}
                   >
                     {link.title}
@@ -220,23 +219,26 @@ const Navbar = () => {
                 const isGetInvolved = item.title === "Get Involved";
                 let linkClass = "";
                 if (isGetInvolved) {
-                  linkClass = "bg-primary text-white p-4 shadow hover:bg-primary/90";
-                } else if (isActive) {
-                  linkClass = "border-b-[2px] border-black";
+                  linkClass =
+                    "bg-primary text-white px-4 py-3 shadow hover:bg-primary/90";
                 }
                 return (
+                  <div key={item.href || item.title} className="flex flex-col items-center mx-2 lg:mx-4  mb-3">
                     <Link
-                    key={item.href || item.title}
-                    href={item.href || "#"}
-                    className={`relative mx-2 lg:mx-4 pt-2 lg:pt-4 mb-4 inline-block text-[10px] lg:text-[14px] uppercase tracking-wide transition-colors duration-200 ${linkClass}`}
+                      href={item.href || "#"}
+                      className={`relative pt-1.5 lg:pt-3 inline-block text-[10px] lg:text-[14px] uppercase tracking-wide transition-colors duration-200 ${linkClass}`}
                     >
-                    <span
-                      className="relative inline-block"
-                      style={{ display: "inline-block" }}
-                    >
-                      {item.title}
-                    </span>
-                  </Link>
+                      <span
+                        className="relative inline-block"
+                        style={{ display: "inline-block" }}
+                      >
+                        {item.title}
+                      </span>
+                    </Link>
+                    {isActive && (
+                      <hr className="border-black border-t-2 w-full mt-1 mb-0" />
+                    )}
+                  </div>
                 );
               })}
             </div>
@@ -264,7 +266,9 @@ const Navbar = () => {
           {/* Backdrop overlay */}
           <div
             className={`fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm transition-opacity duration-200 md:hidden ${
-              isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+              isMobileMenuOpen
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
             }`}
             aria-hidden="true"
             onClick={closeMobileMenu}
@@ -283,7 +287,11 @@ const Navbar = () => {
           >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-4 py-3 border-b">
-              <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-3">
+              <Link
+                href="/"
+                onClick={closeMobileMenu}
+                className="flex items-center gap-3"
+              >
                 <Image src={logo} alt="logo" className="h-8 w-auto" />
                 <span className="sr-only">Home</span>
               </Link>
@@ -299,33 +307,37 @@ const Navbar = () => {
             {/* Drawer content */}
             <div className="flex-1 overflow-y-auto px-4 py-3">
               <nav className="space-y-1">
-                {(NAVBAR as NavbarItem[]).map((item: NavbarItem, idx: number) => {
-                  const isActive = isActiveLink(item);
-                  const isCTA = item.title === "Get Involved";
-                  if (isCTA) {
+                {(NAVBAR as NavbarItem[]).map(
+                  (item: NavbarItem, idx: number) => {
+                    const isActive = isActiveLink(item);
+                    const isCTA = item.title === "Get Involved";
+                    if (isCTA) {
+                      return (
+                        <Link
+                          key={getNavKey(item)}
+                          href={item.href || "#"}
+                          onClick={closeMobileMenu}
+                          className="btn btn-primary btn-lg w-full mt-2"
+                        >
+                          {item.title}
+                        </Link>
+                      );
+                    }
                     return (
                       <Link
                         key={getNavKey(item)}
                         href={item.href || "#"}
+                        ref={idx === 0 ? firstLinkRef : undefined}
                         onClick={closeMobileMenu}
-                        className="btn btn-primary btn-lg w-full mt-2"
+                        className={`nav-item ${
+                          isActive ? "active" : ""
+                        } text-base`}
                       >
                         {item.title}
                       </Link>
                     );
                   }
-                  return (
-                    <Link
-                      key={getNavKey(item)}
-                      href={item.href || "#"}
-                      ref={idx === 0 ? firstLinkRef : undefined}
-                      onClick={closeMobileMenu}
-                      className={`nav-item ${isActive ? "active" : ""} text-base`}
-                    >
-                      {item.title}
-                    </Link>
-                  );
-                })}
+                )}
               </nav>
 
               {/* Divider */}
@@ -339,7 +351,9 @@ const Navbar = () => {
                     href={link.href}
                     onClick={closeMobileMenu}
                     className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-accent ${
-                      link.title === "Profile" ? "text-primary-600 font-medium" : "text-gray-700"
+                      link.title === "Profile"
+                        ? "text-primary-600 font-medium"
+                        : "text-gray-700"
                     }`}
                   >
                     <span>{link.title}</span>

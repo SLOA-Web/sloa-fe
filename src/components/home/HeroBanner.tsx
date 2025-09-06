@@ -287,9 +287,14 @@ const HeroBanner = () => {
           {(() => {
             if (eventLoading) {
               return (
-                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <p className="mt-2 text-sm text-muted-foreground">Loading event...</p>
+                <div className="relative bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-sm min-h-[320px] text-black">
+                  <div className="w-full h-52 relative bg-gray-300 animate-pulse"></div>
+                  <div className="p-4 flex flex-col w-full flex-1">
+                    <div className="h-4 bg-gray-300 animate-pulse mb-2"></div>
+                    <div className="h-3 bg-gray-300 animate-pulse mb-2"></div>
+                    <div className="flex-1" />
+                    <div className="h-8 w-20 bg-gray-300 animate-pulse"></div>
+                  </div>
                 </div>
               );
             } else if (eventError) {

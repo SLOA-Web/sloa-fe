@@ -11,7 +11,7 @@ export default function useLenis(): Lenis | null {
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.05,
     });
 
     // Store lenis instance in ref
