@@ -69,13 +69,13 @@ const Footer = () => {
               priority
             />
           </div>
-          <div className="w-full text-[28px] font-roboto mb-8 lg:mb-0 lg:w-[35%] lg:text-[40px]">
+          <div className="w-full text-[28px] font-poppins mb-8 lg:mb-0 lg:w-[35%] lg:text-[36px]">
             Get the latest <span className="text-primary">Orthopaedic</span>{" "}
             news and event updates — join our newsletter.
           </div>
         </div>
 
-        <div className="flex flex-col gap-10 mt-10 font-roboto lg:flex-row lg:gap-16 lg:mt-12">
+        <div className="flex flex-col gap-10 mt-10 font-poppins lg:flex-row lg:gap-16 lg:mt-12">
           {/* Quick Links, Documentation, Social Media */}
           <div className="w-full lg:w-[40%] space-y-4">
             <div className="text-[14px] text-primary">Quick Links</div>
@@ -132,8 +132,12 @@ const Footer = () => {
 
           {/* --- MODIFIED Email Input Section --- */}
           <div className="w-full lg:w-[40%] flex flex-col justify-end self-end">
-            <form ref={formRef} onSubmit={handleSubscribe} className="flex flex-col gap-2 font-poppins text-[18px]">
-                <div className="flex flex-col gap-2 lg:flex-row bg-[#FBFBFB] p-2 rounded">
+            <form
+              ref={formRef}
+              onSubmit={handleSubscribe}
+              className="flex flex-col gap-2 font-poppins text-[18px]"
+            >
+              <div className="flex flex-row gap-2 bg-[#FBFBFB] p-2 rounded">
                 <input
                   type="email"
                   placeholder="YOUR EMAIL"
@@ -144,13 +148,13 @@ const Footer = () => {
                 />
                 <CustomButton
                   onClick={handleButtonClick}
-                  className="border-none font-poppins text-[18px] mt-2 lg:mt-0"
+                  className="border-none font-poppins text-[18px]"
                 />
-                </div>
+              </div>
               {/* Success/Error Message Area */}
               <div className="text-sm h-5 text-left">
-                  {success && <p className="text-green-600">{success}</p>}
-                  {error && <p className="text-red-600">{error}</p>}
+                {success && <p className="text-green-600">{success}</p>}
+                {error && <p className="text-red-600">{error}</p>}
               </div>
             </form>
           </div>

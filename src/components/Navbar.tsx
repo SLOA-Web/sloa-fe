@@ -364,7 +364,7 @@ const Navbar = () => {
             </div>
 
             {/* Drawer footer */}
-            <div className="border-t px-4 py-3 text-xs text-gray-500">
+            <div className="border-t px-4 py-3 text-center text-xs text-gray-500">
               © {new Date().getFullYear()} Sri Lanka Orthopedic Association
             </div>
           </aside>

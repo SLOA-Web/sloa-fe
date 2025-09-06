@@ -4,12 +4,19 @@ import Image from "next/image";
 import { CTASectionProps } from "@/types";
 import SectionHeader from "../SectionHeader";
 
+import { useRouter } from "next/navigation";
+
 const CTASection: React.FC<CTASectionProps> = ({
   title = "Advance Orthopaedics in Sri Lanka",
   description = "Advance orthopaedics together — through education, research, and collaboration across Sri Lanka.",
   buttonText = "Join SLOA",
-  onClick,
 }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/signup");
+  };
+
   return (
     <section className="w-full flex flex-col items-start justify-center py-16 shadow-lg relative overflow-hidden min-h-[600px] bg-gradient-to-r from-[#0d1f14] via-[#0d1f14] to-transparent to-[95%]">
       <Image
@@ -28,7 +35,7 @@ const CTASection: React.FC<CTASectionProps> = ({
         </p>
         <CustomButton
           text={buttonText}
-          onClick={onClick}
+          onClick={handleClick}
           variant="white"
           className="px-8 py-3 text-lg font-semibold mt-8"
         />

@@ -54,7 +54,7 @@ const EventsSection: React.FC = () => {
   const fetchEvents = async () => {
     try {
       const data: { events?: EventApiType[] } | EventApiType[] = await api.get(
-        "/api/v1/events"
+        "/api/v1/events?upcoming=true&page=1&limit=30"
       );
       if (
         data &&
