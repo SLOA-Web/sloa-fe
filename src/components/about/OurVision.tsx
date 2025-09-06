@@ -10,7 +10,7 @@ interface OurVisionProps {
 export default function OurVision({
   title = "Our\nVision",
   content = [
-    "A Sri Lanka where every patient has access to world-class orthopaedic care — delivered by skilled, ethical professionals working within a collaborative, research-driven system."
+    "A Sri Lanka where every patient has access to world-class orthopaedic care — delivered by skilled, ethical professionals working within a collaborative, research-driven system. We envision a future where innovation and compassion go hand in hand, ensuring that every individual receives the highest standard of orthopaedic treatment regardless of their background or circumstances. Our commitment is to foster a culture of continuous learning, research, and ethical practice, empowering healthcare professionals to push the boundaries of excellence. By building strong partnerships and embracing new technologies, we strive to transform the landscape of orthopaedic care for generations to come."
   ],
   imageUrl = "/assets/images/our-vision.webp",
   imageAlt = "Medical facility"
