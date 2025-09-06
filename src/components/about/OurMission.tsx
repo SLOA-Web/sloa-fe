@@ -59,7 +59,7 @@ export default function OurMission({
       <div className="container mx-auto">
         <SectionHeader text="Become a member" />
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16 mx-4 md:mx-10 lg:mx-16 my-12">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16 mx-5 md:mx-10 lg:mx-16 my-12">
           {/* Left Column - Title */}
           <div>
             <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight font-normal whitespace-pre-line">
@@ -76,7 +76,7 @@ export default function OurMission({
         </div>
 
         {/* Auto-moving Carousel with Gradient Overlays */}
-        <div className="relative mt-16">
+        <div className="relative mt-16 mx-5">
           {/* Left Gradient Overlay */}
           <div className="absolute left-0 top-0 w-8 md:w-16 lg:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"/>
 

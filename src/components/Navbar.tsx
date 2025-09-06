@@ -26,6 +26,8 @@ const Navbar = () => {
   const { user, isLoading } = useAuth();
   const navLinksRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const [hasMounted, setHasMounted] = useState(false);
   // Removed isHeaderHidden logic
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -112,6 +114,25 @@ const Navbar = () => {
       document.body.classList.add("overflow-hidden");
     }
   }, [isMobileMenuOpen]);
+
+  // Accessibility: close on Escape and focus handling when opening
+  useEffect(() => {
+    if (!hasMounted) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isMobileMenuOpen) {
+        e.preventDefault();
+        closeMobileMenu();
+      }
+    };
+    if (isMobileMenuOpen) {
+      document.addEventListener("keydown", onKeyDown);
+      // focus first link in drawer after open
+      setTimeout(() => {
+        firstLinkRef.current?.focus();
+      }, 50);
+    }
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isMobileMenuOpen, hasMounted]);
 
   const isActiveLink = (item: NavbarItem) => {
     if (item.children) {
@@ -223,101 +244,117 @@ const Navbar = () => {
         ) : (
           <button
             onClick={toggleMobileMenu}
-            className="text-2xl focus:outline-none z-50"
-            style={{ transition: "transform 0.2s" }}
+            className="relative z-[1000] flex h-10 w-10 items-center justify-center rounded-md border border-transparent hover:border-accent hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            aria-controls="mobile-nav-drawer"
+            aria-expanded={isMobileMenuOpen}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
           >
-            <span
-              style={{
-                display: "inline-block",
-                transform: isMobileMenuOpen ? "rotate(90deg)" : "rotate(0deg)",
-                transition: "transform 0.2s",
-              }}
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </span>
-            <span className="sr-only">Toggle menu</span>
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         )}
       </nav>
 
-      {/* Mobile Menu */}
-      {isMobile && isMobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-white z-50 md:hidden min-h-screen flex flex-col justify-center"
-          id="mobile-menu"
-          style={{ opacity: 0 }}
-          ref={(el) => {
-            if (el) {
-              gsap.to(el, { opacity: 1, duration: 0.2, ease: "power2.out" });
-            }
-          }}
-        >
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:100px_100px]" />
-            <div className="absolute -left-[20%] top-0 w-[140%] h-[140%] " />
-          </div>
+      {/* Mobile Drawer & Overlay */}
+      {isMobile && (
+        <>
+          {/* Backdrop overlay */}
+          <div
+            className={`fixed inset-0 z-[998] bg-black/40 backdrop-blur-sm transition-opacity duration-200 md:hidden ${
+              isMobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+            }`}
+            aria-hidden="true"
+            onClick={closeMobileMenu}
+          />
 
-          <div className="relative z-10 flex flex-col items-center justify-center h-full px-8 text-black overflow-y-auto">
-            <div className="w-full max-w-md">
-              {(NAVBAR as NavbarItem[]).map((item: NavbarItem) => (
-                <Link
-                  key={getNavKey(item)}
-                  href={item.href || "#"}
-                  className={`block text-2xl sm:text-3xl font-bold transition-all hover:pl-4 cursor-pointer ${
-                    pathname === item.href
-                      ? "pl-4 border-l-2 border-primary"
-                      : ""
-                  }`}
-                  onClick={closeMobileMenu}
-                >
-                  {item.title}
-                </Link>
-              ))}
+          {/* Drawer */}
+          <aside
+            id="mobile-nav-drawer"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation"
+            ref={drawerRef}
+            className={`fixed top-0 right-0 z-[999] h-full w-full rounded-l-2xl bg-white shadow-xl transition-transform duration-300 ease-out md:hidden flex flex-col ${
+              isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {/* Drawer header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b">
+              <Link href="/" onClick={closeMobileMenu} className="flex items-center gap-3">
+                <Image src={logo} alt="logo" className="h-8 w-auto" />
+                <span className="sr-only">Home</span>
+              </Link>
+              <button
+                onClick={closeMobileMenu}
+                className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                aria-label="Close menu"
+              >
+                <X className="h-5 w-5" />
+              </button>
             </div>
 
-            {/* Top Bar Links on Mobile */}
-            <div className="w-full max-w-md mt-8 pt-6 border-t border-gray-200">
-              <div className="grid grid-cols-1 gap-3">
+            {/* Drawer content */}
+            <div className="flex-1 overflow-y-auto px-4 py-3">
+              <nav className="space-y-1">
+                {(NAVBAR as NavbarItem[]).map((item: NavbarItem, idx: number) => {
+                  const isActive = isActiveLink(item);
+                  const isCTA = item.title === "Get Involved";
+                  if (isCTA) {
+                    return (
+                      <Link
+                        key={getNavKey(item)}
+                        href={item.href || "#"}
+                        onClick={closeMobileMenu}
+                        className="btn btn-primary btn-lg w-full mt-2"
+                      >
+                        {item.title}
+                      </Link>
+                    );
+                  }
+                  return (
+                    <Link
+                      key={getNavKey(item)}
+                      href={item.href || "#"}
+                      ref={idx === 0 ? firstLinkRef : undefined}
+                      onClick={closeMobileMenu}
+                      className={`nav-item ${isActive ? "active" : ""} text-base`}
+                    >
+                      {item.title}
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Divider */}
+              <div className="my-4 h-px w-full bg-accent" />
+
+              {/* Quick links / top bar on mobile */}
+              <div className="grid grid-cols-1 gap-2">
                 {getTopBarLinks().map((link) => (
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`block text-base sm:text-lg text-gray-700 hover:text-black transition-colors ${
-                      link.title === "Profile" 
-                        ? "text-primary font-medium hover:text-primary/80" 
-                        : ""
-                    }`}
                     onClick={closeMobileMenu}
+                    className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm hover:bg-accent ${
+                      link.title === "Profile" ? "text-primary-600 font-medium" : "text-gray-700"
+                    }`}
                   >
-                    {link.title}
+                    <span>{link.title}</span>
+                    <span aria-hidden>→</span>
                   </Link>
                 ))}
               </div>
             </div>
 
-            <div
-              className="absolute bottom-12 left-0 right-0 text-center text-black text-sm px-8"
-              style={{ opacity: 0, transform: "translateY(20px)" }}
-              ref={(el) => {
-                if (el) {
-                  gsap.to(el, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 0.3,
-                    delay: 0.4,
-                    ease: "power2.out",
-                  });
-                }
-              }}
-            >
-              <p>© {new Date().getFullYear()} Sri Lanka Orthopedic Association. All rights reserved.</p>
+            {/* Drawer footer */}
+            <div className="border-t px-4 py-3 text-xs text-gray-500">
+              © {new Date().getFullYear()} Sri Lanka Orthopedic Association
             </div>
-          </div>
-        </div>
+          </aside>
+        </>
       )}
 
       {/* CSS for dropdown animation */}

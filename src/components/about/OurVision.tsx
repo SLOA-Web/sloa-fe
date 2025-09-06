@@ -17,8 +17,8 @@ export default function OurVision({
   imageAlt = "Medical facility"
 }: OurVisionProps) {
   return (
-    <section className="py-12 lg:py-24 bg-white">
-      <div className="container mx-auto mx-4 md:mx-10 lg:mx-16">
+    <section className="py-12 lg:py-24 bg-white mx-5 md:mx-10 lg:mx-16">
+      <div className="container ">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Text */}
           <div className="order-2 lg:order-1">
