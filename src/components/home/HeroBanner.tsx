@@ -306,7 +306,7 @@ const HeroBanner = () => {
                 <EventCard
                   {...upcomingEvent}
                   state="heropage"
-                  onReadMore={() => router.push(`/event/${upcomingEvent.id}`)}
+                  onReadMore={() => router.push(`/events/${upcomingEvent.id}`)}
                 />
               );
             } else {
