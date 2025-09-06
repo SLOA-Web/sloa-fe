@@ -18,9 +18,8 @@ export default function HowItStarted({
 }: HowItStartedProps) {
   return (
     <section className="relative bg-gradient-to-r from-[#122D1E] via-[#122D1E]/90 to-[#122D1E]/90 py-16 lg:py-24">
+      <SectionHeader text="how it started" />
       <div className="container mx-auto">
-        <SectionHeader text="how it started" />
-
         <div className="mx-4 md:mx-10 lg:mx-16 my-12">
           {/* Main Title - spans full width */}
           <div className="mb-12">

@@ -11,7 +11,7 @@ interface OurMissionProps {
 export default function OurMission({
   title = "Our Mission",
   content = [
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Loreelit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Loreelit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem \n\n  Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum doelit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorelor sit amet."
+    "To advance orthopaedic practice in Sri Lanka by providing high-quality education and CPD, enabling research and audit, setting and promoting clinical standards, and advocating for patient safety and musculoskeletal health nationwide. We strive to foster a culture of continuous professional development among orthopaedic practitioners, support innovative research that addresses local and global challenges, and collaborate with healthcare partners to improve patient outcomes. Through our commitment to excellence, we aim to empower clinicians, enhance public awareness, and ensure equitable access to the highest standards of musculoskeletal care throughout the country.",
   ],
   imageUrl = "/assets/images/our-mission.webp",
   imageAlt = "Physical rehabilitation with forearm crutches",
@@ -20,7 +20,6 @@ export default function OurMission({
     <section className="py-12 lg:py-24 bg-white ">
       <SectionHeader text="BECOME A MEMBER" className="mb-8 lg:mb-24" />
       <div className="container mx-auto px-5 md:px-8">
-        
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Image */}
           <div className="order-1">
