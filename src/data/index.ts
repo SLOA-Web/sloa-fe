@@ -266,7 +266,7 @@ export const NAVBAR = [
   { title: "About Us", href: "/about" },
   { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
-  { title: "Get Involved", href: "/get-involved" },
+  { title: "Membership", href: "/get-involved" },
 ];
 
 export const TOP_BAR_LINKS = [

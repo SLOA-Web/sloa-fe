@@ -26,6 +26,8 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
 
     // Add a small delay to ensure elements are properly mounted
     const timer = setTimeout(() => {
+      
+
       if (!section || !img || !p) return;
       
       const ctx = gsap.context(() => {
@@ -76,6 +78,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
     };
   }, []);
 
+  function handleClick(): void {
+    window.location.href = "/signup";
+  }
+
   return (
     <section
       ref={sectionRef}
@@ -101,7 +107,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
             <p ref={pRef} className="text-[24px] my-8">
               The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka.
             </p>
-            <CustomButton text="Read our story" />
+            <CustomButton text="Apply Now" onClick={handleClick} />
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ export default function OurMission({
 }: OurMissionProps) {
   return (
     <section className="py-12 lg:py-24 bg-white ">
-      <SectionHeader text="BECOME A MEMBER" className="mb-8 lg:mb-24" />
+      <SectionHeader text="What Drives Us" className="mb-8 lg:mb-24" />
       <div className="container mx-auto px-5 md:px-8">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Image */}

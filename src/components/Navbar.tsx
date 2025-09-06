@@ -216,7 +216,7 @@ const Navbar = () => {
             <div className="flex justify-end gap-2 mt-4">
               {(NAVBAR as NavbarItem[]).map((item: NavbarItem) => {
                 const isActive = isActiveLink(item);
-                const isGetInvolved = item.title === "Get Involved";
+                const isGetInvolved = item.title === "Membership";
                 let linkClass = "";
                 if (isGetInvolved) {
                   linkClass =
@@ -235,7 +235,7 @@ const Navbar = () => {
                         {item.title}
                       </span>
                     </Link>
-                    {isActive && (
+                    {isActive && !isGetInvolved && (
                       <hr className="border-black border-t-2 w-full mt-1 mb-0" />
                     )}
                   </div>

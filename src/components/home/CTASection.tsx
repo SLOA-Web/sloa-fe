@@ -7,7 +7,7 @@ import SectionHeader from "../SectionHeader";
 import { useRouter } from "next/navigation";
 
 const CTASection: React.FC<CTASectionProps> = ({
-  title = "Advance Orthopaedics in Sri Lanka",
+  title = "Join SLOA Today",
   description = "Advance orthopaedics together — through education, research, and collaboration across Sri Lanka.",
   buttonText = "Join SLOA",
 }) => {
@@ -28,7 +28,7 @@ const CTASection: React.FC<CTASectionProps> = ({
         priority
       />
 
-      <SectionHeader text={title} />
+      <SectionHeader text={title} color="white" />
       <div className="relative z-10 flex flex-col items-start mx-4 md:mx-10 lg:mx-16">
         <p className="text-[32px] md:text-[40px] lg:text-[55px] my-12 text-white mb-8 text-left lg:w-[60%] font-roboto leading-[55px]">
           {description}
