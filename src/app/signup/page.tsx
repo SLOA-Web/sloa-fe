@@ -22,7 +22,7 @@ const SignupPage = () => {
 
     try {
       await api.post('/api/v1/auth/register', { fullName, email, password });
-      router.push('/login?registered=true'); // Redirect to login with a success message
+      router.push('/signup/success'); // Redirect to signup success page
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
