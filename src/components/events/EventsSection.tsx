@@ -232,99 +232,176 @@ const EventsSection: React.FC = () => {
   }, [grouped]);
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-12 lg:py-24">
-      {/* Top bar: search and month filter */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
-        <input
-          type="text"
-          placeholder="Search events..."
-          className="w-full md:w-1/3 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/500"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <select
-          className="w-full md:w-1/4 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/500 md:ml-auto"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
-        >
-          <option value="all">All Months</option>
-          {monthsList.map((month) => (
-            <option key={month} value={month}>{month}</option>
-          ))}
-        </select>
-      </div>
-      
-      {loading && <LoadingSpinner text="Loading event details..." />}
-      {error && <div className="text-red-500 mb-4">{error}</div>}
-      {!loading &&
-        !error &&
-        Object.entries(grouped).map(([month, events]) => (
-          <div key={month} className="mb-12">
-            <div className="flex items-center mb-8 w-full">
-              <h2
-                className="text-3xl lg:text-4xl font-extrabold tracking-tight capitalize text-black"
-                ref={(el) => {
-                  monthRefs.current[month] = el;
-                }}
-              >
-                {month}
-              </h2>
-              <hr
-                className="flex-1 h-[2px] mt-1 bg-black rounded-full border-none ml-4"
-                ref={(el) => {
-                  lineRefs.current[month] = el as HTMLSpanElement;
-                }}
-                style={{ display: "block" }}
+    <section className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 py-12 lg:py-24">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 tracking-tight">
+            Upcoming Events
+          </h1>
+          <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            Discover and register for our latest medical conferences, workshops, and educational events
+          </p>
+        </div>
+
+        {/* Enhanced Search and Filter Bar */}
+        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-white/20 p-6 mb-12">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            {/* Search Input */}
+            <div className="relative flex-1 max-w-md">
+              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder="Search events by title, description, or date..."
+                className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all duration-200 text-gray-700 placeholder-gray-400"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {events.map((event: EventApiType) => {
-                const eventId = event.id;
-                // Format date for display (e.g., 14 Sep 2023)
-                let dateObj: Date;
-                if (event.date.includes('/')) {
-                  const [day, month, year] = event.date.split('/').map(Number);
-                  dateObj = new Date(year, month - 1, day);
-                } else {
-                  dateObj = new Date(event.date);
-                }
-                const dateStr = !isNaN(dateObj.getTime())
-                  ? dateObj.toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "short",
-                      year: "numeric",
-                    })
-                  : event.date;
-                // Use posterUrl or fallback image
-                const image =
-                  event.posterUrl || "/assets/images/backup_card.png";
-                // Use description as summary
-                const summary = event.description || "";
-                // Use first agenda speaker as doctor (if available)
-                const doctor =
-                  event.agenda && event.agenda.length > 0
-                    ? event.agenda[0].speaker
-                    : "";
-                // Determine if event is upcoming
-                const now = new Date();
-                const isUpcoming = event.isRegistrationOpen && dateObj > now;
-                return (
-                  <EventCard
-                    key={event.id}
-                    image={image}
-                    date={dateStr}
-                    title={event.title}
-                    summary={summary}
-                    doctor={doctor}
-                    state={isUpcoming ? "upcoming" : undefined}
-                    onReadMore={() => handleReadMore(eventId)}
-                    loading={loadingSlug === eventId}
-                  />
-                );
-              })}
+
+            {/* Month Filter */}
+            <div className="relative">
+              <select
+                className="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/30 transition-all duration-200 text-gray-700 min-w-[180px]"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+              >
+                <option value="all">All Months</option>
+                {monthsList.map((month) => (
+                  <option key={month} value={month}>{month}</option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Results Counter */}
+            <div className="text-sm text-gray-500 font-medium">
+              {Object.values(grouped).reduce((total, events) => total + events.length, 0)} events found
             </div>
           </div>
-        ))}
+        </div>
+        
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-20">
+            <LoadingSpinner text="Loading events..." />
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-6 mb-8">
+            <div className="flex items-center">
+              <svg className="h-6 w-6 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <p className="text-red-700 font-medium">{error}</p>
+            </div>
+          </div>
+        )}
+
+        {/* Events Content */}
+        {!loading && !error && (
+          <>
+            {Object.keys(grouped).length === 0 ? (
+              <div className="text-center py-20">
+                <div className="bg-white/60 rounded-2xl p-12 max-w-md mx-auto">
+                  <svg className="h-16 w-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0v10a2 2 0 002 2h4a2 2 0 002-2V7m-8 0H6a2 2 0 00-2 2v10a2 2 0 002 2h1m5-10V9a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2h2v-6" />
+                  </svg>
+                  <h3 className="text-xl font-semibold text-gray-700 mb-2">No Events Found</h3>
+                  <p className="text-gray-500">Try adjusting your search criteria or check back later for new events.</p>
+                </div>
+              </div>
+            ) : (
+              Object.entries(grouped).map(([month, events]) => (
+                <div key={month} className="mb-16">
+                  {/* Month Header */}
+                  <div className="flex items-center mb-10 w-full">
+                    <h2
+                      className="text-3xl lg:text-4xl font-bold tracking-tight capitalize text-gray-900"
+                      ref={(el) => {
+                        monthRefs.current[month] = el;
+                      }}
+                    >
+                      {month}
+                    </h2>
+                    <div className="flex-1 ml-6 h-px bg-gradient-to-r from-primary/30 to-transparent">
+                      <hr
+                        className="h-full border-none bg-gradient-to-r from-primary to-primary/30"
+                        ref={(el) => {
+                          lineRefs.current[month] = el as HTMLSpanElement;
+                        }}
+                        style={{ display: "block" }}
+                      />
+                    </div>
+                    <div className="ml-4 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">
+                      {events.length} event{events.length !== 1 ? 's' : ''}
+                    </div>
+                  </div>
+
+                  {/* Events Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    {events.map((event: EventApiType) => {
+                      const eventId = event.id;
+                      // Format date for display (e.g., 14 Sep 2023)
+                      let dateObj: Date;
+                      if (event.date.includes('/')) {
+                        const [day, month, year] = event.date.split('/').map(Number);
+                        dateObj = new Date(year, month - 1, day);
+                      } else {
+                        dateObj = new Date(event.date);
+                      }
+                      const dateStr = !isNaN(dateObj.getTime())
+                        ? dateObj.toLocaleDateString("en-GB", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                          })
+                        : event.date;
+                      // Use posterUrl or fallback image
+                      const image =
+                        event.posterUrl || "/assets/images/backup_card.png";
+                      // Use description as summary
+                      const summary = event.description || "";
+                      // Use first agenda speaker as doctor (if available)
+                      const doctor =
+                        event.agenda && event.agenda.length > 0
+                          ? event.agenda[0].speaker
+                          : "";
+                      // Determine if event is upcoming
+                      const now = new Date();
+                      const isUpcoming = event.isRegistrationOpen && dateObj > now;
+                      return (
+                        <EventCard
+                          key={event.id}
+                          image={image}
+                          date={dateStr}
+                          title={event.title}
+                          summary={summary}
+                          doctor={doctor}
+                          state={isUpcoming ? "upcoming" : undefined}
+                          onReadMore={() => handleReadMore(eventId)}
+                          loading={loadingSlug === eventId}
+                          disableAnimations={true}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))
+            )}
+          </>
+        )}
+      </div>
     </section>
   );
 };

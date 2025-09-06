@@ -35,6 +35,7 @@ export interface EventApiType {
   time?: string;
   location?: string;
   posterUrl?: string | null;
+  coverImage?: string | null;
   agenda?: {
     time: string;
     topic: string;
