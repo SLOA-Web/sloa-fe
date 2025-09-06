@@ -220,7 +220,7 @@ const Navbar = () => {
                 let linkClass = "";
                 if (isGetInvolved) {
                   linkClass =
-                    "bg-primary text-white px-4 py-3 shadow hover:bg-primary/90";
+                    "bg-primary text-white px-4 py-2.5 shadow hover:bg-primary/90";
                 }
                 return (
                   <div key={item.href || item.title} className="flex flex-col items-center mx-2 lg:mx-4  mb-3">
