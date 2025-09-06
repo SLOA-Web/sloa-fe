@@ -99,20 +99,19 @@ const HeroBanner = () => {
         },
       });
 
-      // Fade out with subtle movement
-      tl.to([leftColRef.current, rightColRef.current], {
+      // Fade out with subtle movement - only animate left column
+      tl.to([leftColRef.current], {
         opacity: 0,
         y: -30,
         scale: 0.98,
         duration: 0.4,
         ease: "power2.inOut",
-        stagger: 0.1,
       })
         // Brief pause for content change
         .set({}, {}, "+=0.1")
-        // Fade in with smooth entrance
+        // Fade in with smooth entrance - only animate left column
         .fromTo(
-          [leftColRef.current, rightColRef.current],
+          [leftColRef.current],
           {
             opacity: 0,
             y: 30,
@@ -124,7 +123,6 @@ const HeroBanner = () => {
             scale: 1,
             duration: 0.6,
             ease: "power2.out",
-            stagger: 0.1,
           }
         );
 
@@ -326,4 +324,5 @@ const HeroBanner = () => {
 };
 
 export default HeroBanner;
+
 
