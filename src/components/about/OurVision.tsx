@@ -8,15 +8,15 @@ interface OurVisionProps {
 }
 
 export default function OurVision({
-  title = "Our\nVision",
+  title = "Our Vision",
   content = [
-    "A Sri Lanka where every patient has access to world-class orthopaedic care — delivered by skilled, ethical professionals working within a collaborative, research-driven system."
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Loreelit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Loreelit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem \n\n  Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum doelit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorelor sit amet."
   ],
   imageUrl = "/assets/images/our-vision.webp",
   imageAlt = "Medical facility"
 }: OurVisionProps) {
   return (
-    <section className="py-12 lg:py-24 bg-white mx-5 md:mx-10 lg:mx-16">
+    <section className="py-12 lg:py-24 bg-white px-5 md:px-8 lg:px-14">
       <div className="container ">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Text */}
@@ -27,7 +27,18 @@ export default function OurVision({
             <div className="space-y-6">
               {content.map((paragraph, index) => (
                 <p key={index} className="text-[#122D1E] font-poppins text-base leading-7">
-                  {paragraph}
+                  {paragraph
+                    .split('\n')
+                    .map((line, i, arr) =>
+                      i < arr.length - 1 ? (
+                        <span key={i}>
+                          {line}
+                          <br />{" "}
+                        </span>
+                      ) : (
+                        <span key={i}>{line}</span>
+                      )
+                    )}
                 </p>
               ))}
             </div>
@@ -38,7 +49,7 @@ export default function OurVision({
             <SimpleImage
               src={imageUrl}
               alt={imageAlt}
-              className="w-full h-[300px] lg:h-[492px] object-cover rounded-[8px]"
+              className="w-full h-[595px] lg:h-[492px] object-cover rounded-[8px]"
             />
           </div>
         </div>
