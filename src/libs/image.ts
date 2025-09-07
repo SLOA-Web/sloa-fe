@@ -1,7 +1,7 @@
 import createImageUrlBuilder from '@sanity/image-url'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'default-project-id'
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || '764fdutk'
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
 
 // Only validate in production/development, allow build to pass in CI without these vars
