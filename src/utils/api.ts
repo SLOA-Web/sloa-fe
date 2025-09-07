@@ -22,7 +22,9 @@ interface UserProfileUpdate {
   hospital?: string;
   location?: string;
   cv?: string;
-  birthDate?: string;
+  // Backend expects these exact keys when present; nulls allowed
+  dateOfBirth?: string | null;
+  phoneNumber?: string | null;
   documents?: string[];
 }
 

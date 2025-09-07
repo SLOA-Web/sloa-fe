@@ -42,6 +42,7 @@ interface User {
   email?: string;
   email_confirmed_at?: string;
   phone?: string;
+  phoneNumber?: string | null;
   confirmation_sent_at?: string;
   confirmed_at?: string;
   recovery_sent_at?: string;
@@ -57,13 +58,13 @@ interface User {
   status?: string;
   location?: string;
   membershipId?: string;
+  dateOfBirth?: string | null;
   profile?: {
     id?: string;
     nic?: string;
     specialization?: string;
     hospital?: string;
     cv?: string;
-    birthDate?: string;
   };
 }
 
@@ -151,18 +152,27 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await fetch(`${BACKEND_URL}/api/v1/auth/logout`, { 
-        method: 'POST', 
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
+      const url = `${BACKEND_URL}/api/v1/auth/logout`;
+      // Prefer sendBeacon for fire-and-forget without blocking navigation
+      if (typeof navigator !== 'undefined' && 'sendBeacon' in navigator) {
+        const blob = new Blob([], { type: 'application/octet-stream' });
+        navigator.sendBeacon(url, blob);
+      } else {
+        // No body and no JSON headers to avoid CORS preflight
+        fetch(url, {
+          method: 'POST',
+          credentials: 'include',
+          keepalive: true,
+        }).catch(() => { /* ignore */ });
+      }
     } finally {
+      // Optimistically clear local state
       setUser(null);
       if (typeof window !== 'undefined') {
         localStorage.removeItem("user_data");
       }
+      // Small UX delay so spinner is visible
+      await new Promise((r) => setTimeout(r, 300));
       router.push("/");
     }
   };

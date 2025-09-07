@@ -100,12 +100,13 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
+  phoneNumber?: string | null;
   nic?: string;
   specialization?: string;
   hospital?: string;
   location?: string;
   cv?: string;
-  birthDate?: string;
+  dateOfBirth?: string | null;
   documents?: string[];
   // Add other user properties as needed
 }
