@@ -25,14 +25,14 @@ interface UserProfile {
   specialization?: string;
   hospital?: string;
   cv?: string;
-  birthDate?: string;
+  phoneNumber?: string | null;
+  dateOfBirth?: string | null;
 }
 
 interface ApiResponse {
   user: {
     id?: string;
     email?: string;
-    phone?: string;
     fullName?: string;
     role?: string;
     status?: string;
@@ -52,7 +52,6 @@ const ProfilePage = () => {
     phone: "",
     email: "",
     location: "",
-    position: "", // Maps to user.role
     company: "", // Maps to profile.hospital
     education: "", // Maps to profile.specialization (closest fit)
     website: "", // Not from API
@@ -85,14 +84,13 @@ const ProfilePage = () => {
           firstName: nameParts[0] || "",
           secondName: nameParts.slice(1).join(' ') || "",
           email: fetchedUser?.email || "",
-          phone: fetchedUser?.phone || "",
+          phone: fetchedUser?.profile?.phoneNumber || "",
           location: location,
-          position: fetchedUser?.role || "",
           company: fetchedUser?.profile?.hospital || "",
           education: fetchedUser?.profile?.specialization || "",
           bio: fetchedUser?.profile?.cv || "",
           nic: fetchedUser?.profile?.nic || "",
-          birthDate: fetchedUser?.profile?.birthDate || "",
+          birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
         }));
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
@@ -135,7 +133,9 @@ const ProfilePage = () => {
         hospital: formData.company,
         location: formData.location,
         cv: formData.bio,
-        birthDate: formData.birthDate,
+        // Backend expects these exact keys; send nulls when empty
+        dateOfBirth: formData.birthDate ? formData.birthDate : null,
+        phoneNumber: formData.phone ? formData.phone : null,
       };
       
       // Use the new convenience method
@@ -160,14 +160,13 @@ const ProfilePage = () => {
         firstName: nameParts[0] || "",
         secondName: nameParts.slice(1).join(' ') || "",
         email: fetchedUser?.email || "",
-        phone: fetchedUser?.phone || "",
+        phone: fetchedUser?.profile?.phoneNumber || "",
         location: location,
-        position: fetchedUser?.role || "",
         company: fetchedUser?.profile?.hospital || "",
         education: fetchedUser?.profile?.specialization || "",
         bio: fetchedUser?.profile?.cv || "",
         nic: fetchedUser?.profile?.nic || "",
-        birthDate: fetchedUser?.profile?.birthDate || "",
+        birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
       }));
     } catch (err) {
       console.error("Failed to save profile:", err);
@@ -200,14 +199,13 @@ const ProfilePage = () => {
             firstName: nameParts[0] || "",
             secondName: nameParts.slice(1).join(' ') || "",
             email: fetchedUser?.email || "",
-            phone: fetchedUser?.phone || "",
+            phone: fetchedUser?.profile?.phoneNumber || "",
             location: location,
-            position: fetchedUser?.role || "",
             company: fetchedUser?.profile?.hospital || "",
             education: fetchedUser?.profile?.specialization || "",
             bio: fetchedUser?.profile?.cv || "",
             nic: fetchedUser?.profile?.nic || "",
-            birthDate: fetchedUser?.profile?.birthDate || "",
+            birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
           }));
         } catch (err) {
           console.error("Failed to fetch user profile on cancel:", err);
@@ -433,20 +431,7 @@ const ProfilePage = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <Briefcase className="h-4 w-4 text-green-600" />
-                  POSITION
-                </label>
-                <input
-                  type="text"
-                  value={formData.position}
-                  onChange={(e) => handleInputChange("position", e.target.value)}
-                  disabled={!isEditing}
-                  className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
-                  placeholder="Enter your position"
-                />
-              </div>
+              
 
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">

@@ -24,7 +24,7 @@ interface UserProfile {
   hospital: string;
   cv?: string;
   guestReason?: string;
-  documents: string[];
+  documents: string[] | null;
 }
 
 interface User {
@@ -41,14 +41,15 @@ interface User {
 interface Membership {
   id: string;
   userId: string;
-  role: 'consultant' | 'trainee';
-  documents: string[];
+  role?: 'consultant' | 'trainee';
+  membershipType?: 'consultant' | 'trainee';
+  documents: string[] | null;
   status: 'pending' | 'approved' | 'rejected';
   appliedAt: string;
-  approvedAt?: string;
-  rejectedAt?: string;
-  expiryDate?: string;
-  lastRenewalReminderAt?: string;
+  approvedAt?: string | null;
+  rejectedAt?: string | null;
+  expiryDate?: string | null;
+  lastRenewalReminderAt?: string | null;
   user: User;
 }
 
@@ -64,10 +65,10 @@ const InfoCard: React.FC<{ title: string; children: React.ReactNode }> = ({ titl
   </div>
 );
 
-const InfoField: React.FC<{ label: string; value: string }> = ({ label, value }) => (
+const InfoField: React.FC<{ label: string; value?: string | null }> = ({ label, value }) => (
   <div>
     <label className="text-sm font-medium text-muted-foreground">{label}</label>
-    <p className="text-foreground font-medium capitalize">{value}</p>
+    <p className="text-foreground font-medium capitalize">{value ?? '—'}</p>
   </div>
 );
 
@@ -173,8 +174,8 @@ const MembershipsPage = () => {
               <h4 className="text-lg font-semibold text-foreground">Current Status</h4>
               <StatusBadge status={membership.status} />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoField label="Role" value={membership.role} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InfoField label="Role" value={membership.role || membership.membershipType || '—'} />
               <InfoField label="Applied Date" value={new Date(membership.appliedAt).toLocaleDateString()} />
               {membership.approvedAt && <InfoField label="Approved Date" value={new Date(membership.approvedAt).toLocaleDateString()} />}
               {membership.expiryDate && <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />}
@@ -183,19 +184,19 @@ const MembershipsPage = () => {
 
           <InfoCard title="Profile Information">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoField label="Full Name" value={membership.user.fullName} />
-              <InfoField label="Email" value={membership.user.email} />
-              <InfoField label="NIC" value={membership.user.profile.nic} />
-              <InfoField label="Specialization" value={membership.user.profile.specialization} />
-              <InfoField label="Hospital" value={membership.user.profile.hospital} />
-              <InfoField label="Location" value={membership.user.location} />
+              <InfoField label="Full Name" value={membership.user?.fullName ?? null} />
+              <InfoField label="Email" value={membership.user?.email ?? null} />
+              <InfoField label="NIC" value={membership.user?.profile?.nic ?? null} />
+              <InfoField label="Specialization" value={membership.user?.profile?.specialization ?? null} />
+              <InfoField label="Hospital" value={membership.user?.profile?.hospital ?? null} />
+              <InfoField label="Location" value={membership.user?.location ?? null} />
             </div>
           </InfoCard>
 
           <InfoCard title="Documents">
             <div className="space-y-3">
-              {membership.documents.length > 0 ? (
-                membership.documents.map((doc, index) => (
+              {(() => { const docs = Array.isArray(membership.documents) ? membership.documents : []; return docs.length > 0 ? (
+                docs.map((doc, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <FileText className="h-5 w-5 text-primary" />
@@ -208,7 +209,7 @@ const MembershipsPage = () => {
                 ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">No documents uploaded</p>
-              )}
+              ); })()}
             </div>
           </InfoCard>
         </div>

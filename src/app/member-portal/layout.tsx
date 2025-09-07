@@ -13,7 +13,8 @@ import {
   CreditCard,
   LogOut,
   ChevronRight,
-  BadgeCheck
+  BadgeCheck,
+  Loader2
 } from 'lucide-react';
 
 const portalLinks = [
@@ -50,9 +51,17 @@ export default function MemberPortalLayout({
 }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    try {
+      setIsLoggingOut(true);
+      await logout();
+    } finally {
+      // In case navigation is blocked or fails, re-enable button
+      setIsLoggingOut(false);
+    }
   };
 
   return (
@@ -122,10 +131,20 @@ export default function MemberPortalLayout({
                 <div className="p-4 border-t border-border">
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+                    disabled={isLoggingOut}
+                    aria-busy={isLoggingOut}
+                    className={`w-full flex items-center justify-center gap-3 px-4 py-3 text-sm font-medium rounded-lg transition-all
+                    ${isLoggingOut 
+                      ? 'bg-muted text-muted-foreground cursor-wait' 
+                      : 'text-destructive hover:bg-destructive/10 active:scale-[0.98]'}
+                    disabled:opacity-60`}
                   >
-                    <LogOut className="h-4 w-4" />
-                    Sign out
+                    {isLoggingOut ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <LogOut className="h-4 w-4" />
+                    )}
+                    {isLoggingOut ? 'Signing out…' : 'Sign out'}
                   </button>
                 </div>
               </div>
