@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, use } from "react";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { api } from "@/utils/api";
@@ -16,11 +16,12 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function EventDetailPage({
-  params,
-}: {
-  readonly params: { readonly id: string };
-}) {
+export default function EventDetailPage(
+  props: {
+    readonly params: Promise<{ readonly id: string }>;
+  }
+) {
+  const params = use(props.params);
   const { user } = useAuth();
   const [event, setEvent] = useState<EventApiType | null | undefined>(
     undefined

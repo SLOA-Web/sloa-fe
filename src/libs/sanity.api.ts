@@ -1,9 +1,10 @@
 // /lib/sanity.api.ts
 import { client } from './client'
-import type { SanityEvent, SanityPost } from '@/types/sanity'
+import type { SanityEvent, SanityPost, SanityAnnouncement } from '@/types/sanity'
 
 export const EVENTS_PER_PAGE = 6;
 export const PUBLICATIONS_PER_PAGE = 10;
+export const ANNOUNCEMENTS_PER_PAGE = 12;
 
 // --- Combined Event Fetching Function ---
 interface GetEventsParams {
@@ -17,7 +18,7 @@ export async function getFilteredEvents({ page, searchTerm, year }: GetEventsPar
   const end = start + EVENTS_PER_PAGE;
 
   let query = `*[_type == "event"`;
-  const params: Record<string, any> = {};
+  const params: Record<string, string | number> = {};
 
   // Build the query conditions
   const conditions = [];
@@ -51,7 +52,7 @@ export async function getFilteredPublications({ page, searchTerm }: GetPublicati
   const end = start + PUBLICATIONS_PER_PAGE;
 
   let query = `*[_type == "post"`;
-  const params: Record<string, any> = {};
+  const params: Record<string, string> = {};
 
   if (searchTerm) {
     query += ` && title match $searchTerm`;
@@ -61,4 +62,21 @@ export async function getFilteredPublications({ page, searchTerm }: GetPublicati
   query += `] | order(publishedAt desc) [${start}...${end}]`;
 
   return client.fetch(query, params);
+}
+
+// --- Announcement Functions ---
+export async function getActiveAnnouncements(): Promise<SanityAnnouncement[]> {
+  const query = `*[_type == "announcement" && isActive == true && (!defined(expiryDate) || expiryDate >= now())] | order(priority desc, publishedAt desc) [0...${ANNOUNCEMENTS_PER_PAGE}]`;
+  return client.fetch(query);
+}
+
+// --- Individual Item Functions ---
+export async function getEventById(id: string): Promise<SanityEvent | null> {
+  const query = `*[_type == "event" && _id == $id][0]`;
+  return client.fetch(query, { id });
+}
+
+export async function getPublicationBySlug(slug: string): Promise<SanityPost | null> {
+  const query = `*[_type == "post" && slug.current == $slug][0]`;
+  return client.fetch(query, { slug });
 }

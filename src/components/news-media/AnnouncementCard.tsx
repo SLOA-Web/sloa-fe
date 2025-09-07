@@ -1,0 +1,76 @@
+'use client'
+
+import { Calendar, AlertCircle, Info, Megaphone } from 'lucide-react'
+import type { SanityAnnouncement } from '@/types/sanity'
+import { cn } from '@/libs/utils'
+
+interface AnnouncementCardProps {
+  announcement: SanityAnnouncement
+}
+
+export default function AnnouncementCard({ announcement }: AnnouncementCardProps) {
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return <AlertCircle size={18} />
+      case 'medium':
+        return <Megaphone size={18} />
+      case 'low':
+      default:
+        return <Info size={18} />
+    }
+  }
+
+  const getPriorityClasses = (priority: string) => {
+    switch (priority) {
+      case 'high':
+        return 'border-red-200 bg-red-50 text-red-900'
+      case 'medium':
+        return 'border-yellow-200 bg-yellow-50 text-yellow-900'
+      case 'low':
+      default:
+        return 'border-blue-200 bg-blue-50 text-blue-900'
+    }
+  }
+
+  return (
+    <div className={cn(
+      'rounded-lg border p-4 transition-colors hover:shadow-md',
+      getPriorityClasses(announcement.priority)
+    )}>
+      <div className="flex items-start space-x-3">
+        <div className="flex-shrink-0 mt-1">
+          {getPriorityIcon(announcement.priority)}
+        </div>
+        
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold mb-2">
+            {announcement.title}
+          </h3>
+          
+          <p className="text-sm mb-3 whitespace-pre-line">
+            {announcement.content}
+          </p>
+          
+          <div className="flex items-center text-xs opacity-75">
+            <Calendar size={12} className="mr-1" />
+            Posted {formatDate(announcement.publishedAt)}
+            {announcement.expiryDate && (
+              <span className="ml-3">
+                • Expires {formatDate(announcement.expiryDate)}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
