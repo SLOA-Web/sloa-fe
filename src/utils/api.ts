@@ -26,6 +26,8 @@ interface UserProfileUpdate {
   dateOfBirth?: string | null;
   phoneNumber?: string | null;
   documents?: string[];
+  // Allow setting/clearing profile image through details when provided
+  profileImage?: string | null;
 }
 
 // Removed unused interface
@@ -185,6 +187,15 @@ class ApiClient {
    */
   async getCurrentUser(): Promise<{ user: User }> {
     return this.get('/api/v1/auth/me');
+  }
+
+  /**
+   * Update current user's profile image (set or remove)
+   */
+  async updateMyProfileImage(profileImage: string | null): Promise<{ success: boolean; message: string; profileImage?: string }>{
+    // Backend expects a string; send empty string to remove
+    const body = { profileImage: profileImage ?? '' } as const;
+    return this.patch('/api/v1/users/me/profile-image', body);
   }
 }
 
