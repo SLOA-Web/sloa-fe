@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileUp, Send, X, CheckCircle2, ArrowRight, ArrowLeft, FileText, Trash2 } from 'lucide-react';
+import { FileUp, Send, CheckCircle2, ArrowRight, ArrowLeft, FileText, Trash2 } from 'lucide-react';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
 
