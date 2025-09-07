@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import MembershipApplicationModal from '@/components/MembershipApplicationModal';
+import MembershipApplicationForm from '@/components/MembershipApplicationForm';
 import { 
   Crown, 
   Clock, 
@@ -48,6 +48,7 @@ interface Membership {
   appliedAt: string;
   approvedAt?: string | null;
   rejectedAt?: string | null;
+  rejectionReason?: string | null;
   expiryDate?: string | null;
   lastRenewalReminderAt?: string | null;
   user: User;
@@ -95,7 +96,8 @@ const MembershipsPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showReapply, setShowReapply] = useState(false);
 
   const fetchMembership = useCallback(async () => {
     try {
@@ -149,18 +151,33 @@ const MembershipsPage = () => {
   );
 
   const renderNoMembership = () => (
-    <div className="text-center py-12 bg-card border border-border rounded-lg">
-      <Crown className="h-16 w-16 text-primary mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-foreground mb-2">Start Your Membership Journey</h3>
-      <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-        It looks like you haven&#39;t applied for a membership yet. Join our community to unlock exclusive benefits.
-      </p>
-      <button 
-        onClick={() => setIsModalOpen(true)}
-        className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
-      >
-        Apply for Membership
-      </button>
+    <div className="py-6">
+      <div className="text-center py-10 bg-card border border-border rounded-lg mb-6">
+        <Crown className="h-16 w-16 text-primary mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-foreground mb-2">Start Your Membership Journey</h3>
+        <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+          It looks like you haven&apos;t applied for a membership yet. Join our community to unlock exclusive benefits.
+        </p>
+        <button 
+          onClick={() => setShowForm(true)}
+          className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
+        >
+          {showForm ? 'Continue Below' : 'Start Application'}
+        </button>
+      </div>
+
+      {showForm && (
+        <div className="bg-card border border-border rounded-lg p-6">
+          <MembershipApplicationForm 
+            onSubmitted={() => {
+              // Hide form and refresh membership details
+              setShowForm(false);
+              setLoading(true);
+              fetchMembership();
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 
@@ -169,13 +186,14 @@ const MembershipsPage = () => {
     return (
       <div className="space-y-6">
         <div className="space-y-6">
+          
           <InfoCard title="Membership Status">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-foreground">Current Status</h4>
               <StatusBadge status={membership.status} />
             </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoField label="Role" value={membership.role || membership.membershipType || '—'} />
+              <InfoField label="Membership Type" value={membership.membershipType || '—'} />
               <InfoField label="Applied Date" value={new Date(membership.appliedAt).toLocaleDateString()} />
               {membership.approvedAt && <InfoField label="Approved Date" value={new Date(membership.approvedAt).toLocaleDateString()} />}
               {membership.expiryDate && <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />}
@@ -212,14 +230,43 @@ const MembershipsPage = () => {
               ); })()}
             </div>
           </InfoCard>
+          {membership.status === 'rejected' && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                <div className="flex-1">
+                  <h4 className="text-red-800 font-semibold mb-1">Application Rejected</h4>
+                  <p className="text-red-700 text-sm">Rejection Reason : {membership.rejectionReason || 'Your application was rejected. Please review and submit again.'}</p>
+                  <div className="mt-3">
+                    <button
+                      onClick={() => setShowReapply(true)}
+                      className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      Reapply
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+        {membership.status === 'rejected' && showReapply && (
+          <div className="bg-card border border-border rounded-lg p-6">
+            <MembershipApplicationForm 
+              onSubmitted={() => {
+                setShowReapply(false);
+                setLoading(true);
+                fetchMembership();
+              }}
+            />
+          </div>
+        )}
       </div>
     );
   };
 
   return (
     <>
-      <MembershipApplicationModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
       <div className="space-y-6">
         <div className="flex items-center justify-between">
         <div>
