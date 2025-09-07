@@ -1,115 +1,59 @@
-"use client";
-
-import React from "react";
 import SimpleImage from "@/components/SimpleImage";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
-import Autoplay from "embla-carousel-autoplay";
 import SectionHeader from "../SectionHeader";
 
 interface OurMissionProps {
-  title?: string;
-  content?: string;
-  images?: Array<{
-    src: string;
-    alt: string;
-  }>;
+  readonly title?: string;
+  readonly content?: readonly string[];
+  readonly imageUrl?: string;
+  readonly imageAlt?: string;
 }
 
 export default function OurMission({
-  title = "Our\nMission",
-  content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  images = [
-    {
-      src: "/assets/images/our-mission.webp",
-      alt: "Physical rehabilitation with forearm crutches",
-    },
-    {
-      src: "/assets/images/our-mission.webp",
-      alt: "Medical assistance with rehabilitation",
-    },
-    {
-      src: "/assets/images/our-mission.webp",
-      alt: "Physical therapy session",
-    },
-    {
-      src: "/assets/images/our-mission.webp",
-      alt: "Rehabilitation progress",
-    },
-    {
-      src: "/assets/images/our-mission.webp",
-      alt: "Physical therapy session",
-    },
-    {
-      src: "/assets/images/our-mission.webp",
-      alt: "Rehabilitation progress",
-    },
+  title = "Our Mission",
+  content = [
+    "To advance orthopaedic practice in Sri Lanka by providing high-quality education and CPD, enabling research and audit, setting and promoting clinical standards, and advocating for patient safety and musculoskeletal health nationwide. We strive to foster a culture of continuous professional development among orthopaedic practitioners, support innovative research that addresses local and global challenges, and collaborate with healthcare partners to improve patient outcomes. Through our commitment to excellence, we aim to empower clinicians, enhance public awareness, and ensure equitable access to the highest standards of musculoskeletal care throughout the country.",
   ],
+  imageUrl = "/assets/images/our-mission.webp",
+  imageAlt = "Physical rehabilitation with forearm crutches",
 }: OurMissionProps) {
-  // Auto-scroll functionality with autoplay plugin
-  const plugin = React.useRef(
-    Autoplay({ delay: 3000, stopOnInteraction: false })
-  );
-
   return (
-    <section className="py-16 lg:py-24 bg-white">
-      <div className="container mx-auto">
-        <SectionHeader text="Become a member" />
+    <section className="py-12 lg:py-24 bg-white ">
+      <SectionHeader text="What Drives Us" className="mb-8 lg:mb-24" />
+      <div className="container mx-auto px-5 md:px-8">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+          {/* Left Column - Image */}
+          <div className="order-1">
+            <SimpleImage
+              src={imageUrl}
+              alt={imageAlt}
+              className="w-full h-[595px] lg:h-[492px] object-cover rounded-[8px]"
+            />
+          </div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start mb-16 mx-4 md:mx-10 lg:mx-16 my-12">
-          {/* Left Column - Title */}
-          <div>
-            <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight font-normal whitespace-pre-line">
+          {/* Right Column - Text */}
+          <div className="order-2">
+            <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight mb-8 font-normal whitespace-pre-line">
               {title}
             </h2>
-          </div>
-
-          {/* Right Column - Content */}
-          <div>
-            <p className="text-[#122D1E] font-poppins text-base leading-7">
-              {content}
-            </p>
-          </div>
-        </div>
-
-        {/* Auto-moving Carousel with Gradient Overlays */}
-        <div className="relative mt-16">
-          {/* Left Gradient Overlay */}
-          <div className="absolute left-0 top-0 w-8 md:w-16 lg:w-24 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"/>
-
-          {/* Right Gradient Overlay */}
-          <div className="absolute right-0 top-0 w-8 md:w-16 lg:w-24 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"/>
-
-          <Carousel
-            plugins={[plugin.current]}
-            opts={{
-              align: "start",
-              loop: true,
-              skipSnaps: false,
-              dragFree: true,
-            }}
-            className="w-full"
-          >
-            <CarouselContent className="-ml-4">
-              {images.map((image, index) => (
-                <CarouselItem
-                  key={index}
-                  className="pl-4 basis-full md:basis-1/2 lg:basis-1/4"
-                >
-                  <div className="relative">
-                    <SimpleImage
-                      src={image.src}
-                      alt={image.alt}
-                      className="w-full h-[300px] lg:h-[445px] object-cover rounded-lg"
-                    />
-                  </div>
-                </CarouselItem>
+            <div className="space-y-6">
+              {content.map((paragraph, index) => (
+                <p key={index} className="text-[#122D1E] font-poppins text-base leading-7">
+                  {paragraph
+                    .split('\n')
+                    .map((line, i, arr) =>
+                      i < arr.length - 1 ? (
+                        <span key={i}>
+                          {line}
+                          <br />{" "}
+                        </span>
+                      ) : (
+                        <span key={i}>{line}</span>
+                      )
+                    )}
+                </p>
               ))}
-            </CarouselContent>
-          </Carousel>
+            </div>
+          </div>
         </div>
       </div>
     </section>

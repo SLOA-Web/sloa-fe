@@ -118,8 +118,8 @@ const RecentEvents: React.FC = () => {
 
       <div className="my-12">
         <div className="mx-4 md:mx-10 lg:mx-16">
-          <h1 className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[50%] font-roboto mb-8">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          <h1 className="text-[24px] md:text-[32px] lg:text-[40px] lg:w-[60%] font-roboto mb-8">
+            Explore recent orthopaedic events in Sri Lanka.
           </h1>
           
           {loading && <LoadingSpinner text="Loading event details..." />}

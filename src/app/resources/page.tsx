@@ -11,7 +11,6 @@ const ResourcesPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
@@ -39,9 +38,6 @@ const ResourcesPage = () => {
       default: return <LinkIcon className="w-5 h-5" />;
     }
   };
-
-  // Only include non-empty categories
-  const categories = ["All", ...Array.from(new Set(resources.map(r => r.category).filter(Boolean)))];
 
   useEffect(() => {
     fetchResources();
@@ -89,11 +85,10 @@ const ResourcesPage = () => {
     const filtered = resources.filter(resource => {
       const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            (resource.shortDesc && resource.shortDesc.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesCategory = selectedCategory === "All" || resource.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      return matchesSearch;
     });
     setFilteredResources(filtered);
-  }, [searchTerm, selectedCategory, resources]);
+  }, [searchTerm, resources]);
 
   const addToRefs = (el: HTMLElement | null) => {
     if (el && !cardsRef.current.includes(el)) {
@@ -137,18 +132,6 @@ const ResourcesPage = () => {
               className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
             />
           </div>
-          
-          <div className="flex items-center space-x-2">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-3 rounded-xl border border-slate-200 bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* Error State */}
@@ -173,7 +156,7 @@ const ResourcesPage = () => {
               <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-slate-600 mb-2">No resources found</h3>
               <p className="text-slate-500">
-                {searchTerm || selectedCategory !== "All" 
+                {searchTerm
                   ? "Try adjusting your search or filter criteria"
                   : "No resources are available yet"
                 }

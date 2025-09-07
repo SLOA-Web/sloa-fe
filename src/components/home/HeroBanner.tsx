@@ -99,20 +99,19 @@ const HeroBanner = () => {
         },
       });
 
-      // Fade out with subtle movement
-      tl.to([leftColRef.current, rightColRef.current], {
+      // Fade out with subtle movement - only animate left column
+      tl.to([leftColRef.current], {
         opacity: 0,
         y: -30,
         scale: 0.98,
         duration: 0.4,
         ease: "power2.inOut",
-        stagger: 0.1,
       })
         // Brief pause for content change
         .set({}, {}, "+=0.1")
-        // Fade in with smooth entrance
+        // Fade in with smooth entrance - only animate left column
         .fromTo(
-          [leftColRef.current, rightColRef.current],
+          [leftColRef.current],
           {
             opacity: 0,
             y: 30,
@@ -124,7 +123,6 @@ const HeroBanner = () => {
             scale: 1,
             duration: 0.6,
             ease: "power2.out",
-            stagger: 0.1,
           }
         );
 
@@ -287,9 +285,14 @@ const HeroBanner = () => {
           {(() => {
             if (eventLoading) {
               return (
-                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                  <p className="mt-2 text-sm text-muted-foreground">Loading event...</p>
+                <div className="relative bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-sm min-h-[320px] text-black">
+                  <div className="w-full h-52 relative bg-gray-300 animate-pulse"></div>
+                  <div className="p-4 flex flex-col w-full flex-1">
+                    <div className="h-4 bg-gray-300 animate-pulse mb-2"></div>
+                    <div className="h-3 bg-gray-300 animate-pulse mb-2"></div>
+                    <div className="flex-1" />
+                    <div className="h-8 w-20 bg-gray-300 animate-pulse"></div>
+                  </div>
                 </div>
               );
             } else if (eventError) {
@@ -303,7 +306,7 @@ const HeroBanner = () => {
                 <EventCard
                   {...upcomingEvent}
                   state="heropage"
-                  onReadMore={() => router.push(`/event/${upcomingEvent.id}`)}
+                  onReadMore={() => router.push(`/events/${upcomingEvent.id}`)}
                 />
               );
             } else {
@@ -321,4 +324,5 @@ const HeroBanner = () => {
 };
 
 export default HeroBanner;
+
 

@@ -8,17 +8,16 @@ interface OurVisionProps {
 }
 
 export default function OurVision({
-  title = "Our\nVision",
+  title = "Our Vision",
   content = [
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    "A Sri Lanka where every patient has access to world-class orthopaedic care — delivered by skilled, ethical professionals working within a collaborative, research-driven system. We envision a future where innovation and compassion go hand in hand, ensuring that every individual receives the highest standard of orthopaedic treatment regardless of their background or circumstances. Our commitment is to foster a culture of continuous learning, research, and ethical practice, empowering healthcare professionals to push the boundaries of excellence. By building strong partnerships and embracing new technologies, we strive to transform the landscape of orthopaedic care for generations to come."
   ],
   imageUrl = "/assets/images/our-vision.webp",
   imageAlt = "Medical facility"
 }: OurVisionProps) {
   return (
-    <section className="py-12 lg:py-24 bg-white">
-      <div className="container mx-auto mx-4 md:mx-10 lg:mx-16">
+    <section className="py-12 lg:py-24 bg-white px-5 md:px-8 lg:px-14">
+      <div className="container ">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Text */}
           <div className="order-2 lg:order-1">
@@ -28,7 +27,18 @@ export default function OurVision({
             <div className="space-y-6">
               {content.map((paragraph, index) => (
                 <p key={index} className="text-[#122D1E] font-poppins text-base leading-7">
-                  {paragraph}
+                  {paragraph
+                    .split('\n')
+                    .map((line, i, arr) =>
+                      i < arr.length - 1 ? (
+                        <span key={i}>
+                          {line}
+                          <br />{" "}
+                        </span>
+                      ) : (
+                        <span key={i}>{line}</span>
+                      )
+                    )}
                 </p>
               ))}
             </div>
@@ -39,7 +49,7 @@ export default function OurVision({
             <SimpleImage
               src={imageUrl}
               alt={imageAlt}
-              className="w-full h-[300px] lg:h-[492px] object-cover rounded-[8px]"
+              className="w-full h-[595px] lg:h-[492px] object-cover rounded-[8px]"
             />
           </div>
         </div>

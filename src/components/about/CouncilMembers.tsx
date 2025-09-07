@@ -56,8 +56,9 @@ export default function CouncilMembers({
 }: Readonly<CouncilMembersProps>) {
   return (
     <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-[#F6E4E5]/30">
+      <SectionHeader text="Council members" />
       <div className="container mx-auto">
-        <SectionHeader text="Council members" />
+        
 
         {/* Council Members Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 mx-4 md:mx-10 lg:mx-16 py-12">

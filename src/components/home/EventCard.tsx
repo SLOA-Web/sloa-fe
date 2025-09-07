@@ -165,7 +165,12 @@ const EventCard: React.FC<any> = (props) => {
           </p>
           <div className="flex-1" />
           <div className="flex justify-end">
-            <CustomButton text="Book Now" className="border-none px-0 py-0" />
+            <CustomButton
+              onClick={onReadMore}
+              text={loading ? "Redirecting..." : "Book Now"}
+              className="border-none px-0 py-0"
+              hideIcon={!!loading}
+            />
           </div>
         </div>
       </div>

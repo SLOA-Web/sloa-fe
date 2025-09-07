@@ -35,6 +35,7 @@ export interface EventApiType {
   time?: string;
   location?: string;
   posterUrl?: string | null;
+  coverImage?: string | null;
   agenda?: {
     time: string;
     topic: string;
@@ -99,12 +100,13 @@ export interface User {
   id: string;
   fullName: string;
   email: string;
+  phoneNumber?: string | null;
   nic?: string;
   specialization?: string;
   hospital?: string;
   location?: string;
   cv?: string;
-  birthDate?: string;
+  dateOfBirth?: string | null;
   documents?: string[];
   // Add other user properties as needed
 }
@@ -182,4 +184,12 @@ export interface Attendee {
     userRole: string;
     // ...other user fields if needed
   };
+}
+
+
+export interface CommonHeroProps {
+  description: string;
+  title: string;
+  imageUrl?: string; // Optional image URL for the hero section
+  imageClassname?: string; 
 }

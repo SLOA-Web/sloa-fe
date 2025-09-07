@@ -102,15 +102,14 @@ export default function GetInvolvedPage() {
   return (
     <main>
       <CommonBanner imageUrl="assets/images/membership.svg" text="Get Involved" />
-      
+
       {/* No Membership Message */}
       <Suspense fallback={null}>
         <NoMembershipMessage />
       </Suspense>
-
+      <InfoSection headerText="new member" />
       <BenefitsList />
       <Benefits />
-      <InfoSection headerText="new member" />
       <CTASection />
     </main>
   );

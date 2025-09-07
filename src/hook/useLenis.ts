@@ -1,17 +1,21 @@
 "use client";
 
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Lenis from "@studio-freight/lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-export default function useLenis(): void {
+export default function useLenis(): Lenis | null {
+  const lenisRef = useRef<Lenis | null>(null);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.05,
     });
+
+    // Store lenis instance in ref
+    lenisRef.current = lenis;
 
     let rafId: number;
     const raf = (time: number) => {
@@ -52,8 +56,11 @@ export default function useLenis(): void {
       lenis.off("scroll", updateScrollTrigger);
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      lenisRef.current = null;
       ScrollTrigger.removeEventListener("refresh", onRefresh);
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
   }, []);
+
+  return lenisRef.current;
 }

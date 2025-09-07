@@ -26,6 +26,8 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
 
     // Add a small delay to ensure elements are properly mounted
     const timer = setTimeout(() => {
+      
+
       if (!section || !img || !p) return;
       
       const ctx = gsap.context(() => {
@@ -34,10 +36,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
         
         gsap.fromTo(
           img,
-          { opacity: 0, y: 40 },
+          { opacity: 0, x: -40 },
           {
             opacity: 1,
-            y: 0,
+            x: 0,
             duration: 1,
             ease: "power2.out",
             scrollTrigger: {
@@ -76,6 +78,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
     };
   }, []);
 
+  function handleClick(): void {
+    window.location.href = "/signup";
+  }
+
   return (
     <section
       ref={sectionRef}
@@ -84,7 +90,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 items-center">
         {/* Left side: Image */}
         <div ref={imgRef} className="flex justify-center w-full">
-          <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full rounded-[8px]">
+          <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full overflow-hidden">
             <Image
               src="/assets/images/home_about.svg"
               alt="Info Section"
@@ -99,17 +105,9 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
           <SectionHeader text={headerText} />
           <div className="mx-4 lg:ml-12">
             <p ref={pRef} className="text-[24px] my-8">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. In et
-              sapien non nunc blandit ullamcorper. Pellentesque convallis
-              vestibulum turpis sit amet tempus. Duis rutrum ut dui non semper.
-              Sed sit amet tincidunt ante, vitae hendrerit massa. Nullam nec
-              faucibus diam, et ultricies nisl. Integer mi lacus, ultricies a
-              sollicitudin iaculis, tempus nec magna. Quisque id mauris
-              convallis ipsum vehicula ornare. Lorem ipsum dolor sit amet,
-              consectetur adipiscing elit. In et sapien non nunc blandit
-              ullamcorper.
+              The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka.
             </p>
-            <CustomButton text="Read our story" />
+            <CustomButton text="Apply Now" onClick={handleClick} />
           </div>
         </div>
       </div>

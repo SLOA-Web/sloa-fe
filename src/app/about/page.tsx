@@ -5,7 +5,7 @@ import { HowItStarted, OurMission, OurVision, CouncilMembers } from "@/component
 export default function AboutPage() {
   return (
     <div>
-      <CommonBanner imageUrl="assets/images/aboutus_hero.svg" text="about us" />
+      <CommonBanner imageUrl="assets/images/aboutus_hero.svg" text="ABOUT US" />
       <HowItStarted />
       <OurMission />
       <OurVision />

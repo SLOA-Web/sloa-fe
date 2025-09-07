@@ -2467,7 +2467,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Annual SLOA Conference 2024\",\n  \"description\": \"Join us for the annual conference featuring the latest in orthopedic surgery\",\n  \"date\": \"2024-12-15\",\n  \"time\": \"09:00\",\n  \"location\": \"Colombo Convention Centre\",\n  \"posterUrl\": \"https://example.com/poster.jpg\",\n  \"programUrl\": \"https://example.com/program.pdf\",\n  \"agenda\": [\n    {\n      \"time\": \"09:00 AM\",\n      \"topic\": \"Registration & Welcome Coffee\",\n      \"speaker\": \"Event Team\"\n    },\n    {\n      \"time\": \"10:00 AM\",\n      \"topic\": \"Keynote: Advances in Orthopedic Surgery\",\n      \"speaker\": \"Dr. Rajesh Kumar\"\n    },\n    {\n      \"time\": \"11:30 AM\",\n      \"topic\": \"Coffee Break\",\n      \"speaker\": \"N/A\"\n    },\n    {\n      \"time\": \"12:00 PM\",\n      \"topic\": \"Panel Discussion: Future of Orthopedics\",\n      \"speaker\": \"Multiple Speakers\"\n    }\n  ],\n  \"isRegistrationOpen\": true\n}"
+							"raw": "{\n  \"title\": \"Annual SLOA Conference 2024\",\n  \"description\": \"Join us for the annual conference featuring the latest in orthopedic surgery\",\n  \"date\": \"2024-12-15\",\n  \"time\": \"09:00\",\n  \"location\": \"Colombo Convention Centre\",\n  \"posterUrl\": \"https://example.com/poster.jpg\",\n  \"coverImage\": \"https://example.com/cover-image.jpg\",\n  \"programUrl\": \"https://example.com/program.pdf\",\n  \"agenda\": [\n    {\n      \"time\": \"09:00 AM\",\n      \"topic\": \"Registration & Welcome Coffee\",\n      \"speaker\": \"Event Team\"\n    },\n    {\n      \"time\": \"10:00 AM\",\n      \"topic\": \"Keynote: Advances in Orthopedic Surgery\",\n      \"speaker\": \"Dr. Rajesh Kumar\"\n    },\n    {\n      \"time\": \"11:30 AM\",\n      \"topic\": \"Coffee Break\",\n      \"speaker\": \"N/A\"\n    },\n    {\n      \"time\": \"12:00 PM\",\n      \"topic\": \"Panel Discussion: Future of Orthopedics\",\n      \"speaker\": \"Multiple Speakers\"\n    }\n  ],\n  \"isRegistrationOpen\": true\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/events",
@@ -2496,7 +2496,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"title\": \"Updated Event Title\",\n  \"isRegistrationOpen\": false\n}"
+							"raw": "{\n  \"title\": \"Updated Event Title\",\n  \"coverImage\": \"https://example.com/new-cover-image.jpg\",\n  \"isRegistrationOpen\": false\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/events/{{eventId}}",
@@ -3741,6 +3741,39 @@
 							]
 						},
 						"description": "Upload event poster image (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Upload Event Cover Image (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "coverImage",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/upload/events/{{eventId}}/cover",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"upload",
+								"events",
+								"{{eventId}}",
+								"cover"
+							]
+						},
+						"description": "Upload event cover image (Admin only)"
 					},
 					"response": []
 				},

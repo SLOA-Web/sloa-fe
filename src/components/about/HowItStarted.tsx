@@ -10,17 +10,16 @@ interface HowItStartedProps {
 }
 
 export default function HowItStarted({
-  title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  leftContent = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.",
-  rightContent = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.",
-  heroImageUrl = "/assets/images/how-it-started.webp",
+  title = "Raising the standard of orthopaedic care across Sri Lanka.",
+  leftContent = "The Sri Lanka Orthopaedic Association (SLOA) is the professional body for orthopaedic surgeons and musculoskeletal specialists in Sri Lanka. From training the next generation to supporting research and quality improvement, we exist to advance safe, effective and compassionate orthopaedic care.",
+  rightContent = "Through national courses, conferences and international partnerships, SLOA promotes evidence-based practice and continuous professional development. Our community shares knowledge, mentors trainees and collaborates on guidelines that improve outcomes for trauma and elective orthopaedic patients.",
+  heroImageUrl = "/assets/images/how-it-started.svg",
   heroImageAlt = "Medical professionals working",
 }: HowItStartedProps) {
   return (
-    <section className="relative bg-gradient-to-r from-[#122D1E] via-[#122D1E]/90 to-[#122D1E]/80 py-16 lg:py-24">
+    <section className="relative bg-gradient-to-r from-[#122D1E] via-[#122D1E]/90 to-[#122D1E]/90 py-16 lg:py-24">
+      <SectionHeader text="how it started" />
       <div className="container mx-auto">
-        <SectionHeader text="how it started" />
-
         <div className="mx-4 md:mx-10 lg:mx-16 my-12">
           {/* Main Title - spans full width */}
           <div className="mb-12">
@@ -51,7 +50,7 @@ export default function HowItStarted({
         <SimpleImage
           src={heroImageUrl}
           alt={heroImageAlt}
-          className="w-full h-[300px] lg:h-[484px] object-cover rounded-[8px]"
+          className="w-full h-[full] md:h-[300px] lg:h-[490px] mx-auto object-cover rounded-[8px]"
         />
       </div>
     </section>

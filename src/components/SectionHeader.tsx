@@ -70,7 +70,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({ text, color = "#587565", 
 
   return (
     <div ref={headerRef} className={`flex items-center gap-2 font-poppins text-[#587565] ${className}`}>
-      <hr ref={hrRef} className="w-8 lg:w-16" style={{ borderColor: color }} />
+      <hr ref={hrRef} className="w-4 md:w-8 lg:w-16" style={{ borderColor: color }} />
       <p ref={textRef} className="uppercase text-[18px]" style={{ color }}>{text}</p>
     </div>
   );
