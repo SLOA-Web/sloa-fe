@@ -344,8 +344,8 @@ export default function EventDetailPage({
                 className="w-full max-w-md aspect-[4/5] overflow-hidden shadow-lg bg-white flex items-center justify-center"
               >
                 <Image
-                  src={event.posterUrl ?? ""}
-                  alt={event.title}
+                  src={event.posterUrl as string}
+                  alt={event.title || "Event poster"}
                   width={400}
                   height={500}
                   className="object-cover object-center w-full h-full"
