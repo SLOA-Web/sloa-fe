@@ -65,6 +65,7 @@ interface User {
     specialization?: string;
     hospital?: string;
     cv?: string;
+    profileImage?: string | null;
   };
 }
 

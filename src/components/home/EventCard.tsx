@@ -140,14 +140,21 @@ const EventCard: React.FC<any> = (props) => {
       triggers.forEach((trigger) => trigger && trigger.kill());
     };
   }, [disableAnimations]);
+  const safeImage =
+    typeof image === "string" && image.trim().length > 0
+      ? image
+      : "/assets/images/homepage_hero.svg";
+
+  const altText = (typeof title === "string" && title.trim().length > 0) ? title : "Event image";
+
   if (state === "heropage") {
     return (
       <div className="relative bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-sm min-h-[320px] text-black">
         {/* Top half image with overlay and Upcoming text */}
         <div className="w-full h-52 relative">
           <Image
-            src={image}
-            alt={title}
+            src={safeImage}
+            alt={altText}
             fill
             className="object-cover object-center"
             sizes="100vw"
@@ -185,8 +192,8 @@ const EventCard: React.FC<any> = (props) => {
       {/* Top half image */}
       <div className="w-full h-40 flex-shrink-0 relative" ref={imageRef}>
         <Image
-          src={image}
-          alt={title}
+          src={safeImage}
+          alt={altText}
           fill
           className="object-cover object-center"
           sizes="100vw"

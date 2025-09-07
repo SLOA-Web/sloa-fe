@@ -14,7 +14,11 @@ const SimpleImage: React.FC<SimpleImageProps> = ({
   alt,
   className,
 }) => {
-  const [imgSrc, setImgSrc] = useState(src);
+  const [imgSrc, setImgSrc] = useState(
+    typeof src === "string" && src.trim().length > 0
+      ? src
+      : "/assets/images/member.webp"
+  );
 
   const handleError = () => {
     setImgSrc("/assets/images/member.webp");
@@ -23,7 +27,7 @@ const SimpleImage: React.FC<SimpleImageProps> = ({
   return (
     <Image
       src={imgSrc}
-      alt={alt}
+      alt={alt || "Image"}
       className={className}
       onError={handleError}
       width={400}
