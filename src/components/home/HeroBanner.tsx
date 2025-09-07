@@ -4,7 +4,7 @@ import EventCard from "./EventCard";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { heroSlides } from "@/data";
-import { UpcomingEvent, Banner, BannersResponse } from "@/types";
+import { UpcomingEvent, Banner, BannersResponse, HeroSlide } from "@/types";
 import api from "@/utils/api";
 import { handleApiError } from "@/utils/errorHandler";
 import { useRouter } from "next/navigation";
@@ -294,7 +294,7 @@ const HeroBanner = () => {
         {/* Right column */}
         <div
           ref={rightColRef}
-          className="flex lg:flex-[0.3] items-center justify-center hidden lg:block"
+          className="flex lg:flex-[0.3] items-center justify-center lg:block"
         >
           {(() => {
             if (eventLoading) {

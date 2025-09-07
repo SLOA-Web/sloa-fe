@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 import { api } from "@/utils/api";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -16,11 +16,10 @@ if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function EventDetailPage({
-  params,
-}: {
-  readonly params: { readonly id: string };
-}) {
+// Next.js 15 expects `PageProps`-compatible typing: `params` is a plain object
+// with string route segments, not a Promise. Define a local Props to satisfy it.
+export default function EventDetailPage() {
+  const params = useParams<{ id: string }>();
   const { user } = useAuth();
   const [event, setEvent] = useState<EventApiType | null | undefined>(
     undefined
