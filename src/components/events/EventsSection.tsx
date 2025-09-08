@@ -341,7 +341,7 @@ const EventsSection: React.FC = () => {
                         : event.date;
                       // Use posterUrl or fallback image
                       const image =
-                        event.posterUrl || "/assets/images/backup_card.png";
+                        event.posterUrl || "/assets/images/small_logo.jpg";
                       // Use description as summary
                       const summary = event.description || "";
                       // Use first agenda speaker as doctor (if available)

@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useRef, FormEvent } from "react"; 
+import React, { useState, useRef, FormEvent } from "react";
 import { DOCUMENTATION_LINKS, NAVBAR } from "@/data";
 import Image from "next/image";
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
-import { api } from "@/utils/api"; 
+import { api } from "@/utils/api";
+import { Instagram, Facebook, Youtube } from "lucide-react";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -13,10 +14,9 @@ const Footer = () => {
   const [error, setError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  
   const handleSubscribe = async (e: FormEvent) => {
     e.preventDefault();
-    if (loading) return; 
+    if (loading) return;
     setError(null);
     setSuccess(null);
 
@@ -33,11 +33,12 @@ const Footer = () => {
     try {
       const payload = { email: email.trim() };
       await api.post("/api/v1/newsletter/subscribe", payload);
-      
+
       setSuccess("Thank you for subscribing!");
-      setEmail(""); 
+      setEmail("");
     } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred.";
+      const errorMessage =
+        err instanceof Error ? err.message : "An unexpected error occurred.";
       setError(`Subscription failed: ${errorMessage}`);
     } finally {
       setLoading(false);
@@ -62,10 +63,10 @@ const Footer = () => {
           <div className="flex-1 flex items-start justify-between mb-8 lg:mb-0">
             <Image
               src="/assets/images/logo.png"
-              alt="Logo"
-              height={64}
-              width={160}
-              className="h-16 w-auto lg:h-24"
+              alt="logo"
+              width={400}
+              height={160}
+              className="relative w-72 lg:w-[28rem] z-[999] mr-16"
               priority
             />
           </div>
@@ -133,14 +134,23 @@ const Footer = () => {
               Social Media
             </div>
             <div className="flex space-x-3">
-              <Link href="https://www.instagram.com/srilankaorthopaedic/" aria-label="Instagram">
-                <Image src="/assets/images/insta.svg" alt="Instagram" width={24} height={24} />
+              <Link
+                href="https://www.instagram.com/srilankaorthopaedic/"
+                aria-label="Instagram"
+              >
+                <Instagram size={24} />
               </Link>
-              <Link href="https://www.facebook.com/ortho.org/" aria-label="Facebook">
-                <Image src="/assets/images/fb.svg" alt="Facebook" width={24} height={24} />
+              <Link
+                href="https://www.facebook.com/ortho.org/"
+                aria-label="Facebook"
+              >
+                <Facebook size={24} />
               </Link>
-              <Link href="https://www.youtube.com/@thesrilankaorthopaedicasso4115" aria-label="YouTube">
-                <Image src="/assets/images/youtube.svg" alt="YouTube" width={24} height={24} />
+              <Link
+                href="https://www.youtube.com/@thesrilankaorthopaedicasso4115"
+                aria-label="YouTube"
+              >
+                <Youtube size={28} />
               </Link>
             </div>
           </div>
@@ -191,8 +201,16 @@ const Footer = () => {
 
         {/* Copyright Section */}
         <div className="pt-10 pb-4 flex flex-col items-center justify-between font-poppins text-[#122D1E] text-[12px] gap-2 lg:flex-row lg:pt-16">
-          <p>© {new Date().getFullYear()} Sri Lanka Orthopedic Association. All rights reserved.</p>
-          <Link href="https://axle.global/" target="_blank" rel="noopener noreferrer" className="hover:underline">
+          <p>
+            © {new Date().getFullYear()} Sri Lanka Orthopedic Association. All
+            rights reserved.
+          </p>
+          <Link
+            href="https://axle.global/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:underline"
+          >
             Designed and Developed by Axle Global
           </Link>
         </div>

@@ -143,23 +143,25 @@ const EventCard: React.FC<any> = (props) => {
   const safeImage =
     typeof image === "string" && image.trim().length > 0
       ? image
-      : "/assets/images/homepage_hero.svg";
+      : "/assets/images/small_logo.jpg";
 
-  const altText = (typeof title === "string" && title.trim().length > 0) ? title : "Event image";
+  const altText =
+    typeof title === "string" && title.trim().length > 0
+      ? title
+      : "Event image";
 
   if (state === "heropage") {
     return (
       <div className="relative bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-sm min-h-[320px] text-black">
         {/* Top half image with overlay and Upcoming text */}
-        <div className="w-full h-52 relative">
+        <div className="w-full h-52 relative bg-secondary">
           <Image
             src={safeImage}
             alt={altText}
             fill
-            className="object-cover object-center"
+            className="object-contain object-center"
             sizes="100vw"
           />
-          <div className="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-black/20 via-transparent to-transparent" />
           <p className="text-[14px] font-poppins absolute top-3 left-3 z-20 text-white drop-shadow">
             Upcoming
           </p>
@@ -187,15 +189,15 @@ const EventCard: React.FC<any> = (props) => {
   return (
     <div
       ref={cardRef}
-      className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-lg min-h-[425px] max-h-[500px]"
+      className="bg-white overflow-hidden shadow-lg flex flex-col items-center w-full max-w-lg min-h-[425px] max-h-[500px]"
     >
       {/* Top half image */}
-      <div className="w-full h-40 flex-shrink-0 relative" ref={imageRef}>
+      <div className="w-full h-40 flex-shrink-0 relative bg-secondary" ref={imageRef}>
         <Image
           src={safeImage}
           alt={altText}
           fill
-          className="object-cover object-center"
+          className="object-contain object-center bg-secondary"
           sizes="100vw"
         />
       </div>

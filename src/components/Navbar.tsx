@@ -186,9 +186,9 @@ const Navbar = () => {
           <Image
             src="/assets/images/logo.png"
             alt="logo"
-            width={160}
-            height={64}
-            className="relative w-24 lg:w-44 z-[999] mr-12"
+            width={400}
+            height={160}
+            className="relative w-72 lg:w-[28rem] z-[999] mr-16"
             priority
           />
         </Link>

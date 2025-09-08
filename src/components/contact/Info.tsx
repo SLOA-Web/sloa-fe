@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { Facebook, Twitter, Linkedin, Instagram, Phone } from "lucide-react";
+import { Facebook, Instagram, Phone, Youtube } from "lucide-react";
 import gsap from "gsap";
 
 const infoData = [
@@ -69,40 +69,31 @@ const infoData = [
         value: (
           <div className="flex gap-4">
             <a
-              href="https://facebook.com"
+              href="https://www.facebook.com/ortho.org/"
               aria-label="Facebook"
               target="_blank"
               rel="noopener noreferrer"
               className=" hover:text-blue-600 transition"
             >
-              <Facebook className="w-5 h-5" />
+              <Facebook className="w-5 lg:w-7 h-5 lg:h-7" />
             </a>
             <a
-              href="https://twitter.com"
-              aria-label="Twitter"
-              target="_blank"
-              rel="noopener noreferrer"
-              className=" hover:text-sky-400 transition"
-            >
-              <Twitter className="w-5 h-5" />
-            </a>
-            <a
-              href="https://linkedin.com"
-              aria-label="LinkedIn"
-              target="_blank"
-              rel="noopener noreferrer"
-              className=" hover:text-blue-700 transition"
-            >
-              <Linkedin className="w-5 h-5" />
-            </a>
-            <a
-              href="https://instagram.com"
+              href="https://www.instagram.com/srilankaorthopaedic/"
               aria-label="Instagram"
               target="_blank"
               rel="noopener noreferrer"
               className=" hover:text-pink-500 transition"
             >
-              <Instagram className="w-5 h-5" />
+              <Instagram className="w-5 lg:w-7 h-5 lg:h-7" />
+            </a>
+            <a
+              href="https://www.youtube.com/@thesrilankaorthopaedicasso4115"
+              aria-label="YouTube"
+              target="_blank"
+              rel="noopener noreferrer"
+              className=" hover:text-red-600 transition"
+            >
+              <Youtube className="w-6 lg:w-8 h-6 lg:h-8" />
             </a>
           </div>
         ),
