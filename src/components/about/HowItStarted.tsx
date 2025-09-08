@@ -1,4 +1,4 @@
-import SimpleImage from "@/components/SimpleImage";
+import CustomImage from "@/components/CustomImage";
 import SectionHeader from "../SectionHeader";
 
 interface HowItStartedProps {
@@ -47,10 +47,9 @@ export default function HowItStarted({
         </div>
 
         {/* Hero Image - now full width */}
-        <SimpleImage
-          src={heroImageUrl}
-          alt={heroImageAlt}
-          className="w-full h-[full] md:h-[300px] lg:h-[490px] mx-auto object-cover rounded-[8px]"
+        <CustomImage
+          imageUrl={heroImageUrl}
+          imageClassname="w-full h-[full] md:h-[300px] lg:h-[490px] mx-auto object-cover rounded-[8px]"
         />
       </div>
     </section>

@@ -35,6 +35,7 @@ const CustomImage: React.FC<CustomImageProps> = ({
         <div
           className="w-full h-[450px] overflow-hidden relative"
           ref={imgWrapperRef}
+          style={{ position: 'relative' }}
         >
           <div
             className={`absolute left-0 w-full h-full bg-tertiary z-10 ${imageClassname}`}
@@ -44,7 +45,10 @@ const CustomImage: React.FC<CustomImageProps> = ({
           {imageUrl && (
             <div
               className="w-full h-full bg-cover bg-center"
-              style={{ backgroundImage: `url('${imageUrl}')`, willChange: 'transform' }}
+              style={{ 
+                backgroundImage: `url('${imageUrl}')`, 
+                backgroundAttachment: 'fixed'
+              }}
             />
           )}
         </div>

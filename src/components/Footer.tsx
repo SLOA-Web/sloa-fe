@@ -83,7 +83,7 @@ const Footer = () => {
                 <div className="flex flex-row gap-2 bg-[#FBFBFB] p-2 rounded">
                   <input
                     type="email"
-                    placeholder="YOUR EMAIL"
+                    placeholder="SUBMIT YOUR EMAIL"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     disabled={loading}
@@ -169,7 +169,7 @@ const Footer = () => {
               <div className="flex flex-row gap-2 bg-[#FBFBFB] p-2 rounded">
                 <input
                   type="email"
-                  placeholder="YOUR EMAIL"
+                  placeholder="SUBMIT YOUR EMAIL"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
