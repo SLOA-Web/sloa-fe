@@ -1,8 +1,11 @@
 'use client'
 
 import { Calendar, AlertCircle, Info, Megaphone } from 'lucide-react'
-import type { SanityAnnouncement } from '@/types/sanity'
+import { PortableText } from '@portabletext/react'
+import type { SanityAnnouncement, SanityImageBlock } from '@/types/sanity'
 import { cn } from '@/libs/utils'
+import Image from 'next/image'
+import { urlFor } from '@/libs/image'
 
 interface AnnouncementCardProps {
   announcement: SanityAnnouncement
@@ -41,6 +44,32 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
     }
   }
 
+  // Minimal PortableText components for announcements
+  const portableTextComponents = {
+    block: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      normal: ({ children }: any) => (
+        <p className="mb-2 leading-relaxed">{children}</p>
+      ),
+    },
+    types: {
+      image: ({ value }: { value: SanityImageBlock }) => {
+        if (!value?.asset?._ref) return null
+        return (
+          <div className="my-3">
+            <Image
+              src={urlFor(value).width(800).height(450).url()}
+              alt={value.alt || 'Announcement image'}
+              width={800}
+              height={450}
+              className="rounded-md"
+            />
+          </div>
+        )
+      },
+    },
+  }
+
   return (
     <div className={cn(
       'rounded-lg border p-4 transition-all hover:shadow-md hover:-translate-y-0.5',
@@ -56,9 +85,13 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
             {announcement.title}
           </h3>
           
-          <p className="text-sm mb-3 whitespace-pre-line">
-            {announcement.content}
-          </p>
+          <div className="text-sm mb-3 whitespace-pre-line">
+            {typeof announcement.content === 'string' ? (
+              <p>{announcement.content}</p>
+            ) : (
+              <PortableText value={announcement.content} components={portableTextComponents} />
+            )}
+          </div>
           
           <div className="flex items-center text-xs opacity-75">
             <Calendar size={12} className="mr-1" />

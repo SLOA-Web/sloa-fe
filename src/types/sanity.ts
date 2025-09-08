@@ -80,7 +80,7 @@ export interface SanityPage {
 export interface SanityAnnouncement {
   _id: string;
   title: string;
-  content: string;
+  content: string | SanityPortableText;
   publishedAt: string;
   priority: 'low' | 'medium' | 'high';
   isActive: boolean;
