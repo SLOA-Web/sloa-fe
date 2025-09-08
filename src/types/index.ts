@@ -193,3 +193,41 @@ export interface CommonHeroProps {
   imageUrl?: string; // Optional image URL for the hero section
   imageClassname?: string; 
 }
+
+// Council Management Types
+export interface CouncilTerm {
+  id: string;
+  name: string;
+  startsAt: string;
+  endsAt: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  positions?: CouncilPosition[];
+  members?: CouncilAssignment[];
+}
+
+export interface CouncilPosition {
+  id: string;
+  termId: string;
+  name: string;
+  isPresident: boolean;
+  grantsAdmin: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CouncilAssignment {
+  id: string;
+  termId: string;
+  positionId: string;
+  userId: string;
+  assignedAt: string;
+  position: CouncilPosition;
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+    membershipId?: string;
+  };
+}
