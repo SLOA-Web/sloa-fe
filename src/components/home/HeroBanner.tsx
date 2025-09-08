@@ -4,7 +4,7 @@ import EventCard from "./EventCard";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { heroSlides } from "@/data";
-import { UpcomingEvent, Banner, BannersResponse } from "@/types";
+import { UpcomingEvent, Banner, BannersResponse, HeroSlide } from "@/types";
 import api from "@/utils/api";
 import { handleApiError } from "@/utils/errorHandler";
 import { useRouter } from "next/navigation";
@@ -171,8 +171,12 @@ const HeroBanner = () => {
   }, []);
 
   // Use banners if available, fallback to static slides
-  const slidesData = banners.length > 0 ? banners : heroSlides;
+  const slidesData = banners.length > 0 ? (banners as (Banner | HeroSlide)[]) : (heroSlides as (Banner | HeroSlide)[]);
   const currentSlideData = slidesData[currentSlide];
+
+  const isBanner = (item: Banner | HeroSlide): item is Banner => {
+    return (item as Banner).imageUrl !== undefined;
+  };
   
   // Ensure currentSlide is within bounds when data changes
   useEffect(() => {
@@ -193,23 +197,33 @@ const HeroBanner = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           </div>
         ) : currentSlideData ? (
-          <Image
-            src={
-              'imageUrl' in currentSlideData 
-                ? currentSlideData.imageUrl 
-                : currentSlideData.backgroundImage
+          (() => {
+            const src = isBanner(currentSlideData)
+              ? currentSlideData.imageUrl
+              : currentSlideData.backgroundImage;
+            if (typeof src !== 'string' || src.trim().length === 0) {
+              return (
+                <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                  <p className="text-white text-lg">No banner image</p>
+                </div>
+              );
             }
-            alt={
-              'altText' in currentSlideData 
-                ? currentSlideData.altText 
-                : `Hero Banner Slide ${currentSlide + 1}`
-            }
-            fill
-            priority
-            quality={90}
-            className="object-cover object-center transition-opacity duration-700 ease-in-out"
-            sizes="100vw"
-          />
+            const fallbackAlt = `Hero Banner Slide ${currentSlide + 1}`;
+            const altText = isBanner(currentSlideData) && currentSlideData.altText && currentSlideData.altText.trim().length > 0
+              ? currentSlideData.altText
+              : fallbackAlt;
+            return (
+              <Image
+                src={src}
+                alt={altText}
+                fill
+                priority
+                quality={90}
+                className="object-cover object-center transition-opacity duration-700 ease-in-out"
+                sizes="100vw"
+              />
+            );
+          })()
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
             <p className="text-white text-lg">No banners available</p>
@@ -280,7 +294,7 @@ const HeroBanner = () => {
         {/* Right column */}
         <div
           ref={rightColRef}
-          className="flex lg:flex-[0.3] items-center justify-center hidden lg:block"
+          className="flex lg:flex-[0.3] items-center justify-center lg:block"
         >
           {(() => {
             if (eventLoading) {
@@ -324,5 +338,3 @@ const HeroBanner = () => {
 };
 
 export default HeroBanner;
-
-

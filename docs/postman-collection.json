@@ -559,7 +559,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital of Sri Lanka\",\n        \"nic\": \"123456789V\"\n      },\n      \"membershipStatus\": \"active\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      },\n      \"stats\": {\n        \"eventRegistrations\": 5,\n        \"payments\": 2\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"guest@example.com\",\n      \"fullName\": \"Jane Guest\",\n      \"role\": \"guest\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": null,\n      \"membershipStatus\": \"no_application\",\n      \"latestApplication\": null,\n      \"stats\": {\n        \"eventRegistrations\": 2,\n        \"payments\": 0\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 150,\n    \"totalPages\": 8\n  },\n  \"summary\": {\n    \"total\": 150,\n    \"filters\": {\n      \"status\": [\"active\"],\n      \"membershipStatus\": null,\n      \"search\": null\n    }\n  }\n}"
+							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital of Sri Lanka\",\n        \"nic\": \"123456789V\",\n        \"profileImage\": \"https://example.com/profile-image.jpg\"\n      },\n      \"membershipStatus\": \"active\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-12-31\"\n      },\n      \"stats\": {\n        \"eventRegistrations\": 5,\n        \"payments\": 2\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"guest@example.com\",\n      \"fullName\": \"Jane Guest\",\n      \"role\": \"guest\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": null,\n      \"membershipStatus\": \"no_application\",\n      \"latestApplication\": null,\n      \"stats\": {\n        \"eventRegistrations\": 2,\n        \"payments\": 0\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 20,\n    \"total\": 150,\n    \"totalPages\": 8\n  },\n  \"summary\": {\n    \"total\": 150,\n    \"filters\": {\n      \"status\": [\"active\"],\n      \"membershipStatus\": null,\n      \"search\": null\n    }\n  }\n}"
 						}
 					]
 				},
@@ -707,7 +707,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"found\": true,\n  \"count\": 3,\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"john.guest@example.com\",\n      \"fullName\": \"John Guest\",\n      \"role\": \"guest\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": null,\n      \"specialization\": null,\n      \"hospital\": null,\n      \"latestApplication\": null\n    }\n  ]\n}"
+							"body": "{\n  \"found\": true,\n  \"count\": 3,\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-12-31\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"john.guest@example.com\",\n      \"fullName\": \"John Guest\",\n      \"role\": \"guest\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": null,\n      \"specialization\": null,\n      \"hospital\": null,\n      \"latestApplication\": null\n    }\n  ]\n}"
 						}
 					]
 				},
@@ -759,7 +759,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"role\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n    \"profile\": {\n      \"id\": \"profile-uuid\",\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"cv\": \"Senior orthopedic surgeon with 15 years of experience...\"\n    },\n    \"membershipStatus\": \"active\",\n    \"applications\": [\n      {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n        \"approvedAt\": \"2024-01-18T09:15:00.000Z\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    ],\n    \"registrations\": [\n      {\n        \"id\": \"reg-uuid\",\n        \"registeredAt\": \"2024-02-01T08:00:00.000Z\",\n        \"event\": {\n          \"id\": \"event-uuid\",\n          \"title\": \"Annual Orthopedic Conference 2024\",\n          \"date\": \"2024-03-15\",\n          \"time\": \"09:00:00\",\n          \"location\": \"BMICH, Colombo\"\n        }\n      }\n    ],\n    \"payments\": [\n      {\n        \"id\": \"payment-uuid\",\n        \"type\": \"membership\",\n        \"status\": \"success\",\n        \"amount\": 5000,\n        \"createdAt\": \"2024-01-18T10:30:00.000Z\"\n      }\n    ],\n    \"stats\": {\n      \"totalRegistrations\": 5,\n      \"totalPayments\": 2,\n      \"totalApplications\": 1\n    }\n  }\n}"
+							"body": "{\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"role\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n    \"profile\": {\n      \"id\": \"profile-uuid\",\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"cv\": \"Senior orthopedic surgeon with 15 years of experience...\"\n    },\n    \"membershipStatus\": \"active\",\n    \"applications\": [\n      {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n        \"approvedAt\": \"2024-01-18T09:15:00.000Z\",\n        \"expiryDate\": \"2025-12-31\"\n      }\n    ],\n    \"registrations\": [\n      {\n        \"id\": \"reg-uuid\",\n        \"registeredAt\": \"2024-02-01T08:00:00.000Z\",\n        \"event\": {\n          \"id\": \"event-uuid\",\n          \"title\": \"Annual Orthopedic Conference 2024\",\n          \"date\": \"2024-03-15\",\n          \"time\": \"09:00:00\",\n          \"location\": \"BMICH, Colombo\"\n        }\n      }\n    ],\n    \"payments\": [\n      {\n        \"id\": \"payment-uuid\",\n        \"type\": \"membership\",\n        \"status\": \"success\",\n        \"amount\": 5000,\n        \"createdAt\": \"2024-01-18T10:30:00.000Z\"\n      }\n    ],\n    \"stats\": {\n      \"totalRegistrations\": 5,\n      \"totalPayments\": 2,\n      \"totalApplications\": 1\n    }\n  }\n}"
 						},
 						{
 							"name": "User Not Found",
@@ -843,7 +843,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"userRole\": \"member\",\n    \"membershipType\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n    \"profile\": {\n      \"id\": \"profile-uuid\",\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"cv\": \"Senior orthopedic surgeon with 15 years of experience...\",\n      \"documents\": [\"https://example.com/cv.pdf\", \"https://example.com/certificate.pdf\"]\n    },\n    \"membershipStatus\": \"active\",\n    \"applications\": [\n      {\n        \"id\": \"app-uuid\",\n        \"membershipType\": \"consultant\",\n        \"status\": \"approved\",\n        \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n        \"approvedAt\": \"2024-01-18T09:15:00.000Z\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    ],\n    \"registrations\": [\n      {\n        \"id\": \"reg-uuid\",\n        \"registeredAt\": \"2024-02-01T08:00:00.000Z\",\n        \"event\": {\n          \"id\": \"event-uuid\",\n          \"title\": \"Annual Orthopedic Conference 2024\",\n          \"date\": \"2024-03-15\",\n          \"time\": \"09:00:00\",\n          \"location\": \"BMICH, Colombo\"\n        }\n      }\n    ],\n    \"payments\": [\n      {\n        \"id\": \"payment-uuid\",\n        \"type\": \"membership\",\n        \"status\": \"success\",\n        \"amount\": 5000,\n        \"createdAt\": \"2024-01-18T10:30:00.000Z\"\n      }\n    ]\n  }\n}"
+							"body": "{\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Doe\",\n    \"userRole\": \"member\",\n    \"membershipType\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n    \"updatedAt\": \"2024-01-20T14:45:00.000Z\",\n    \"profile\": {\n      \"id\": \"profile-uuid\",\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"cv\": \"Senior orthopedic surgeon with 15 years of experience...\",\n      \"profileImage\": \"https://example.com/profile-image.jpg\",\n      \"documents\": [\"https://example.com/cv.pdf\", \"https://example.com/certificate.pdf\"]\n    },\n    \"membershipStatus\": \"active\",\n    \"applications\": [\n      {\n        \"id\": \"app-uuid\",\n        \"membershipType\": \"consultant\",\n        \"status\": \"approved\",\n        \"appliedAt\": \"2024-01-15T10:30:00.000Z\",\n        \"approvedAt\": \"2024-01-18T09:15:00.000Z\",\n        \"expiryDate\": \"2025-12-31\"\n      }\n    ],\n    \"registrations\": [\n      {\n        \"id\": \"reg-uuid\",\n        \"registeredAt\": \"2024-02-01T08:00:00.000Z\",\n        \"event\": {\n          \"id\": \"event-uuid\",\n          \"title\": \"Annual Orthopedic Conference 2024\",\n          \"date\": \"2024-03-15\",\n          \"time\": \"09:00:00\",\n          \"location\": \"BMICH, Colombo\"\n        }\n      }\n    ],\n    \"payments\": [\n      {\n        \"id\": \"payment-uuid\",\n        \"type\": \"membership\",\n        \"status\": \"success\",\n        \"amount\": 5000,\n        \"createdAt\": \"2024-01-18T10:30:00.000Z\"\n      }\n    ]\n  }\n}"
 						}
 					]
 				},
@@ -859,7 +859,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Dr. John Smith\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Spine Surgery\",\n  \"hospital\": \"General Hospital Colombo\",\n  \"location\": \"local\",\n  \"phoneNumber\": \"+94771234567\",\n  \"dateOfBirth\": \"1985-03-15\",\n  \"cv\": \"Updated CV content with recent achievements and publications...\",\n  \"documents\": [\"https://example.com/updated-cv.pdf\", \"https://example.com/new-certificate.pdf\"]\n}"
+							"raw": "{\n  \"fullName\": \"Dr. John Smith\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Spine Surgery\",\n  \"hospital\": \"General Hospital Colombo\",\n  \"location\": \"local\",\n  \"phoneNumber\": \"+94771234567\",\n  \"profileImage\": \"https://example.com/new-profile-image.jpg\",\n  \"dateOfBirth\": \"1985-03-15\",\n  \"cv\": \"Updated CV content with recent achievements and publications...\",\n  \"documents\": [\"https://example.com/updated-cv.pdf\", \"https://example.com/new-certificate.pdf\"]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/users/me/details",
@@ -915,7 +915,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"message\": \"Member details updated successfully\",\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Smith\",\n    \"userRole\": \"member\",\n    \"membershipType\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"profile\": {\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Spine Surgery\",\n      \"hospital\": \"General Hospital Colombo\",\n      \"cv\": \"Updated CV content...\",\n      \"documents\": [\"https://example.com/updated-cv.pdf\"]\n    },\n    \"updatedAt\": \"2024-01-25T10:30:00.000Z\"\n  }\n}"
+							"body": "{\n  \"message\": \"Member details updated successfully\",\n  \"user\": {\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n    \"email\": \"john.doe@example.com\",\n    \"fullName\": \"Dr. John Smith\",\n    \"userRole\": \"member\",\n    \"membershipType\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"local\",\n    \"membershipId\": \"SLOA2024001\",\n    \"profile\": {\n      \"nic\": \"123456789V\",\n      \"specialization\": \"Spine Surgery\",\n      \"hospital\": \"General Hospital Colombo\",\n      \"cv\": \"Updated CV content...\",\n      \"profileImage\": \"https://example.com/updated-profile-image.jpg\",\n      \"documents\": [\"https://example.com/updated-cv.pdf\"]\n    },\n    \"updatedAt\": \"2024-01-25T10:30:00.000Z\"\n  }\n}"
 						},
 						{
 							"name": "Validation Error",
@@ -971,7 +971,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Dr. Jane Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"userRole\": \"member\",\n  \"membershipType\": \"consultant\",\n  \"status\": \"active\",\n  \"location\": \"foreign\",\n  \"membershipId\": \"SLOA2024002\",\n  \"nic\": \"987654321V\",\n  \"specialization\": \"Pediatric Orthopedics\",\n  \"hospital\": \"Children's Hospital\",\n  \"phoneNumber\": \"+447123456789\",\n  \"dateOfBirth\": \"1980-07-22\",\n  \"cv\": \"Specialist in pediatric orthopedic surgery with international experience...\",\n  \"documents\": [\"https://example.com/international-cert.pdf\"]\n}"
+							"raw": "{\n  \"fullName\": \"Dr. Jane Smith\",\n  \"email\": \"jane.smith@example.com\",\n  \"userRole\": \"member\",\n  \"membershipType\": \"consultant\",\n  \"status\": \"active\",\n  \"location\": \"foreign\",\n  \"membershipId\": \"SLOA2024002\",\n  \"nic\": \"987654321V\",\n  \"specialization\": \"Pediatric Orthopedics\",\n  \"hospital\": \"Children's Hospital\",\n  \"phoneNumber\": \"+447123456789\",\n  \"profileImage\": \"https://example.com/admin-updated-profile.jpg\",\n  \"dateOfBirth\": \"1980-07-22\",\n  \"cv\": \"Specialist in pediatric orthopedic surgery with international experience...\",\n  \"documents\": [\"https://example.com/international-cert.pdf\"]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/users/{{userId}}/details",
@@ -1027,7 +1027,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"message\": \"Member details updated successfully\",\n  \"user\": {\n    \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n    \"email\": \"jane.smith@example.com\",\n    \"fullName\": \"Dr. Jane Smith\",\n    \"userRole\": \"member\",\n    \"membershipType\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"foreign\",\n    \"membershipId\": \"SLOA2024002\",\n    \"profile\": {\n      \"nic\": \"987654321V\",\n      \"specialization\": \"Pediatric Orthopedics\",\n      \"hospital\": \"Children's Hospital\",\n      \"cv\": \"Specialist in pediatric orthopedic surgery...\",\n      \"documents\": [\"https://example.com/international-cert.pdf\"]\n    },\n    \"updatedAt\": \"2024-01-25T15:45:00.000Z\"\n  }\n}"
+							"body": "{\n  \"message\": \"Member details updated successfully\",\n  \"user\": {\n    \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n    \"email\": \"jane.smith@example.com\",\n    \"fullName\": \"Dr. Jane Smith\",\n    \"userRole\": \"member\",\n    \"membershipType\": \"consultant\",\n    \"status\": \"active\",\n    \"location\": \"foreign\",\n    \"membershipId\": \"SLOA2024002\",\n    \"profile\": {\n      \"nic\": \"987654321V\",\n      \"specialization\": \"Pediatric Orthopedics\",\n      \"hospital\": \"Children's Hospital\",\n      \"cv\": \"Specialist in pediatric orthopedic surgery...\",\n      \"profileImage\": \"https://example.com/pediatric-surgeon-profile.jpg\",\n      \"documents\": [\"https://example.com/international-cert.pdf\"]\n    },\n    \"updatedAt\": \"2024-01-25T15:45:00.000Z\"\n  }\n}"
 						},
 						{
 							"name": "User Not Found",
@@ -1073,6 +1073,184 @@
 				}
 			],
 			"description": "Comprehensive user management endpoints for ALL users in the system including guests, members, pending users, approved but unpaid users, etc. Provides extensive filtering and search capabilities. Includes member profile management with self-update and admin override capabilities."
+		},
+		{
+			"name": "Profile Image Management",
+			"item": [
+				{
+					"name": "Update My Profile Image",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"profileImage\": \"https://example.com/my-profile-image.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/me/profile-image",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"me",
+								"profile-image"
+							]
+						},
+						"description": "Update current authenticated user's profile image. Users can set or remove their profile image."
+					},
+					"response": [
+						{
+							"name": "Profile Image Updated",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/me/profile-image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"me",
+										"profile-image"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Profile image updated successfully\",\n  \"profileImage\": \"https://example.com/my-profile-image.jpg\"\n}"
+						},
+						{
+							"name": "Remove Profile Image",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/me/profile-image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"me",
+										"profile-image"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Profile image updated successfully\",\n  \"profileImage\": \"\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Profile Image (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"profileImage\": \"https://example.com/new-profile-image.jpg\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/users/{{userId}}/profile-image",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{{userId}}",
+								"profile-image"
+							]
+						},
+						"description": "Admin endpoint to update any user's profile image. Includes audit logging for accountability."
+					},
+					"response": [
+						{
+							"name": "Profile Image Updated (Admin)",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/api/v1/users/123e4567-e89b-12d3-a456-426614174000/profile-image",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"users",
+										"123e4567-e89b-12d3-a456-426614174000",
+										"profile-image"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"success\": true,\n  \"message\": \"Profile image updated successfully\",\n  \"userId\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"profileImage\": \"https://example.com/new-profile-image.jpg\"\n}"
+						}
+					]
+				}
+			],
+			"description": "Profile image management endpoints for users to update their profile images and for admins to manage user profile images."
 		},
 		{
 			"name": "Admin Management",
@@ -1352,7 +1530,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"fullName\": \"Dr. John Doe\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Orthopedic Surgery\",\n  \"hospital\": \"National Hospital of Sri Lanka\",\n  \"role\": \"consultant\",\n  \"cv\": \"Dr. John Doe is a senior orthopedic surgeon with 15 years of experience in joint replacement procedures. He graduated from University of Colombo Faculty of Medicine and completed his specialized training in orthopedics at the National Hospital. He has published multiple research papers on knee replacement techniques and has been involved in training junior doctors.\",\n  \"documents\": [\n    \"https://example.com/document1.pdf\",\n    \"https://example.com/document2.pdf\"\n  ]\n}"
+							"raw": "{\n  \"fullName\": \"Dr. John Doe\",\n  \"nic\": \"123456789V\",\n  \"specialization\": \"Orthopedic Surgery\",\n  \"hospital\": \"National Hospital of Sri Lanka\",\n  \"role\": \"consultant\",\n  \"profileImage\": \"https://example.com/application-profile.jpg\",\n  \"cv\": \"Dr. John Doe is a senior orthopedic surgeon with 15 years of experience in joint replacement procedures. He graduated from University of Colombo Faculty of Medicine and completed his specialized training in orthopedics at the National Hospital. He has published multiple research papers on knee replacement techniques and has been involved in training junior doctors.\",\n  \"documents\": [\n    \"https://example.com/document1.pdf\",\n    \"https://example.com/document2.pdf\"\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/v1/membership/apply",
@@ -1504,7 +1682,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital of Sri Lanka\"\n      },\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"jane.smith@example.com\",\n      \"fullName\": \"Dr. Jane Smith\",\n      \"role\": \"trainee\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024002\",\n      \"profile\": {\n        \"specialization\": \"Sports Medicine\",\n        \"hospital\": \"Colombo General Hospital\"\n      },\n      \"latestApplication\": {\n        \"id\": \"app-uuid-2\",\n        \"role\": \"trainee\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-02-15\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total\": 320,\n    \"totalPages\": 32\n  }\n}"
+							"body": "{\n  \"users\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"location\": \"local\",\n      \"membershipId\": \"SLOA2024001\",\n      \"createdAt\": \"2024-01-15T10:30:00.000Z\",\n      \"profile\": {\n        \"specialization\": \"Orthopedic Surgery\",\n        \"hospital\": \"National Hospital of Sri Lanka\",\n        \"profileImage\": \"https://example.com/profile-image.jpg\"\n      },\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-12-31\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"jane.smith@example.com\",\n      \"fullName\": \"Dr. Jane Smith\",\n      \"role\": \"trainee\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024002\",\n      \"profile\": {\n        \"specialization\": \"Sports Medicine\",\n        \"hospital\": \"Colombo General Hospital\"\n      },\n      \"latestApplication\": {\n        \"id\": \"app-uuid-2\",\n        \"role\": \"trainee\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-02-15\"\n      }\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 10,\n    \"total\": 320,\n    \"totalPages\": 32\n  }\n}"
 						}
 					]
 				},
@@ -1778,7 +1956,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"found\": true,\n  \"count\": 2,\n  \"members\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024001\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-01-18\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"john.smith@example.com\",\n      \"fullName\": \"Dr. John Smith\",\n      \"role\": \"trainee\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024002\",\n      \"specialization\": \"Sports Medicine\",\n      \"hospital\": \"Colombo General Hospital\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid-2\",\n        \"role\": \"trainee\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-02-15\"\n      }\n    }\n  ]\n}"
+							"body": "{\n  \"found\": true,\n  \"count\": 2,\n  \"members\": [\n    {\n      \"id\": \"123e4567-e89b-12d3-a456-426614174000\",\n      \"email\": \"john.doe@example.com\",\n      \"fullName\": \"Dr. John Doe\",\n      \"role\": \"consultant\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024001\",\n      \"specialization\": \"Orthopedic Surgery\",\n      \"hospital\": \"National Hospital of Sri Lanka\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid\",\n        \"role\": \"consultant\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-12-31\"\n      }\n    },\n    {\n      \"id\": \"456e7890-e89b-12d3-a456-426614174001\",\n      \"email\": \"john.smith@example.com\",\n      \"fullName\": \"Dr. John Smith\",\n      \"role\": \"trainee\",\n      \"status\": \"active\",\n      \"membershipId\": \"SLOA2024002\",\n      \"specialization\": \"Sports Medicine\",\n      \"hospital\": \"Colombo General Hospital\",\n      \"latestApplication\": {\n        \"id\": \"app-uuid-2\",\n        \"role\": \"trainee\",\n        \"status\": \"approved\",\n        \"expiryDate\": \"2025-02-15\"\n      }\n    }\n  ]\n}"
 						},
 						{
 							"name": "No Active Members Found",
@@ -3563,7 +3741,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"items\": [\n    {\n      \"id\": \"80e25d82-c2cd-4ee7-8da6-b9698be189b9\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"application.approved\",\n      \"targetType\": \"application\",\n      \"targetId\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"metadata\": {\n        \"decision\": {\n          \"status\": \"approved\",\n          \"membershipId\": \"MEM-2025-001\",\n          \"expiryDate\": \"2026-01-15\"\n        },\n        \"applicationDetails\": {\n          \"role\": \"trainee\",\n          \"userId\": \"00000004-0000-4000-8000-000000000004\"\n        }\n      },\n      \"createdAt\": \"2025-01-15T10:30:00.000Z\"\n    },\n    {\n      \"id\": \"90f36e93-d3de-5ff8-9eb7-c0709cf2a0a0\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"payment.success\",\n      \"targetType\": \"payment\",\n      \"targetId\": \"660f47f1-f4cf-62g9-0fc8-d1810dg3b1b1\",\n      \"metadata\": {\n        \"paymentType\": \"membership\",\n        \"amount\": 5000,\n        \"gateway\": \"stripe\",\n        \"gatewayRef\": \"pi_3OqK8t2eZvKYlo2C1gQ1234\"\n      },\n      \"createdAt\": \"2025-01-15T09:15:00.000Z\"\n    },\n    {\n      \"id\": \"a1g47f04-e4ef-63g0-1gd9-e2921eh4c2c2\",\n      \"actorUserId\": \"00000002-0000-4000-8000-000000000002\",\n      \"actorEmail\": \"council@sloa.lk\",\n      \"actorName\": \"Council Member\",\n      \"action\": \"event.created\",\n      \"targetType\": \"event\",\n      \"targetId\": \"770g58g2-g5dg-73h0-2ge0-f3032fi5d3d3\",\n      \"metadata\": {\n        \"eventTitle\": \"Annual Conference 2025\",\n        \"eventDate\": \"2025-06-15\",\n        \"maxCapacity\": 200\n      },\n      \"createdAt\": \"2025-01-15T08:45:00.000Z\"\n    },\n    {\n      \"id\": \"b2h58g15-f5fg-74h1-2hf1-f4143gj6e4e4\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"user.status_updated\",\n      \"targetType\": \"user\",\n      \"targetId\": \"00000004-0000-4000-8000-000000000004\",\n      \"metadata\": {\n        \"oldStatus\": \"pending\",\n        \"newStatus\": \"active\",\n        \"reason\": \"Payment confirmed\"\n      },\n      \"createdAt\": \"2025-01-15T07:30:00.000Z\"\n    },\n    {\n      \"id\": \"c3i69h26-g6gh-85i2-3ig2-g5254hk7f5f5\",\n      \"actorUserId\": \"00000003-0000-4000-8000-000000000003\",\n      \"actorEmail\": \"member@sloa.lk\",\n      \"actorName\": \"Dr. Jane Smith\",\n      \"action\": \"event.registered\",\n      \"targetType\": \"registration\",\n      \"targetId\": \"880h69h3-h6eh-86i3-3hf3-g6365il8g6g6\",\n      \"metadata\": {\n        \"eventId\": \"770g58g2-g5dg-73h0-2ge0-f3032fi5d3d3\",\n        \"eventTitle\": \"Annual Conference 2025\",\n        \"registrationType\": \"member\"\n      },\n      \"createdAt\": \"2025-01-15T06:20:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 5,\n    \"total\": 156,\n    \"totalPages\": 32\n  }\n}"
+							"body": "{\n  \"items\": [\n    {\n      \"id\": \"80e25d82-c2cd-4ee7-8da6-b9698be189b9\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"application.approved\",\n      \"targetType\": \"application\",\n      \"targetId\": \"550e8400-e29b-41d4-a716-446655440001\",\n      \"metadata\": {\n        \"decision\": {\n          \"status\": \"approved\",\n          \"membershipId\": \"MEM-2025-001\",\n          \"expiryDate\": \"2025-12-31\"\n        },\n        \"applicationDetails\": {\n          \"role\": \"trainee\",\n          \"userId\": \"00000004-0000-4000-8000-000000000004\"\n        }\n      },\n      \"createdAt\": \"2025-01-15T10:30:00.000Z\"\n    },\n    {\n      \"id\": \"90f36e93-d3de-5ff8-9eb7-c0709cf2a0a0\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"payment.success\",\n      \"targetType\": \"payment\",\n      \"targetId\": \"660f47f1-f4cf-62g9-0fc8-d1810dg3b1b1\",\n      \"metadata\": {\n        \"paymentType\": \"membership\",\n        \"amount\": 5000,\n        \"gateway\": \"stripe\",\n        \"gatewayRef\": \"pi_3OqK8t2eZvKYlo2C1gQ1234\"\n      },\n      \"createdAt\": \"2025-01-15T09:15:00.000Z\"\n    },\n    {\n      \"id\": \"a1g47f04-e4ef-63g0-1gd9-e2921eh4c2c2\",\n      \"actorUserId\": \"00000002-0000-4000-8000-000000000002\",\n      \"actorEmail\": \"council@sloa.lk\",\n      \"actorName\": \"Council Member\",\n      \"action\": \"event.created\",\n      \"targetType\": \"event\",\n      \"targetId\": \"770g58g2-g5dg-73h0-2ge0-f3032fi5d3d3\",\n      \"metadata\": {\n        \"eventTitle\": \"Annual Conference 2025\",\n        \"eventDate\": \"2025-06-15\",\n        \"maxCapacity\": 200\n      },\n      \"createdAt\": \"2025-01-15T08:45:00.000Z\"\n    },\n    {\n      \"id\": \"b2h58g15-f5fg-74h1-2hf1-f4143gj6e4e4\",\n      \"actorUserId\": \"00000001-0000-4000-8000-000000000001\",\n      \"actorEmail\": \"admin@sloa.lk\",\n      \"actorName\": \"System Administrator\",\n      \"action\": \"user.status_updated\",\n      \"targetType\": \"user\",\n      \"targetId\": \"00000004-0000-4000-8000-000000000004\",\n      \"metadata\": {\n        \"oldStatus\": \"pending\",\n        \"newStatus\": \"active\",\n        \"reason\": \"Payment confirmed\"\n      },\n      \"createdAt\": \"2025-01-15T07:30:00.000Z\"\n    },\n    {\n      \"id\": \"c3i69h26-g6gh-85i2-3ig2-g5254hk7f5f5\",\n      \"actorUserId\": \"00000003-0000-4000-8000-000000000003\",\n      \"actorEmail\": \"member@sloa.lk\",\n      \"actorName\": \"Dr. Jane Smith\",\n      \"action\": \"event.registered\",\n      \"targetType\": \"registration\",\n      \"targetId\": \"880h69h3-h6eh-86i3-3hf3-g6365il8g6g6\",\n      \"metadata\": {\n        \"eventId\": \"770g58g2-g5dg-73h0-2ge0-f3032fi5d3d3\",\n        \"eventTitle\": \"Annual Conference 2025\",\n        \"registrationType\": \"member\"\n      },\n      \"createdAt\": \"2025-01-15T06:20:00.000Z\"\n    }\n  ],\n  \"pagination\": {\n    \"page\": 1,\n    \"limit\": 5,\n    \"total\": 156,\n    \"totalPages\": 32\n  }\n}"
 						},
 						{
 							"name": "Filtered Response Example",

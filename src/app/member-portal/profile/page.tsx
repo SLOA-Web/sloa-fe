@@ -27,6 +27,7 @@ interface UserProfile {
   cv?: string;
   phoneNumber?: string | null;
   dateOfBirth?: string | null;
+  profileImage?: string | null;
 }
 
 interface ApiResponse {
@@ -63,6 +64,7 @@ const ProfilePage = () => {
   });
   const [, setLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
+  
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -92,6 +94,7 @@ const ProfilePage = () => {
           nic: fetchedUser?.profile?.nic || "",
           birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
         }));
+        
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
         setError("Failed to load profile data. Please try again.");
@@ -168,6 +171,7 @@ const ProfilePage = () => {
         nic: fetchedUser?.profile?.nic || "",
         birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
       }));
+      
     } catch (err) {
       console.error("Failed to save profile:", err);
       const errorMessage = err instanceof Error ? err.message : "Failed to save profile data. Please check your input.";
@@ -207,6 +211,7 @@ const ProfilePage = () => {
             nic: fetchedUser?.profile?.nic || "",
             birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
           }));
+          
         } catch (err) {
           console.error("Failed to fetch user profile on cancel:", err);
           setError("Failed to revert changes. Please refresh the page.");
@@ -218,6 +223,8 @@ const ProfilePage = () => {
     }
     setIsEditing(false);
   };
+
+  
 
   return (
     <div className="space-y-8 mx-auto">
@@ -238,18 +245,17 @@ const ProfilePage = () => {
                   </p>
                 </div>
               </div>
-              
-            {!isEditing && (
-              <button
-                onClick={() => setIsEditing(true)}
-                className="px-6 py-3 text-sm font-medium bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-              >
-                <Edit3 className="h-4 w-4" />
-                Edit Profile
-              </button>
-            )}
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="px-6 py-3 text-sm font-medium bg-primary text-primary-foreground rounded-xl hover:bg-primary/90 transition-all duration-200 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                >
+                  <Edit3 className="h-4 w-4" />
+                  Edit Profile
+                </button>
+              )}
             </div>
-            </div>
+          </div>
         </div>
       </div>
 

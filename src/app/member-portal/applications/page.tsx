@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, JSX } from 'react';
 import { useRouter } from 'next/navigation';
 import MembershipApplicationForm from '@/components/MembershipApplicationForm';
 import { 
@@ -73,13 +73,17 @@ const InfoField: React.FC<{ label: string; value?: string | null }> = ({ label, 
   </div>
 );
 
-const StatusBadge: React.FC<{ status: Membership['status'] }> = ({ status }) => {
-  const statusConfig = {
+const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
+  const key = (status || '').toLowerCase();
+  const statusConfig: Record<string, { icon: JSX.Element; text: string; bg: string; textColor: string }> = {
     approved: { icon: <CheckCircle className="h-4 w-4 text-green-600" />, text: 'Active', bg: 'bg-green-100', textColor: 'text-green-800' },
-    pending: { icon: <Clock className="h-4 w-4 text-yellow-600" />, text: 'Pending', bg: 'bg-yellow-100', textColor: 'text-yellow-800' },
+    active:   { icon: <CheckCircle className="h-4 w-4 text-green-600" />, text: 'Active', bg: 'bg-green-100', textColor: 'text-green-800' },
+    pending:  { icon: <Clock className="h-4 w-4 text-yellow-600" />, text: 'Pending', bg: 'bg-yellow-100', textColor: 'text-yellow-800' },
     rejected: { icon: <XCircle className="h-4 w-4 text-red-600" />, text: 'Rejected', bg: 'bg-red-100', textColor: 'text-red-800' },
+    inactive: { icon: <AlertCircle className="h-4 w-4 text-gray-600" />, text: 'Inactive', bg: 'bg-gray-100', textColor: 'text-gray-800' },
+    suspended:{ icon: <XCircle className="h-4 w-4 text-red-600" />, text: 'Suspended', bg: 'bg-red-100', textColor: 'text-red-800' },
   };
-  const config = statusConfig[status] || { icon: <AlertCircle className="h-4 w-4 text-gray-600" />, text: 'Unknown', bg: 'bg-gray-100', textColor: 'text-gray-800' };
+  const config = statusConfig[key] || { icon: <AlertCircle className="h-4 w-4 text-gray-600" />, text: 'Unknown', bg: 'bg-gray-100', textColor: 'text-gray-800' };
 
   return (
     <div className={`inline-flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-full ${config.bg} ${config.textColor}`}>
@@ -190,7 +194,7 @@ const MembershipsPage = () => {
           <InfoCard title="Membership Status">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-foreground">Current Status</h4>
-              <StatusBadge status={membership.status} />
+              <StatusBadge status={membership.user?.status || membership.status} />
             </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <InfoField label="Membership Type" value={membership.membershipType || '—'} />
