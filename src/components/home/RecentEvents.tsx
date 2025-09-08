@@ -3,119 +3,77 @@
 import React, { useState, useEffect, useRef } from "react";
 import SectionHeader from "@/components/SectionHeader";
 
+import { getRecentEvents } from "@/libs/sanity.api";
+import type { SanityEvent } from "@/types/sanity";
+
 import type { EmblaCarouselType } from "embla-carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
-import { api } from "@/utils/api";
-import { handleApiError } from "@/utils/errorHandler";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import { UpcomingEvent, UpcomingEventsResponse } from "@/types";
-import EventCard from "./EventCard";
-import { useRouter } from "next/navigation";
 import InfoSection from "./InfoSection";
 
-gsap.registerPlugin(ScrollTrigger);
+import EventCard from "@/components/news-media/EventCard"; 
 
 const RecentEvents: React.FC = () => {
-  const [carouselApi, setCarouselApi] = useState<
-    EmblaCarouselType | undefined
-  >();
+  const [carouselApi, setCarouselApi] = useState<EmblaCarouselType | undefined>();
   const [current, setCurrent] = useState(0);
   const [count, setCount] = useState(0);
   const [isMdScreen, setIsMdScreen] = useState(false);
-  const [loadingSlug, setLoadingSlug] = useState<string | null>(null);
-  const [events, setEvents] = useState<UpcomingEvent[]>([]);
+  
+  const [events, setEvents] = useState<SanityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   
   useEffect(() => {
-    const fetchEvents = async () => {
+    const fetchSanityEvents = async () => {
       try {
         setLoading(true);
-        const data: UpcomingEventsResponse = await api.get("/api/v1/events/upcoming/brief");
-        setEvents(Array.isArray(data?.events) ? data.events : []);
+        setError(null);
+        const sanityEvents = await getRecentEvents();
+        setEvents(Array.isArray(sanityEvents) ? sanityEvents : []);
       } catch (err: unknown) {
-        const errorMessage = handleApiError(err, router);
-        setError(errorMessage);
+        console.error("Failed to fetch recent events from Sanity:", err);
+        setError("Could not load recent events. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
-    fetchEvents();
-  }, [router]);
+    fetchSanityEvents();
+  }, []); 
 
-  // Ref for autoplay plugin
   const autoplay = useRef(
-    Autoplay({
-      delay: 2500,
-      stopOnInteraction: true,
-      playOnInit: true,
-    })
+    Autoplay({ delay: 2500, stopOnInteraction: true, playOnInit: true })
   );
 
   useEffect(() => {
-    // Check screen size on mount and resize
-    const checkScreenSize = () => {
-      if (typeof window !== "undefined") {
-        setIsMdScreen(window.innerWidth >= 768);
-      }
-    };
+    const checkScreenSize = () => setIsMdScreen(typeof window !== "undefined" && window.innerWidth >= 768);
     checkScreenSize();
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", checkScreenSize);
-      return () => window.removeEventListener("resize", checkScreenSize);
-    }
+    window.addEventListener("resize", checkScreenSize);
+    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
   useEffect(() => {
     if (!carouselApi) return;
-
-    const updateCountAndCurrent = () => {
+    const updateApiState = () => {
       setCount(carouselApi.scrollSnapList().length);
       setCurrent(carouselApi.selectedScrollSnap());
-      console.log("[Embla] updateCountAndCurrent", {
-        count: carouselApi.scrollSnapList().length,
-        current: carouselApi.selectedScrollSnap(),
-      });
     };
-    updateCountAndCurrent();
-
-    const onSelectCallback = (emblaApi: EmblaCarouselType) => {
-      setCurrent(emblaApi.selectedScrollSnap());
-      console.log("[Embla] onSelect", emblaApi.selectedScrollSnap());
-    };
-    const onReInitCallback = (emblaApi: EmblaCarouselType) => {
-      updateCountAndCurrent();
-      console.log("[Embla] onReInit", emblaApi.scrollSnapList().length);
-    };
-
-    carouselApi.on("select", onSelectCallback);
-    carouselApi.on("reInit", onReInitCallback);
-
-    const handleResize = () => {
-      updateCountAndCurrent();
-    };
-    window.addEventListener("resize", handleResize);
-
+    updateApiState();
+    carouselApi.on("select", updateApiState);
+    carouselApi.on("reInit", updateApiState);
     return () => {
-      carouselApi?.off("select", onSelectCallback);
-      carouselApi?.off("reInit", onReInitCallback);
-      window.removeEventListener("resize", handleResize);
+      carouselApi?.off("select", updateApiState);
+      carouselApi?.off("reInit", updateApiState);
     };
   }, [carouselApi]);
 
   return (
     <div className="bg-gradient-to-b from-[#fff] to-[#D47045]/10 py-12 lg:py-24 overflow-x-hidden">
       <SectionHeader text="recent events" />
-
       <div className="my-12">
         <div className="mx-4 md:mx-10 lg:mx-16">
           <h1 className="text-[24px] md:text-[32px] lg:text-[40px] lg:w-[60%] font-roboto mb-8">
@@ -124,76 +82,39 @@ const RecentEvents: React.FC = () => {
           
           {loading && <LoadingSpinner text="Loading event details..." />}
           {error && <div className="text-red-500 mb-4">{error}</div>}
+          
           {!loading && !error && events.length === 0 && (
-            <div className="text-center text-gray-500">No events found.</div>
+            <div className="text-center text-gray-500">No recent events found.</div>
           )}
 
           {!loading && !error && events.length > 0 && (
             <Carousel
               setApi={setCarouselApi}
-              opts={{ 
-                align: "start", 
-                loop: true,
-                // Add consistent spacing through Embla options
-                containScroll: "trimSnaps"
-              }}
+              opts={{ align: "start", loop: events.length > 1 }}
               plugins={isMdScreen ? [autoplay.current] : []}
               className="w-full"
             >
               <CarouselContent className="-ml-4 md:-ml-6 lg:-ml-8">
-                {events.map((event) => {
-                  if (!event || !event.id || !event.title) return null;
-                  const eventId = event.id;
-                  let dateStr = event.date;
-                  if (event.date) {
-                    const dateObj = new Date(event.date);
-                    if (!isNaN(dateObj.getTime())) {
-                      dateStr = dateObj.toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      });
-                    }
-                  }
-                  return (
-                    <CarouselItem
-                      key={event.id}
-                      className="pl-4 md:pl-6 lg:pl-8 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3"
-                    >
-                      <EventCard
-                        image={event.image ?? ""}
-                        date={dateStr ?? ""}
-                        title={event.title ?? "Untitled"}
-                        summary={event.shortDesc ?? ""}
-                        doctor={event.speaker ?? ""}
-                        state="upcoming"
-                        disableAnimations={true}
-                        onReadMore={() => {
-                          setLoadingSlug(eventId);
-                          setTimeout(() => {
-                            router.push(`/events/${eventId}`);
-                          }, 500);
-                        }}
-                        loading={loadingSlug === eventId}
-                      />
-                    </CarouselItem>
-                  );
-                })}
+                {events.map((event) => (
+                  <CarouselItem
+                    key={event._id}
+                    className="pl-4 md:pl-6 lg:pl-8 basis-full sm:basis-1/2 md:basis-1/2 lg:basis-1/3"
+                  >
+                    <EventCard event={event} />
+                  </CarouselItem>
+                ))}
               </CarouselContent>
             </Carousel>
           )}
         </div>
 
         {/* Progress Bar */}
-        {count > 0 && (
+        {count > 1 && (
           <div className="mx-4 md:mx-10 lg:mx-16 mt-8">
-            <div className="h-[2px] bg-primary/25 rounded relative overflow-hidden w-full">
+            <div className="h-[2px] bg-primary/25 rounded relative w-full">
               <div
                 className="h-full bg-primary transition-all duration-300"
-                style={{
-                  width:
-                    count > 1 ? `${((current + 1) / count) * 100}%` : "100%",
-                }}
+                style={{ width: `${((current + 1) / count) * 100}%` }}
               ></div>
             </div>
           </div>
