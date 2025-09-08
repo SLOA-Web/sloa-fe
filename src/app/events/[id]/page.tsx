@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, use } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { notFound, useParams } from "next/navigation";
 import { api } from "@/utils/api";

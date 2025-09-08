@@ -2,6 +2,7 @@
 import { client } from './client'
 import { groq } from 'next-sanity'
 import imageUrlBuilder from '@sanity/image-url'
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import type { SanityEvent, SanityPost, SanityAnnouncement } from '@/types/sanity'
 
 export const EVENTS_PER_PAGE = 6;
@@ -17,7 +18,7 @@ interface GetEventsParams {
 
 const builder = imageUrlBuilder(client)
 
-export function urlFor(source: any) {
+export function urlFor(source: SanityImageSource) {
   return builder.image(source)
 }
 
