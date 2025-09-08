@@ -39,7 +39,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
     <div className={`bg-gradient-to-r from-white/95 to-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-primary/20 p-6 mb-12 ${className}`}>
       <div className={`flex flex-col lg:flex-row lg:items-center gap-6 lg:justify-between`}>
         {/* Search Input */}
-        <div className="relative flex-1 max-w-md">
+        <div className="relative flex-1">
           <label htmlFor="search-input" className="block text-sm font-medium text-gray-700 mb-2 font-roboto uppercase tracking-wide">
             {searchLabel}
           </label>
