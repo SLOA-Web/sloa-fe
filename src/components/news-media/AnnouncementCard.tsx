@@ -37,13 +37,13 @@ export default function AnnouncementCard({ announcement }: AnnouncementCardProps
         return 'border-yellow-200 bg-yellow-50 text-yellow-900'
       case 'low':
       default:
-        return 'border-blue-200 bg-blue-50 text-blue-900'
+        return 'border-primary-300 bg-primary-100 text-primary-700'
     }
   }
 
   return (
     <div className={cn(
-      'rounded-lg border p-4 transition-colors hover:shadow-md',
+      'rounded-lg border p-4 transition-all hover:shadow-md hover:-translate-y-0.5',
       getPriorityClasses(announcement.priority)
     )}>
       <div className="flex items-start space-x-3">

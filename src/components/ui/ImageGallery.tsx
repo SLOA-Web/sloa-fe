@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { urlFor } from '@/libs/image'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
@@ -63,48 +63,101 @@ export default function ImageGallery({ images, title, className = '' }: ImageGal
 
       {/* Lightbox */}
       {selectedImage !== null && (
-        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-          <button
-            onClick={closeLightbox}
-            className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
-          >
-            <X size={32} />
-          </button>
-          
-          {images.length > 1 && (
-            <>
-              <button
-                onClick={goToPrevious}
-                className="absolute left-4 text-white hover:text-gray-300 z-10"
-              >
-                <ChevronLeft size={32} />
-              </button>
-              
-              <button
-                onClick={goToNext}
-                className="absolute right-4 text-white hover:text-gray-300 z-10"
-              >
-                <ChevronRight size={32} />
-              </button>
-            </>
-          )}
-          
-          <div className="relative w-full h-full max-w-4xl max-h-full">
-            <Image
-              src={urlFor(images[selectedImage]).width(1200).height(900).url()}
-              alt={`${title} - Image ${selectedImage + 1}`}
-              fill
-              className="object-contain"
-              sizes="100vw"
-            />
-          </div>
-          
-          {/* Image counter */}
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded">
-            {selectedImage + 1} of {images.length}
-          </div>
-        </div>
+        <Lightbox
+          images={images}
+          title={title}
+          selectedIndex={selectedImage}
+          onClose={closeLightbox}
+          onPrev={goToPrevious}
+          onNext={goToNext}
+        />
       )}
     </>
+  )
+}
+
+// Dedicated lightbox with better z-index, padding, and accessibility
+function Lightbox({
+  images,
+  title,
+  selectedIndex,
+  onClose,
+  onPrev,
+  onNext,
+}: {
+  images: { asset: { _ref: string; _type: 'reference' } }[]
+  title: string
+  selectedIndex: number
+  onClose: () => void
+  onPrev: () => void
+  onNext: () => void
+}) {
+  // Escape to close + lock body scroll
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft') onPrev()
+      if (e.key === 'ArrowRight') onNext()
+    }
+    document.addEventListener('keydown', onKey)
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prev
+    }
+  }, [onClose, onPrev, onNext])
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/90 z-[120] flex items-center justify-center p-4 pt-32"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${title} image viewer`}
+    >
+      <button
+        onClick={(e) => { e.stopPropagation(); onClose() }}
+        className="absolute top-6 right-6 text-white hover:text-gray-300 z-10 inline-flex items-center justify-center h-10 w-10 rounded-full bg-black/40 backdrop-blur"
+        aria-label="Close image viewer"
+      >
+        <X size={22} />
+      </button>
+          
+      {images.length > 1 && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); onPrev() }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 inline-flex items-center justify-center h-10 w-10 rounded-full bg-black/40 backdrop-blur"
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          
+          <button
+            onClick={(e) => { e.stopPropagation(); onNext() }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:text-gray-300 z-10 inline-flex items-center justify-center h-10 w-10 rounded-full bg-black/40 backdrop-blur"
+            aria-label="Next image"
+          >
+            <ChevronRight size={22} />
+          </button>
+        </>
+      )}
+          
+      <div className="relative w-full h-full max-w-4xl max-h-full" onClick={(e) => e.stopPropagation()}>
+        <Image
+          src={urlFor(images[selectedIndex]).width(1600).height(1200).url()}
+          alt={`${title} - Image ${selectedIndex + 1}`}
+          fill
+          className="object-contain"
+          sizes="100vw"
+        />
+      </div>
+          
+          {/* Image counter */}
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded" onClick={(e) => e.stopPropagation()}>
+        {selectedIndex + 1} of {images.length}
+      </div>
+    </div>
   )
 }

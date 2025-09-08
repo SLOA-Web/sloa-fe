@@ -19,48 +19,62 @@ export default function PublicationCard({ publication }: PublicationCardProps) {
     })
   }
 
+  const wordCount = (publication.excerpt || '').split(/\s+/).filter(Boolean).length
+  const readTime = Math.max(1, Math.round(wordCount / 200))
+
+  const authorName = publication.author || 'Unknown'
+  const initials = authorName
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((s) => s[0]?.toUpperCase())
+    .join('')
+
   return (
     <Link 
       href={`/news-media/publications/${publication.slug.current}`}
-      className="group block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-200"
+      className="group block bg-card rounded-xl border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary/60"
     >
-      <div className="flex">
-        {/* Image */}
-        {publication.image && (
-          <div className="relative w-24 h-24 flex-shrink-0">
-            <Image
-              src={urlFor(publication.image).width(200).height(200).url()}
-              alt={publication.title}
-              fill
-              className="object-cover"
-              sizes="96px"
-            />
-          </div>
+      {/* Top image */}
+      <div className="relative h-44 md:h-56 bg-muted">
+        {publication.image ? (
+          <Image
+            src={urlFor(publication.image).width(800).height(450).url()}
+            alt={publication.title}
+            fill
+            className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        ) : null}
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <h3 className="text-[18px] md:text-[20px] font-semibold leading-snug group-hover:text-primary transition-colors line-clamp-2">
+          {publication.title}
+        </h3>
+
+        {publication.excerpt && (
+          <p className="mt-2 text-sm text-muted-foreground line-clamp-3">
+            {publication.excerpt}
+          </p>
         )}
 
-        {/* Content */}
-        <div className="flex-1 p-4">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">
-            {publication.title}
-          </h3>
-          
-          <div className="space-y-1 mb-2">
-            <div className="flex items-center text-gray-600 text-sm">
-              <User size={14} className="mr-2" />
-              {publication.author}
+        {/* Meta */}
+        <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-[10px] font-medium">
+              {initials || <User size={12} />}
             </div>
-            
-            <div className="flex items-center text-gray-600 text-sm">
-              <Calendar size={14} className="mr-2" />
-              {formatDate(publication.publishedAt)}
-            </div>
+            <span className="truncate max-w-[140px]">{authorName}</span>
           </div>
-
-          {publication.excerpt && (
-            <p className="text-gray-700 text-sm line-clamp-2">
-              {publication.excerpt}
-            </p>
-          )}
+          <span>•</span>
+          <div className="flex items-center gap-1">
+            <Calendar size={12} />
+            <span>{formatDate(publication.publishedAt)}</span>
+          </div>
+          <span>•</span>
+          <span>{readTime} min read</span>
         </div>
       </div>
     </Link>

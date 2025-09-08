@@ -92,7 +92,7 @@ export default async function PublicationPage(props: PublicationPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-20 md:py-32">
       {/* Back Navigation */}
       <Link 
         href="/news-media"

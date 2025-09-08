@@ -1,33 +1,35 @@
-'use client'
+"use client";
 
-import { Calendar, MapPin } from 'lucide-react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { urlFor } from '@/libs/image'
-import type { SanityEvent } from '@/types/sanity'
+import { Calendar, MapPin } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { urlFor } from "@/libs/image";
+import type { SanityEvent } from "@/types/sanity";
 
 interface EventCardProps {
-  event: SanityEvent
+  event: SanityEvent;
 }
 
 export default function EventCard({ event }: EventCardProps) {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
+    const d = new Date(dateString);
+    if (isNaN(d.getTime())) return "Date TBA";
+    return d.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
 
-  const coverImage = event.imageGallery?.[0]
+  const coverImage = event.imageGallery?.[0];
 
   return (
-    <Link 
+    <Link
       href={`/news-media/events/${event._id}`}
-      className="group block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+      className="group block bg-card rounded-lg border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-0.5 "
     >
       {/* Cover Image */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative h-48 overflow-hidden ">
         {coverImage ? (
           <Image
             src={urlFor(coverImage).width(400).height(300).url()}
@@ -37,26 +39,37 @@ export default function EventCard({ event }: EventCardProps) {
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           />
         ) : (
-          <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-            <span className="text-gray-500 text-sm">No image</span>
+          <div className="w-full h-full bg-muted flex items-center justify-center">
+            <span className="text-muted-foreground text-sm">No image</span>
           </div>
         )}
+        {/* Year badge (guard invalid dates) */}
+        {(() => {
+          const d = event.eventDate ? new Date(event.eventDate) : null;
+          const year =
+            d && !isNaN(d.getTime()) ? String(d.getFullYear()) : null;
+          return year ? (
+            <div className="absolute top-3 left-3 bg-primary text-primary-foreground text-xs font-medium px-2 py-1 rounded-md shadow-primary-500/10 shadow">
+              {year}
+            </div>
+          ) : null;
+        })()}
       </div>
 
       {/* Content */}
       <div className="p-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
           {event.title}
         </h3>
-        
+
         <div className="space-y-2 mb-4">
-          <div className="flex items-center text-gray-600 text-sm">
+          <div className="flex items-center text-sm text-muted-foreground">
             <Calendar size={16} className="mr-2" />
             {formatDate(event.eventDate)}
           </div>
-          
+
           {event.location && (
-            <div className="flex items-center text-gray-600 text-sm">
+            <div className="flex items-center text-sm text-muted-foreground">
               <MapPin size={16} className="mr-2" />
               {event.location}
             </div>
@@ -64,11 +77,9 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         {event.shortDescription && (
-          <p className="text-gray-700 text-sm line-clamp-3">
-            {event.shortDescription}
-          </p>
+          <p className="text-sm line-clamp-3">{event.shortDescription}</p>
         )}
       </div>
     </Link>
-  )
+  );
 }

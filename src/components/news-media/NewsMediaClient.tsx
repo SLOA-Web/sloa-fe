@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Calendar } from 'lucide-react'
+import { Search, Calendar, ChevronLeft, ChevronRight } from 'lucide-react'
 import {
   getFilteredEvents,
   getFilteredPublications,
@@ -58,6 +58,9 @@ export default function NewsMediaClient({
   const [publicationPage, setPublicationPage] = useState(1)
   const [hasMoreEvents, setHasMoreEvents] = useState(initialHasMoreEvents)
   const [hasMorePublications, setHasMorePublications] = useState(initialHasMorePublications)
+  // Announcements pagination (client-side)
+  const ANNOUNCEMENTS_PER_PAGE = 5
+  const [announcementPage, setAnnouncementPage] = useState(1)
 
   // Loading State
   const [eventsLoading, setEventsLoading] = useState(false)
@@ -111,40 +114,54 @@ export default function NewsMediaClient({
 
   // Events Tab Content
   const eventsContent = (
-    <div className="space-y-6">
+    <div className="space-y-6 mx-auto">
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-        <div className="relative flex-1 max-w-md">
-          <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search events..."
-            value={eventSearchTerm}
-            onChange={(e) => setEventSearchTerm(e.target.value)}
-            className="input pl-10 w-full"
-          />
-        </div>
-        
-        <div className="relative">
-          <Calendar size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <select
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-            className="input pl-10 pr-10"
-          >
-            <option value="all">All Years</option>
-            {years.map(year => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+      <div className="sticky top-0 z-10 -mt-2 pt-2 bg-gradient-to-b from-background to-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center rounded-lg border shadow-sm p-3">
+          <div className="relative flex-1 w-full max-w-xl">
+            <Search aria-hidden size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search events by title, location..."
+              aria-label="Search events"
+              value={eventSearchTerm}
+              onChange={(e) => setEventSearchTerm(e.target.value)}
+              className="input pl-10 w-full"
+            />
+          </div>
+
+          <div className="relative">
+            <Calendar aria-hidden size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <select
+              aria-label="Filter by year"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+              className="input pl-10 pr-10"
+            >
+              <option value="all">All Years</option>
+              {years.map(year => (
+                <option key={year} value={year}>{year}</option>
+              ))}
+            </select>
+          </div>
+
+          {(isEventFiltering) && (
+            <button
+              type="button"
+              onClick={() => { setEventSearchTerm(''); setSelectedYear('all'); }}
+              className="btn btn-outline btn-sm whitespace-nowrap"
+            >
+              Reset
+            </button>
+          )}
         </div>
       </div>
 
       {/* Loading */}
       {eventsLoading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading events...</p>
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p className="mt-2 text-muted-foreground">Loading events...</p>
         </div>
       )}
 
@@ -158,29 +175,35 @@ export default function NewsMediaClient({
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No events found.</p>
+            <div className="text-center py-12 border rounded-md">
+              <p className="text-muted-foreground">No events found.</p>
             </div>
           )}
 
           {/* Pagination */}
           {!isEventFiltering && (
-            <div className="flex justify-between items-center mt-8">
-              <button
-                onClick={() => setEventPage(p => p - 1)}
-                disabled={eventPage === 1}
-                className="btn btn-outline btn-sm disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-gray-600">Page {eventPage}</span>
-              <button
-                onClick={() => setEventPage(p => p + 1)}
-                disabled={!hasMoreEvents}
-                className="btn btn-outline btn-sm disabled:opacity-50"
-              >
-                Next
-              </button>
+            <div className="flex justify-center items-center mt-8">
+              <div className="flex items-center gap-3 rounded-full bg-card border shadow-sm px-3 py-2">
+                <button
+                  onClick={() => setEventPage(p => p - 1)}
+                  disabled={eventPage === 1}
+                  className="inline-flex items-center gap-1 btn btn-outline btn-sm disabled:opacity-50"
+                >
+                  <ChevronLeft size={16} />
+                  Prev
+                </button>
+                <span className="text-xs md:text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                  Page {eventPage}
+                </span>
+                <button
+                  onClick={() => setEventPage(p => p + 1)}
+                  disabled={!hasMoreEvents}
+                  className="inline-flex items-center gap-1 btn btn-outline btn-sm disabled:opacity-50"
+                >
+                  Next
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           )}
         </>
@@ -190,24 +213,36 @@ export default function NewsMediaClient({
 
   // Publications Tab Content
   const publicationsContent = (
-    <div className="space-y-6">
+    <div className="space-y-6 mx-auto">
       {/* Search */}
-      <div className="relative max-w-md">
-        <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-        <input
-          type="text"
-          placeholder="Search publications..."
-          value={publicationSearchTerm}
-          onChange={(e) => setPublicationSearchTerm(e.target.value)}
-          className="input pl-10 w-full"
-        />
+      <div className="sticky top-0 z-10 -mt-2 pt-2 bg-gradient-to-b from-background to-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="relative w-full max-w-xl rounded-lg border shadow-sm">
+          <Search aria-hidden size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search publications by title or author..."
+            aria-label="Search publications"
+            value={publicationSearchTerm}
+            onChange={(e) => setPublicationSearchTerm(e.target.value)}
+            className="input pl-10 w-full"
+          />
+          {isPublicationFiltering && (
+            <button
+              type="button"
+              onClick={() => setPublicationSearchTerm('')}
+              className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-sm"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Loading */}
       {pubsLoading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <p className="mt-2 text-gray-600">Loading publications...</p>
+        <div className="text-center py-10">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <p className="mt-2 text-muted-foreground">Loading publications...</p>
         </div>
       )}
 
@@ -215,35 +250,41 @@ export default function NewsMediaClient({
       {!pubsLoading && (
         <>
           {publications.length > 0 ? (
-            <div className="space-y-4">
+            <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {publications.map((pub) => (
                 <PublicationCard key={pub._id} publication={pub} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-gray-500">No publications found.</p>
+            <div className="text-center py-12 border rounded-md">
+              <p className="text-muted-foreground">No publications found.</p>
             </div>
           )}
 
           {/* Pagination */}
           {!isPublicationFiltering && (
-            <div className="flex justify-between items-center mt-8">
-              <button
-                onClick={() => setPublicationPage(p => p - 1)}
-                disabled={publicationPage === 1}
-                className="btn btn-outline btn-sm disabled:opacity-50"
-              >
-                Previous
-              </button>
-              <span className="text-sm text-gray-600">Page {publicationPage}</span>
-              <button
-                onClick={() => setPublicationPage(p => p + 1)}
-                disabled={!hasMorePublications}
-                className="btn btn-outline btn-sm disabled:opacity-50"
-              >
-                Next
-              </button>
+            <div className="flex justify-center items-center mt-8">
+              <div className="flex items-center gap-3 rounded-full bg-card border shadow-sm px-3 py-2">
+                <button
+                  onClick={() => setPublicationPage(p => p - 1)}
+                  disabled={publicationPage === 1}
+                  className="inline-flex items-center gap-1 btn btn-outline btn-sm disabled:opacity-50"
+                >
+                  <ChevronLeft size={16} />
+                  Prev
+                </button>
+                <span className="text-xs md:text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                  Page {publicationPage}
+                </span>
+                <button
+                  onClick={() => setPublicationPage(p => p + 1)}
+                  disabled={!hasMorePublications}
+                  className="inline-flex items-center gap-1 btn btn-outline btn-sm disabled:opacity-50"
+                >
+                  Next
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             </div>
           )}
         </>
@@ -252,12 +293,45 @@ export default function NewsMediaClient({
   )
 
   // Announcements Tab Content
+  const totalAnnouncementPages = Math.max(1, Math.ceil(announcements.length / ANNOUNCEMENTS_PER_PAGE))
+  const pagedAnnouncements = announcements.slice(
+    (announcementPage - 1) * ANNOUNCEMENTS_PER_PAGE,
+    announcementPage * ANNOUNCEMENTS_PER_PAGE
+  )
+
   const announcementsContent = (
-    <div className="space-y-4">
+    <div className="space-y-6 mx-auto">
       {announcements.length > 0 ? (
-        announcements.map((announcement) => (
-          <AnnouncementCard key={announcement._id} announcement={announcement} />
-        ))
+        <>
+          <div className="space-y-4">
+            {pagedAnnouncements.map((announcement) => (
+              <AnnouncementCard key={announcement._id} announcement={announcement} />
+            ))}
+          </div>
+          {totalAnnouncementPages > 1 && (
+            <div className="flex justify-center items-center mt-4">
+              <div className="flex items-center gap-3 rounded-full bg-card border shadow-sm px-3 py-2">
+                <button
+                  onClick={() => setAnnouncementPage((p) => Math.max(1, p - 1))}
+                  disabled={announcementPage === 1}
+                  className="btn btn-outline btn-sm disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span className="text-xs md:text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                  Page {announcementPage} of {totalAnnouncementPages}
+                </span>
+                <button
+                  onClick={() => setAnnouncementPage((p) => Math.min(totalAnnouncementPages, p + 1))}
+                  disabled={announcementPage === totalAnnouncementPages}
+                  className="btn btn-outline btn-sm disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       ) : (
         <div className="text-center py-12">
           <p className="text-gray-500">No active announcements.</p>
@@ -288,14 +362,7 @@ export default function NewsMediaClient({
   ]
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">News & Media</h1>
-        <p className="text-lg text-gray-600">
-          Stay updated with our latest events, publications, and announcements.
-        </p>
-      </div>
-
+    <div className="container mx-auto px-4 py-10">
       <Tabs tabs={tabs} defaultTab="events" />
     </div>
   )

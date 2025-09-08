@@ -27,7 +27,7 @@ export default async function EventPage(props: EventPageProps) {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-20 md:py-32">
       {/* Back Navigation */}
       <Link 
         href="/news-media"
@@ -69,7 +69,7 @@ export default async function EventPage(props: EventPageProps) {
 
       {/* Image Gallery */}
       {event.imageGallery && event.imageGallery.length > 0 && (
-        <div className="mb-8">
+        <div className="m-4 p-4 bg-gray-50 rounded-lg">
           <h2 className="text-2xl font-semibold text-gray-900 mb-6">Event Gallery</h2>
           <ImageGallery 
             images={event.imageGallery} 
