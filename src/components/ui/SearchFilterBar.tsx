@@ -1,18 +1,24 @@
 "use client";
 import React from "react";
 
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
 interface SearchFilterBarProps {
   search: string;
   onSearchChange: (value: string) => void;
   selectedFilter: string;
   onFilterChange: (value: string) => void;
-  filterOptions: { value: string; label: string }[];
+  filterOptions: FilterOption[];
   totalResults: number;
   searchPlaceholder?: string;
   resultsLabel?: string;
   searchLabel?: string;
   filterLabel?: string;
   className?: string;
+  showFilter?: boolean;
 }
 
 const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
@@ -27,14 +33,15 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   searchLabel = "Search",
   filterLabel = "Filter By",
   className = "",
+  showFilter = true,
 }) => {
   return (
     <div className={`bg-gradient-to-r from-white/95 to-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-primary/20 p-6 mb-12 ${className}`}>
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div className={`flex flex-col lg:flex-row lg:items-center gap-6 ${showFilter ? 'lg:justify-between' : 'lg:justify-center'}`}>
         {/* Search Input */}
         <div className="relative flex-1 max-w-md">
           <label htmlFor="search-input" className="block text-sm font-medium text-gray-700 mb-2 font-roboto uppercase tracking-wide">
-            Search Events
+            {searchLabel}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -54,30 +61,32 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
         </div>
 
         {/* Filter Dropdown */}
-        <div className="relative">
-          <label htmlFor="filter-select" className="block text-sm font-medium text-gray-700 mb-2 font-roboto uppercase tracking-wide">
-            Filter By
-          </label>
+        {showFilter && (
           <div className="relative">
-            <select
-              id="filter-select"
-              className="appearance-none bg-white/60 border-2 border-primary/20 rounded-[8px] px-4 py-4 pr-12 focus:outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 focus:bg-white transition-all duration-300 text-gray-800 min-w-[200px] font-poppins hover:border-primary/40 hover:bg-white/80 cursor-pointer text-base"
-              value={selectedFilter}
-              onChange={(e) => onFilterChange(e.target.value)}
-            >
-              {filterOptions.map((option) => (
-                <option key={option.value} value={option.value} className="font-poppins py-2">
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-              <svg className="h-5 w-5 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-              </svg>
+            <label htmlFor="filter-select" className="block text-sm font-medium text-gray-700 mb-2 font-roboto uppercase tracking-wide">
+              {filterLabel}
+            </label>
+            <div className="relative">
+              <select
+                id="filter-select"
+                className="appearance-none bg-white/60 border-2 border-primary/20 rounded-[8px] px-4 py-4 pr-12 focus:outline-none focus:ring-4 focus:ring-primary/20 focus:border-primary/50 focus:bg-white transition-all duration-300 text-gray-800 min-w-[200px] font-poppins hover:border-primary/40 hover:bg-white/80 cursor-pointer text-base"
+                value={selectedFilter}
+                onChange={(e) => onFilterChange(e.target.value)}
+              >
+                {filterOptions.map((option) => (
+                  <option key={option.value} value={option.value} className="font-poppins py-2">
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                <svg className="h-5 w-5 text-primary/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Results Counter */}
         <div className="flex flex-col items-center lg:items-end">
