@@ -129,7 +129,7 @@ const ContactForm = () => {
   return (
     <form
       ref={formRef}
-      className="bg-white border-2 border-[#D47045]/65 shadow-lg rounded-[14px] p-4 sm:p-6 py-12 sm:py-16 text-tertiary font-sans relative z-20"
+      className="bg-white border-2 border-[#D47045]/65 shadow-lg rounded-[14px] p-4 sm:p-6 py-12 sm:py-16 text-tertiary font-roboto relative z-20"
       onSubmit={handleSubmit}
       autoComplete="off"
       noValidate

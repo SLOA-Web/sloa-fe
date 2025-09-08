@@ -155,7 +155,7 @@ const Info: React.FC = () => {
       </div>
       <div
         ref={sectionRef}
-        className="grid grid-cols-1 lg:gap-6 md:grid-cols-2 lg:grid-cols-4 font-sans uppercase mb-10"
+        className="grid grid-cols-1 lg:gap-6 md:grid-cols-2 lg:grid-cols-4 font-roboto uppercase mb-10"
       >
         {infoData.map((col) => (
           <div key={col.title} className="info-col px-2 py-4 sm:px-4 sm:py-6">
