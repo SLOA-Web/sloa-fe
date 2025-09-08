@@ -1,6 +1,12 @@
 import CommonBanner from "@/components/CommonBanner";
 import CTASection from "@/components/home/CTASection";
-import { HowItStarted, OurMission, OurVision, CouncilMembers, SecretaryNote } from "@/components/about";
+import {
+  HowItStarted,
+  OurMission,
+  OurVision,
+  CouncilMembers
+} from "@/components/about";
+import ExecutiveNote from "@/components/ExecutiveNote";
 
 export default function AboutPage() {
   return (
@@ -10,7 +16,7 @@ export default function AboutPage() {
       <OurMission />
       <OurVision />
       <CouncilMembers />
-      <SecretaryNote />
+      <ExecutiveNote role="secretary" title="SECRETARY NOTE" />
       <CTASection />
     </div>
   );

@@ -133,14 +133,14 @@ const Footer = () => {
               Social Media
             </div>
             <div className="flex space-x-3">
-              <Link href="#" aria-label="Instagram">
+              <Link href="https://www.instagram.com/srilankaorthopaedic/" aria-label="Instagram">
                 <Image src="/assets/images/insta.svg" alt="Instagram" width={24} height={24} />
               </Link>
-              <Link href="#" aria-label="Facebook">
+              <Link href="https://www.facebook.com/ortho.org/" aria-label="Facebook">
                 <Image src="/assets/images/fb.svg" alt="Facebook" width={24} height={24} />
               </Link>
-              <Link href="#" aria-label="Twitter">
-                <Image src="/assets/images/twitter.svg" alt="Twitter" width={24} height={24} />
+              <Link href="https://www.youtube.com/@thesrilankaorthopaedicasso4115" aria-label="YouTube">
+                <Image src="/assets/images/youtube.svg" alt="YouTube" width={24} height={24} />
               </Link>
             </div>
           </div>

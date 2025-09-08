@@ -6,13 +6,14 @@ import { Suspense, lazy, useEffect } from "react";
 const RecentEvents = lazy(() => import("../components/home/RecentEvents"));
 const BecomeAMember = lazy(() => import("../components/home/BecomeAMember"));
 const BookEvents = lazy(() => import("@/components/home/BookEvents"));
+const ExecutiveNote = lazy(() => import("@/components/ExecutiveNote"));
 
 export default function Home() {
   useEffect(() => {
     // Refresh ScrollTrigger after all components have loaded
     const timer = setTimeout(() => {
-      if (typeof window !== 'undefined') {
-        import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
+      if (typeof window !== "undefined") {
+        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
           ScrollTrigger.refresh();
         });
       }
@@ -28,6 +29,11 @@ export default function Home() {
         <RecentEvents />
         <BecomeAMember />
         <BookEvents />
+        <ExecutiveNote
+          role="president"
+          title="PRESIDENT NOTE"
+          backgroundColor="bg-white"
+        />
       </Suspense>
     </>
   );
