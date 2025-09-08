@@ -10,6 +10,7 @@ import {
 } from '@/libs/sanity.api'
 import type { SanityEvent, SanityPost, SanityAnnouncement } from '@/types/sanity'
 import Tabs from '@/components/ui/Tabs'
+import SearchFilterBar from '@/components/ui/SearchFilterBar'
 import EventCard from './EventCard'
 import PublicationCard from './PublicationCard'
 import AnnouncementCard from './AnnouncementCard'
@@ -116,46 +117,21 @@ export default function NewsMediaClient({
   const eventsContent = (
     <div className="space-y-6 mx-auto">
       {/* Filters */}
-      <div className="sticky top-0 z-10 -mt-2 pt-2 bg-gradient-to-b from-background to-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center rounded-lg border shadow-sm p-3">
-          <div className="relative flex-1 w-full max-w-xl">
-            <Search aria-hidden size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder="Search events by title, location..."
-              aria-label="Search events"
-              value={eventSearchTerm}
-              onChange={(e) => setEventSearchTerm(e.target.value)}
-              className="input pl-10 w-full"
-            />
-          </div>
-
-          <div className="relative">
-            <Calendar aria-hidden size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <select
-              aria-label="Filter by year"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-              className="input pl-10 pr-10"
-            >
-              <option value="all">All Years</option>
-              {years.map(year => (
-                <option key={year} value={year}>{year}</option>
-              ))}
-            </select>
-          </div>
-
-          {(isEventFiltering) && (
-            <button
-              type="button"
-              onClick={() => { setEventSearchTerm(''); setSelectedYear('all'); }}
-              className="btn btn-outline btn-sm whitespace-nowrap"
-            >
-              Reset
-            </button>
-          )}
-        </div>
-      </div>
+      <SearchFilterBar
+        search={eventSearchTerm}
+        onSearchChange={setEventSearchTerm}
+        selectedFilter={selectedYear.toString()}
+        onFilterChange={(value) => setSelectedYear(value === 'all' ? 'all' : Number(value))}
+        filterOptions={[
+          { value: 'all', label: 'All Years' },
+          ...years.map(year => ({ value: year.toString(), label: year.toString() }))
+        ]}
+        totalResults={events.length}
+        searchPlaceholder="Search events by title, location..."
+        resultsLabel="events found"
+        searchLabel="Search Events"
+        filterLabel="Filter by Year"
+      />
 
       {/* Loading */}
       {eventsLoading && (
@@ -215,28 +191,18 @@ export default function NewsMediaClient({
   const publicationsContent = (
     <div className="space-y-6 mx-auto">
       {/* Search */}
-      <div className="sticky top-0 z-10 -mt-2 pt-2 bg-gradient-to-b from-background to-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="relative w-full max-w-xl rounded-lg border shadow-sm">
-          <Search aria-hidden size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search publications by title or author..."
-            aria-label="Search publications"
-            value={publicationSearchTerm}
-            onChange={(e) => setPublicationSearchTerm(e.target.value)}
-            className="input pl-10 w-full"
-          />
-          {isPublicationFiltering && (
-            <button
-              type="button"
-              onClick={() => setPublicationSearchTerm('')}
-              className="absolute right-2 top-1/2 -translate-y-1/2 btn btn-ghost btn-sm"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-      </div>
+      <SearchFilterBar
+        search={publicationSearchTerm}
+        onSearchChange={setPublicationSearchTerm}
+        selectedFilter=""
+        onFilterChange={() => {}}
+        filterOptions={[]}
+        totalResults={publications.length}
+        searchPlaceholder="Search publications by title or author..."
+        resultsLabel="publications found"
+        searchLabel="Search Publications"
+        showFilter={false}
+      />
 
       {/* Loading */}
       {pubsLoading && (

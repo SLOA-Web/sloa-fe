@@ -9,7 +9,7 @@ import CommonBanner from "@/components/CommonBanner";
 import MemberCard from "@/components/membership/MemberCard";
 import Pagination from "@/components/ui/Pagination";
 import { useDebounce } from "@/hooks/useDebounce";
-import { Search, Filter } from "lucide-react";
+import SearchFilterBar from "@/components/ui/SearchFilterBar";
 
 const MemberDirectoryContent = () => {
   const router = useRouter();
@@ -64,29 +64,23 @@ const MemberDirectoryContent = () => {
         imageUrl="/assets/images/aboutus_hero.svg"
       />
       <div className="container mx-auto px-4 py-12 min-h-[70vh]">
-        <div className="mb-8 flex flex-col md:flex-row gap-4">
-          <div className="relative flex-grow">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-            <input
-              type="text"
-              placeholder="Search by name, specialization, etc."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
-            />
-          </div>
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="w-full md:w-auto pl-10 pr-4 py-2 border rounded-lg appearance-none focus:ring-primary focus:border-primary"
-            >
-              <option value="">All Roles</option>
-              <option value="consultant">Consultant</option>
-              <option value="trainee">Trainee</option>
-            </select>
-          </div>
+        <div className="mb-8">
+          <SearchFilterBar
+            search={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedFilter={roleFilter}
+            onFilterChange={setRoleFilter}
+            filterOptions={[
+              { value: "", label: "All Roles" },
+              { value: "consultant", label: "Consultant" },
+              { value: "trainee", label: "Trainee" }
+            ]}
+            totalResults={members.length}
+            searchPlaceholder="Search by name, specialization, etc."
+            resultsLabel="members found"
+            searchLabel="Search Members"
+            filterLabel="Filter by Role"
+          />
         </div>
         {loading ? (
           <div className="flex justify-center min-h-[50vh] items-center">

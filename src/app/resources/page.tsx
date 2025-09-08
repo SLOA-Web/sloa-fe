@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { ExternalLink, Search, BookOpen, Download, Play, FileText, Link as LinkIcon } from "lucide-react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+import { ExternalLink, BookOpen, Download, Play, FileText, Link as LinkIcon } from "lucide-react";
 import { api } from "@/utils/api";
 import { Resource } from "@/types";
+import SearchFilterBar from "@/components/ui/SearchFilterBar";
 
 const ResourcesPage = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -11,10 +12,28 @@ const ResourcesPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
+
+  // Get unique categories from resources
+  const categoryOptions = useMemo(() => {
+    const categories = new Set<string>();
+    resources.forEach(resource => {
+      if (resource.category) {
+        categories.add(resource.category);
+      }
+    });
+    return [
+      { value: "all", label: "All Categories" },
+      ...Array.from(categories).sort().map(category => ({
+        value: category,
+        label: category
+      }))
+    ];
+  }, [resources]);
 
   const fetchResources = async () => {
     try {
@@ -84,11 +103,12 @@ const ResourcesPage = () => {
   useEffect(() => {
     const filtered = resources.filter(resource => {
       const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           (resource.shortDesc && resource.shortDesc.toLowerCase().includes(searchTerm.toLowerCase()));
-      return matchesSearch;
+                           (resource.shortDesc?.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesCategory = selectedCategory === "all" || resource.category === selectedCategory;
+      return matchesSearch && matchesCategory;
     });
     setFilteredResources(filtered);
-  }, [searchTerm, resources]);
+  }, [searchTerm, selectedCategory, resources]);
 
   const addToRefs = (el: HTMLElement | null) => {
     if (el && !cardsRef.current.includes(el)) {
@@ -121,18 +141,19 @@ const ResourcesPage = () => {
         </div>
 
         {/* Search and Filter Section */}
-        <div className="mb-8 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search resources..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 bg-white/70 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-200"
-            />
-          </div>
-        </div>
+        <SearchFilterBar
+          search={searchTerm}
+          onSearchChange={setSearchTerm}
+          selectedFilter={selectedCategory}
+          onFilterChange={setSelectedCategory}
+          filterOptions={categoryOptions}
+          totalResults={filteredResources.length}
+          searchPlaceholder="Search resources by name or description..."
+          resultsLabel="resources found"
+          searchLabel="Search Resources"
+          filterLabel="Filter by Category"
+          showFilter={false}
+        />
 
         {/* Error State */}
         {error && (

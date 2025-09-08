@@ -129,19 +129,19 @@ const ContactForm = () => {
   return (
     <form
       ref={formRef}
-      className="bg-white border-2 border-[#D47045]/65 shadow-lg rounded-[14px] p-4 sm:p-6 py-12 sm:py-16 text-tertiary font-sans relative z-20"
+      className="bg-white border-2 border-[#D47045]/65 shadow-lg rounded-[14px] p-4 sm:p-6 py-12 sm:py-16 text-tertiary font-roboto relative z-20"
       onSubmit={handleSubmit}
       autoComplete="off"
       noValidate
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
         <div ref={el => { fieldsRef.current[0] = el; }}>
-          <label htmlFor="name" className="uppercase text-[20px]">
+          <label htmlFor="name" className="uppercase text-[20px] font-roboto">
             Full Name
           </label>
           <input
             id="name"
-            className={inputClass}
+            className={`${inputClass} font-poppins`}
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
@@ -150,13 +150,13 @@ const ContactForm = () => {
           />
         </div>
         <div ref={el => { fieldsRef.current[1] = el; }}>
-          <label htmlFor="email" className="uppercase text-[20px]">
+          <label htmlFor="email" className="uppercase text-[20px] font-roboto">
             Email
           </label>
           <input
             id="email"
             type="email"
-            className={inputClass}
+            className={`${inputClass} font-poppins`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -165,13 +165,13 @@ const ContactForm = () => {
           />
         </div>
         <div ref={el => { fieldsRef.current[2] = el; }}>
-          <label htmlFor="contactNumber" className="uppercase text-[20px]">
+          <label htmlFor="contactNumber" className="uppercase text-[20px] font-roboto">
             Contact Number
           </label>
           <input
             id="contactNumber"
             type="tel"
-            className={inputClass}
+            className={`${inputClass} font-poppins`}
             value={contactNumber}
             onChange={(e) => setContactNumber(e.target.value)}
             required
@@ -180,12 +180,12 @@ const ContactForm = () => {
           />
         </div>
         <div ref={el => { fieldsRef.current[3] = el; }}>
-          <label htmlFor="subject" className="uppercase text-[20px]">
+          <label htmlFor="subject" className="uppercase text-[20px] font-roboto">
             Subject
           </label>
           <input
             id="subject"
-            className={inputClass}
+            className={`${inputClass} font-poppins`}
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             required
@@ -193,13 +193,13 @@ const ContactForm = () => {
           />
         </div>
         <div className="col-span-1 sm:col-span-2" ref={el => { fieldsRef.current[4] = el; }}>
-          <label htmlFor="message" className="uppercase text-[20px]">
+          <label htmlFor="message" className="uppercase text-[20px] font-roboto">
             Message
           </label>
           <textarea
             id="message"
             rows={4}
-            className={inputClass}
+            className={`${inputClass} font-poppins`}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             required
