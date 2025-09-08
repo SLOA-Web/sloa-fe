@@ -96,7 +96,7 @@ export default function SecretaryNote() {
                 schedule conducted by national and international resource persons.
               </p>
 
-              <div className="pt-6 md:pt-16">
+              <div className="pt-6 md:pt-8">
                 <p className="font-semibold">{name}</p>
                 <p className="">Secretary - SLOA</p>
               </div>
