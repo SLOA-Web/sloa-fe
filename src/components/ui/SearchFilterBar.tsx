@@ -36,7 +36,7 @@ const SearchFilterBar: React.FC<SearchFilterBarProps> = ({
   showFilter = true,
 }) => {
   return (
-    <div className={`bg-gradient-to-r from-white/95 to-white/90 backdrop-blur-lg rounded-2xl shadow-lg border border-primary/20 p-6 mb-12 ${className}`}>
+    <div className={`bg-gradient-to-r from-white/95 to-white/90 backdrop-blur-lg rounded-2xl shadow-md border border-primary/20 p-6 mb-12 ${className}`}>
       <div className={`flex flex-col lg:flex-row lg:items-center gap-6 lg:justify-between`}>
         {/* Search Input */}
         <div className="relative flex-1">

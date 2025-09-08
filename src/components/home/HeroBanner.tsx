@@ -294,7 +294,7 @@ const HeroBanner = () => {
         {/* Right column */}
         <div
           ref={rightColRef}
-          className="flex lg:flex-[0.3] items-center justify-center lg:block"
+          className="hidden lg:flex lg:flex-[0.3] items-center justify-center lg:block"
         >
           {(() => {
             if (eventLoading) {
