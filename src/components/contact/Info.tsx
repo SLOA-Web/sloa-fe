@@ -161,13 +161,13 @@ const Info: React.FC = () => {
           <div key={col.title} className="info-col px-2 py-4 sm:px-4 sm:py-6">
             <div className="flex items-center gap-2 mb-3">
               {col.icon}
-              <h3 className="text-[20px] sm:text-[22px] md:text-[24px]">
+              <h3 className="text-[20px] sm:text-[22px] md:text-[24px] font-roboto">
                 {col.title}
               </h3>
             </div>
             <ul className="list-none p-0 m-0">
               {col.items.map((item, i) => (
-                <li key={i} className="mb-2 text-[15px] sm:text-[16px]">
+                <li key={i} className="mb-2 text-[15px] sm:text-[16px] font-poppins">
                   {item.value}
                 </li>
               ))}
