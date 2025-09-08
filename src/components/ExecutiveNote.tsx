@@ -19,14 +19,12 @@ interface ExecutiveNoteProps {
   role: "president" | "secretary";
   title?: string;
   content?: string;
-  backgroundColor?: string;
 }
 
 export default function ExecutiveNote({
   role,
   title,
-  content = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons.",
-  backgroundColor = "bg-[#fff5f5]"
+  content = "Sri Lanka Orthopaedic Association (SLOA) represents the Orthopaedic surgical fraternity of Sri Lanka. SLOA is committed to the improvement of the standard of care given to Orthopaedic and Trauma patients. This is done by joining hands with the Ministry of Health to improve the Orthopaedic services of the hospitals and provide optimum care to a wider population. SLOA is also committed to further enhance the knowledge and capabilities of the Sri Lankan Orthopaedic Surgeons by continuous medical education. This is facilitated by the numerous CME programmes in our schedule conducted by national and international resource persons."
 }: Readonly<ExecutiveNoteProps>) {
   const [executive, setExecutive] = useState<CouncilMember | null>(null);
   const [loading, setLoading] = useState(true);
@@ -149,7 +147,7 @@ export default function ExecutiveNote({
 
   if (loading) {
     return (
-      <section className="py-16 lg:py-24">
+      <section className="py-12 lg:py-24">
         <div className="container mx-auto px-4 md:px-10 lg:px-16">
           <SectionHeader text={displayTitle} />
           <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
@@ -172,7 +170,7 @@ export default function ExecutiveNote({
   const name = executive.user.name || role.charAt(0).toUpperCase() + role.slice(1);
 
   return (
-    <section ref={sectionRef} className={`py-16 lg:py-24 ${backgroundColor}`}>
+    <section ref={sectionRef} className="py-12 lg:py-24">
       <div className="container mx-auto px-4 md:px-10 lg:px-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div ref={imageRef} className="relative w-full">

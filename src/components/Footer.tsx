@@ -160,7 +160,7 @@ const Footer = () => {
           </div>
 
           {/* --- MODIFIED Email Input Section --- */}
-          <div className="w-full lg:w-[40%] hidden lg:flex flex-col justify-end self-end">
+          <div className="w-full lg:w-[40%] hidden lg:flex flex-col justify-start self-start">
             <form
               ref={formRef}
               onSubmit={handleSubscribe}
