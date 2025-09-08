@@ -1,6 +1,6 @@
 import CommonBanner from "@/components/CommonBanner";
 import CTASection from "@/components/home/CTASection";
-import { HowItStarted, OurMission, OurVision, CouncilMembers } from "@/components/about";
+import { HowItStarted, OurMission, OurVision, CouncilMembers, SecretaryNote } from "@/components/about";
 
 export default function AboutPage() {
   return (
@@ -10,6 +10,7 @@ export default function AboutPage() {
       <OurMission />
       <OurVision />
       <CouncilMembers />
+      <SecretaryNote />
       <CTASection />
     </div>
   );
