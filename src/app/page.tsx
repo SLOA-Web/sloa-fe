@@ -32,7 +32,6 @@ export default function Home() {
         <ExecutiveNote
           role="president"
           title="PRESIDENT NOTE"
-          backgroundColor="bg-white"
         />
       </Suspense>
     </>
