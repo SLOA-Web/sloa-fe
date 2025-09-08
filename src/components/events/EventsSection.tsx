@@ -1,7 +1,7 @@
 "use client";
 import EventCard from "@/components/home/EventCard";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
-import SearchFilterBar from "./SearchFilterBar";
+
 import { EventApiType } from "@/types";
 import { useRef, useEffect, useLayoutEffect, useState, useMemo } from "react";
 import gsap from "gsap";
@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { api } from "@/utils/api";
 import { handleApiError } from "@/utils/errorHandler";
 import { useRouter } from "next/navigation";
+import SearchFilterBar from "../ui/SearchFilterBar";
 gsap.registerPlugin(ScrollTrigger);
 
 const EventsSection: React.FC = () => {

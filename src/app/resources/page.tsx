@@ -152,6 +152,7 @@ const ResourcesPage = () => {
           resultsLabel="resources found"
           searchLabel="Search Resources"
           filterLabel="Filter by Category"
+          showFilter={false}
         />
 
         {/* Error State */}
