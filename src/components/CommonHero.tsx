@@ -60,13 +60,13 @@ const CommonHero: React.FC<CommonHeroProps> = ({
   return (
     <section className="uppercase" ref={sectionRef}>
       <p
-        className="text-[14px] md:text-[15px] lg:text-[16px] font-ibm opacity-[0.75] md:w-[60%] lg:w-[38%]"
+        className="text-[14px] md:text-[15px] lg:text-[16px] opacity-[0.75] md:w-[60%] lg:w-[38%]"
         ref={descRef}
       >
         {description}
       </p>
       <h1
-        className="text-[40px] md:text-[72px] lg:text-[128px] font-semibold font-inter"
+        className="text-[40px] md:text-[72px] lg:text-[128px] font-semibold "
         ref={titleRef}
       >
         {renderTitle()}

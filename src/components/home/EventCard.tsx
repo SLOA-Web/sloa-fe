@@ -31,7 +31,7 @@ const EventCard: React.FC<any> = (props) => {
 
   // Helper to DRY up GSAP animation logic
   const animateElement = (
-    ref: React.RefObject<HTMLElement>,
+    ref: React.RefObject<HTMLElement | null>,
     fromVars: gsap.TweenVars,
     toVars: gsap.TweenVars & { scrollTrigger: ScrollTrigger.Vars }
   ): ScrollTrigger | null => {
@@ -129,7 +129,7 @@ const EventCard: React.FC<any> = (props) => {
 
     animationConfigs.forEach(({ ref, from, to }) => {
       const trigger = animateElement(
-        ref as React.RefObject<HTMLElement>,
+        ref as React.RefObject<HTMLElement | null>,
         from,
         to
       );

@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { gsap } from "gsap";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
-import logo from "../../public/assets/images/logo.png";
 import { NAVBAR, TOP_BAR_LINKS } from "@/data/index";
 import { useAuth } from "@/context/AuthContext";
 
@@ -185,9 +184,12 @@ const Navbar = () => {
       >
         <Link href="/">
           <Image
-            src={logo}
+            src="/assets/images/logo.png"
             alt="logo"
+            width={160}
+            height={64}
             className="relative w-24 lg:w-44 z-[999] mr-12"
+            priority
           />
         </Link>
 
@@ -292,7 +294,14 @@ const Navbar = () => {
                 onClick={closeMobileMenu}
                 className="flex items-center gap-3"
               >
-                <Image src={logo} alt="logo" className="h-8 w-auto" />
+                <Image
+                  src="/assets/images/logo.png"
+                  alt="logo"
+                  width={160}
+                  height={64}
+                  className="h-8 w-auto"
+                  priority
+                />
                 <span className="sr-only">Home</span>
               </Link>
               <button
