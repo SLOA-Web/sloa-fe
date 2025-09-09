@@ -189,28 +189,28 @@ export const eventCards: EventCardProp[] = [
 export const BENEFITS_LIST = [
   {
     image: "/assets/images/benefit1.svg",
-    title: "Professional Development & CPD",
-    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
-  },
-  {
-    image: "/assets/images/homepage_hero.svg",
-    title: "Professional Development & CPD",
-    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
+    title: "Exclusive Networking",
+    para: "Connect with leading professionals and peers in your field at national and international events.",
   },
   {
     image: "/assets/images/benefit1.svg",
-    title: "Professional Development & CPD",
-    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
-  },
-  {
-    image: "/assets/images/homepage_hero.svg",
-    title: "Professional Development & CPD",
-    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
+    title: "Research Grants",
+    para: "Apply for special funding opportunities to support your innovative research projects.",
   },
   {
     image: "/assets/images/benefit1.svg",
-    title: "Professional Development & CPD",
-    para: "Access to accredited continuing professional development courses, workshops, and conferences designed specifically for orthopaedic surgeons and musculoskeletal specialists.",
+    title: "Mentorship Programs",
+    para: "Gain guidance from experienced mentors to accelerate your career growth and clinical skills.",
+  },
+  {
+    image: "/assets/images/benefit1.svg",
+    title: "Access to Journals",
+    para: "Enjoy complimentary access to top orthopaedic journals and the latest scientific publications.",
+  },
+  {
+    image: "/assets/images/benefit1.svg",
+    title: "Discounted Conference Fees",
+    para: "Benefit from reduced registration fees for workshops, seminars, and annual conferences.",
   },
 ];
 
@@ -284,15 +284,15 @@ export const DOCUMENTATION_LINKS = [
 
 export const BENEFITS = [
   {
-    title: "Startup Pack",
-    para: "For new businesses. Includes Name Reservation, Company Incorporation, and a Digital Articles of Association.Company Incorporation, and a Digital Articles of Association.",
+    title: "Medical Council Registration",
+    para: "Must be a registered medical practitioner approved by the Sri Lanka Medical Council with current license and certification in good standing.",
   },
   {
-    title: "Growth Package",
-    para: "Designed for scaling startups. Features include Business Plan Development, Investor Pitch Deck, and Market Research Analysis.",
+    title: "Orthopaedic Specialization",
+    para: "Demonstrated expertise in orthopaedics through formal training, board certification, or equivalent qualification in musculoskeletal medicine.",
   },
   {
-    title: "Enterprise",
-    para: "Tailored for established businesses. Offers Comprehensive Compliance Management, Strategic Consultancy, and Advanced Market Insights.",
+    title: "Professional Experience",
+    para: "Minimum of 2 years clinical experience in orthopaedics with commitment to continuing medical education and professional development.",
   },
 ];

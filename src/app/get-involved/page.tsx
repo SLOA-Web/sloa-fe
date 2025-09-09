@@ -129,7 +129,11 @@ export default function GetInvolvedPage() {
       </Suspense>
       <BenefitsList />
       <Benefits />
-      <InfoSection headerText="new member" imageSrc="/assets/images/new_member.svg" description="The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka." />
+      <InfoSection
+        headerText="new member"
+        imageSrc="/assets/images/new_member.svg"
+        description="Become a part of the Sri Lanka Orthopaedic Association (SLOA) and join a vibrant community of orthopaedic surgeons and musculoskeletal specialists dedicated to advancing the field. As a new member, you'll gain access to exclusive educational resources, research opportunities, and international collaborations. SLOA empowers you to contribute to clinical excellence, set national standards, and make a meaningful impact on patient care across Sri Lanka. Start your journey with us and help shape the future of orthopaedics."
+      />
       <CTASection imageSrc="/assets/images/cta_membership.svg" />
     </main>
   );

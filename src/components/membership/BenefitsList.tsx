@@ -89,12 +89,12 @@ const BenefitsList: React.FC = () => {
       }}
     >
       <SectionHeader text="benefits" />
-      <div className="mx-4 md:mx-10 lg:mx-16 lg:w-[50%] my-6 lg:my-12">
+      <div className="mx-4 md:mx-10 lg:mx-16 lg:w-[70%] my-6 lg:my-12">
         <span
           ref={titleRef}
           className="font-roboto text-[32px] md:text-[40px] lg:text-[55px]"
         >
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Explore the exclusive benefits of joining the Sri Lanka Orthopaedic Association.
         </span>
       </div>
       <div className="mx-4 md:mx-10 lg:mx-16 flex flex-col md:flex-row items-start gap-10 lg:h-full">
