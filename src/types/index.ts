@@ -163,6 +163,7 @@ export interface PublicMember {
   profile: {
     specialization: string;
     hospital: string;
+    profileImage?: string;
   };
 }
 
