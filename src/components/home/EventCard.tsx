@@ -143,7 +143,7 @@ const EventCard: React.FC<any> = (props) => {
   const safeImage =
     typeof image === "string" && image.trim().length > 0
       ? image
-      : "/assets/images/small_logo.jpg";
+      : "/assets/images/small_logo.png";
 
   const altText =
     typeof title === "string" && title.trim().length > 0
@@ -159,7 +159,7 @@ const EventCard: React.FC<any> = (props) => {
             src={safeImage}
             alt={altText}
             fill
-            className="object-contain object-center"
+            className="object-contain object-center py-2"
             sizes="100vw"
           />
           <p className="text-[14px] font-poppins absolute top-3 left-3 z-20 text-white drop-shadow">
@@ -197,7 +197,7 @@ const EventCard: React.FC<any> = (props) => {
           src={safeImage}
           alt={altText}
           fill
-          className="object-contain object-center bg-secondary"
+          className="object-contain object-center bg-secondary py-2"
           sizes="100vw"
         />
       </div>
