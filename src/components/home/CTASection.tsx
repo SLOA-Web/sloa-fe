@@ -10,6 +10,7 @@ const CTASection: React.FC<CTASectionProps> = ({
   title = "Join SLOA Today",
   description = "Advance orthopaedics together — through education, research, and collaboration across Sri Lanka.",
   buttonText = "Join SLOA",
+  imageSrc = "/assets/images/cta.svg",
 }) => {
   const router = useRouter();
 
@@ -18,9 +19,9 @@ const CTASection: React.FC<CTASectionProps> = ({
   };
 
   return (
-    <section className="w-full flex flex-col items-start justify-center py-16 shadow-lg relative overflow-hidden min-h-[600px] bg-gradient-to-r from-[#0d1f14] via-[#0d1f14] to-transparent to-[95%]">
+    <section className="w-full flex flex-col items-start justify-center py-16 shadow-lg relative overflow-hidden min-h-[600px] bg-[linear-gradient(to_right,rgba(18,45,30,1)_1%,rgba(18,45,30,0.92)_28%,rgba(18,45,30,0.88)_43%,rgba(18,45,30,0.8)_63%,rgba(18,45,30,0.5)_86%,rgba(18,45,30,0)_100%)]">
       <Image
-        src="/assets/images/cta.svg"
+        src={imageSrc}
         alt="CTA Background"
         fill
         className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none select-none"
@@ -30,7 +31,7 @@ const CTASection: React.FC<CTASectionProps> = ({
 
       <SectionHeader text={title} color="white" />
       <div className="relative z-10 flex flex-col items-start mx-4 md:mx-10 lg:mx-16">
-        <p className="text-[32px] md:text-[40px] lg:text-[55px] my-12 text-white mb-8 text-left lg:w-[60%] font-roboto leading-[55px]">
+        <p className="text-[32px] md:text-[40px] lg:text-[55px] my-12 text-white mb-8 text-left lg:w-[85%] font-roboto leading-[55px]">
           {description}
         </p>
         <CustomButton

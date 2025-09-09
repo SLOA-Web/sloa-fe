@@ -13,7 +13,7 @@ export default function OurMission({
   content = [
     "To advance orthopaedic practice in Sri Lanka by providing high-quality education and CPD, enabling research and audit, setting and promoting clinical standards, and advocating for patient safety and musculoskeletal health nationwide. We strive to foster a culture of continuous professional development among orthopaedic practitioners, support innovative research that addresses local and global challenges, and collaborate with healthcare partners to improve patient outcomes. Through our commitment to excellence, we aim to empower clinicians, enhance public awareness, and ensure equitable access to the highest standards of musculoskeletal care throughout the country.",
   ],
-  imageUrl = "/assets/images/our-mission.webp",
+  imageUrl = "/assets/images/our_mission.svg",
   imageAlt = "Physical rehabilitation with forearm crutches",
 }: OurMissionProps) {
   return (

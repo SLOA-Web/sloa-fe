@@ -93,6 +93,7 @@ export interface CTASectionProps {
   title?: string;
   description?: string;
   buttonText?: string;
+  imageSrc?: string;
   onClick?: () => void;
 }
 

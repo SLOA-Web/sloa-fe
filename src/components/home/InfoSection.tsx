@@ -10,9 +10,11 @@ gsap.registerPlugin(ScrollTrigger);
 
 interface InfoSectionProps {
   headerText: string;
+  imageSrc: string;
+  description: string;
 }
 
-const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
+const InfoSection: React.FC<InfoSectionProps> = ({ headerText, imageSrc, description }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
   const pRef = useRef<HTMLParagraphElement>(null);
@@ -90,9 +92,9 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
       <div className="grid grid-cols-1 md:grid-cols-2 items-center">
         {/* Left side: Image */}
         <div ref={imgRef} className="flex justify-center w-full">
-          <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full overflow-hidden">
+          <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full overflow-hidden rounded-[8px]">
             <Image
-              src="/assets/images/home_about.svg"
+              src={imageSrc}
               alt="Info Section"
               fill
               className="object-cover rounded-[8px]"
@@ -105,7 +107,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText }) => {
           <SectionHeader text={headerText} />
           <div className="mx-4 lg:ml-12">
             <p ref={pRef} className="text-[24px] my-8">
-              The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka.
+              {description}
             </p>
             <CustomButton text="Apply Now" onClick={handleClick} />
           </div>

@@ -4,7 +4,7 @@ import {
   HowItStarted,
   OurMission,
   OurVision,
-  CouncilMembers
+  CouncilMembers,
 } from "@/components/about";
 import ExecutiveNote from "@/components/ExecutiveNote";
 
@@ -17,7 +17,11 @@ export default function AboutPage() {
       <OurVision />
       <CouncilMembers />
       <ExecutiveNote role="secretary" title="SECRETARY NOTE" />
-      <CTASection />
+      <CTASection
+        buttonText="Become a member"
+        description="Join the Sri Lanka Orthopaedic Association to advance orthopaedic care through education, training, research, collaboration, and professional development nationwide."
+        imageSrc="/assets/images/cta_about.svg"
+      />
     </div>
   );
 }

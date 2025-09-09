@@ -1,6 +1,6 @@
 "use client";
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState, Suspense } from 'react';
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import CommonBanner from "@/components/CommonBanner";
 import InfoSection from "@/components/home/InfoSection";
 import CTASection from "@/components/home/CTASection";
@@ -13,14 +13,14 @@ function NoMembershipMessage() {
   const [showNoMembershipMessage, setShowNoMembershipMessage] = useState(false);
 
   useEffect(() => {
-    const message = searchParams.get('message');
-    if (message === 'no-membership') {
+    const message = searchParams.get("message");
+    if (message === "no-membership") {
       setShowNoMembershipMessage(true);
       // Scroll to the message
       setTimeout(() => {
-        const element = document.getElementById('no-membership-message');
+        const element = document.getElementById("no-membership-message");
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          element.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       }, 100);
     }
@@ -31,7 +31,10 @@ function NoMembershipMessage() {
   }
 
   return (
-    <div id="no-membership-message" className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-primary/20">
+    <div
+      id="no-membership-message"
+      className="bg-gradient-to-r from-primary/5 to-secondary/5 border-b border-primary/20"
+    >
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-2xl shadow-lg border border-primary/20 p-8 md:p-12">
@@ -41,14 +44,16 @@ function NoMembershipMessage() {
                   <Crown className="h-10 w-10" />
                 </div>
               </div>
-              
+
               <div className="space-y-4">
                 <h2 className="text-3xl md:text-4xl font-bold text-foreground">
                   Welcome! You&apos;re Almost There
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  We noticed you don&apos;t have an active membership yet. Join our community to unlock exclusive benefits, 
-                  access professional resources, and connect with healthcare professionals.
+                  We noticed you don&apos;t have an active membership yet. Join
+                  our community to unlock exclusive benefits, access
+                  professional resources, and connect with healthcare
+                  professionals.
                 </p>
               </div>
 
@@ -57,24 +62,36 @@ function NoMembershipMessage() {
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 mx-auto mb-3">
                     <CheckCircle className="h-6 w-6" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Professional Network</h3>
-                  <p className="text-sm text-muted-foreground">Connect with peers and mentors</p>
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Professional Network
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Connect with peers and mentors
+                  </p>
                 </div>
-                
+
                 <div className="text-center p-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-600 mx-auto mb-3">
                     <CheckCircle className="h-6 w-6" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Exclusive Events</h3>
-                  <p className="text-sm text-muted-foreground">Attend conferences & workshops</p>
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Exclusive Events
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Attend conferences & workshops
+                  </p>
                 </div>
-                
+
                 <div className="text-center p-4">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600 mx-auto mb-3">
                     <CheckCircle className="h-6 w-6" />
                   </div>
-                  <h3 className="font-semibold text-foreground mb-2">Resources</h3>
-                  <p className="text-sm text-muted-foreground">Access research & guidelines</p>
+                  <h3 className="font-semibold text-foreground mb-2">
+                    Resources
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Access research & guidelines
+                  </p>
                 </div>
               </div>
 
@@ -83,7 +100,7 @@ function NoMembershipMessage() {
                   <span>Apply for Membership</span>
                   <ArrowRight className="h-5 w-5" />
                 </button>
-                <button 
+                <button
                   onClick={() => setShowNoMembershipMessage(false)}
                   className="px-6 py-3 text-primary hover:text-primary/80 font-medium transition-colors"
                 >
@@ -101,16 +118,19 @@ function NoMembershipMessage() {
 export default function GetInvolvedPage() {
   return (
     <main>
-      <CommonBanner imageUrl="assets/images/membership.svg" text="Get Involved" />
+      <CommonBanner
+        imageUrl="assets/images/membership.svg"
+        text="Membership"
+      />
 
       {/* No Membership Message */}
       <Suspense fallback={null}>
         <NoMembershipMessage />
       </Suspense>
-      <InfoSection headerText="new member" />
       <BenefitsList />
       <Benefits />
-      <CTASection />
+      <InfoSection headerText="new member" imageSrc="/assets/images/new_member.svg" description="The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka." />
+      <CTASection imageSrc="/assets/images/cta_membership.svg" />
     </main>
   );
 }

@@ -121,7 +121,7 @@ const RecentEvents: React.FC = () => {
         )}
       </div>
 
-      <InfoSection headerText="about" />
+      <InfoSection headerText="about" imageSrc="/assets/images/home_about.svg" description="The Sri Lanka Orthopaedic Association (SLOA) represents the national body of orthopaedic surgeons and musculoskeletal specialists. Through education, research, and international partnerships, we are committed to improving patient outcomes in both trauma and elective orthopaedic surgery. Our members collaborate to share expertise, set clinical standards, and deliver compassionate, evidence-based care across Sri Lanka." />
     </div>
   );
 };
