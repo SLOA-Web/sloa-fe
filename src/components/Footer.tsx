@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import CustomButton from "./ui/CustomButton";
 import { api } from "@/utils/api";
-import { Instagram, Facebook, Youtube } from "lucide-react";
+import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -138,19 +138,20 @@ const Footer = () => {
                 href="https://www.instagram.com/srilankaorthopaedic/"
                 aria-label="Instagram"
               >
-                <Instagram size={24} />
+                <FaInstagram size={24} />
               </Link>
               <Link
                 href="https://www.facebook.com/ortho.org/"
                 aria-label="Facebook"
               >
-                <Facebook size={24} />
+                <FaFacebookF size={24} />
               </Link>
               <Link
                 href="https://www.youtube.com/@thesrilankaorthopaedicasso4115"
                 aria-label="YouTube"
+                className="pb-2"
               >
-                <Youtube size={28} />
+                <FaYoutube size={28} />
               </Link>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef } from "react";
-import { Facebook, Instagram, Phone, Youtube } from "lucide-react";
+import { FaInstagram, FaFacebookF, FaYoutube } from "react-icons/fa";
+import { MdPhone } from "react-icons/md";
 import gsap from "gsap";
 
 const infoData = [
@@ -45,14 +46,14 @@ const infoData = [
               href="tel:+94762820181"
               className="inline-flex items-center gap-1 hover:underline"
             >
-              <Phone className="w-4 h-4" />
+              <MdPhone className="w-4 h-4" />
               +94 76 282 0181
             </a>
             <a
               href="tel:+94117460735"
               className="inline-flex items-center gap-1 hover:underline"
             >
-              <Phone className="w-4 h-4" />
+              <MdPhone className="w-4 h-4" />
               +94 11 746 0735
             </a>
           </div>
@@ -75,7 +76,7 @@ const infoData = [
               rel="noopener noreferrer"
               className=" hover:text-blue-600 transition"
             >
-              <Facebook className="w-5 lg:w-7 h-5 lg:h-7" />
+              <FaFacebookF className="w-5 lg:w-7 h-5 lg:h-7" />
             </a>
             <a
               href="https://www.instagram.com/srilankaorthopaedic/"
@@ -84,7 +85,7 @@ const infoData = [
               rel="noopener noreferrer"
               className=" hover:text-pink-500 transition"
             >
-              <Instagram className="w-5 lg:w-7 h-5 lg:h-7" />
+              <FaInstagram className="w-5 lg:w-7 h-5 lg:h-7" />
             </a>
             <a
               href="https://www.youtube.com/@thesrilankaorthopaedicasso4115"
@@ -93,7 +94,7 @@ const infoData = [
               rel="noopener noreferrer"
               className=" hover:text-red-600 transition"
             >
-              <Youtube className="w-6 lg:w-8 h-6 lg:h-8" />
+              <FaYoutube className="w-6 lg:w-8 h-6 lg:h-8" />
             </a>
           </div>
         ),
