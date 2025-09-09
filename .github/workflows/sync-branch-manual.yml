@@ -1,0 +1,23 @@
+name: Sync Branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  sync-branch:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Run sync script
+      env:
+        TOKEN: ${{ secrets.SYNC_TOKEN }}
+        BRANCH: ${{ github.ref_name }}
+      run: |
+        echo "🔄 Starting sync for branch: $BRANCH"
+        echo "🔑 Using token: ${TOKEN:0:8}..."
+        bash sync.sh
