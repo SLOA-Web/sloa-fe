@@ -62,9 +62,9 @@ export default function CouncilMembers({ title = "Council members" }: Readonly<{
               <div className="flex flex-col space-y-6">
                 <div className="relative overflow-hidden rounded-lg bg-gray-100">
                   <CouncilMemberImage
-                    src={member.user.imageUrl || "/assets/images/member.webp"}
+                    src={member.user.imageUrl || "/assets/images/small_logo.png"}
                     alt={member.user.name || 'Council Member'}
-                    className="w-full h-[300px] lg:h-[405px] object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-[300px] lg:h-[405px] object-cover object-center object-top transition-transform duration-300 group-hover:scale-105"
                   />
                   <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#122D1E]/80 via-[#122D1E]/40 to-transparent rounded-b-lg"></div>
                   <div className="absolute inset-0 bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>

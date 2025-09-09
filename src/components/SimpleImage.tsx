@@ -17,11 +17,11 @@ const SimpleImage: React.FC<SimpleImageProps> = ({
   const [imgSrc, setImgSrc] = useState(
     typeof src === "string" && src.trim().length > 0
       ? src
-      : "/assets/images/member.webp"
+      : "/assets/images/small_logo.png"
   );
 
   const handleError = () => {
-    setImgSrc("/assets/images/member.webp");
+    setImgSrc("/assets/images/small_logo.png");
   };
 
   return (

@@ -142,7 +142,7 @@ export default function MemberPortalLayout({
                         >
                           {profileImageUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={profileImageUrl} alt="Profile" className="h-full w-full object-cover" />
+                            <img src={profileImageUrl} alt="Profile" className="h-full w-full object-cover object-center object-top" />
                           ) : (
                             <span className="text-xl font-semibold">
                               {user.user_metadata?.full_name?.[0] || user.email?.[0] || 'M'}

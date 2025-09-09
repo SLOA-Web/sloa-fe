@@ -166,7 +166,7 @@ export default function ExecutiveNote({
 
   if (!executive) return null;
 
-  const imageSrc = executive.user.imageUrl || "/assets/images/member.webp";
+  const imageSrc = executive.user.imageUrl || "/assets/images/small_logo.png";
   const name = executive.user.name || role.charAt(0).toUpperCase() + role.slice(1);
 
   return (
@@ -179,7 +179,7 @@ export default function ExecutiveNote({
                 src={imageSrc}
                 alt={`${name} portrait`}
                 fill
-                className="object-cover rounded-[8px]"
+                className="object-cover object-center object-top rounded-[8px]"
                 sizes="33vw"
                 priority
               />
@@ -189,9 +189,9 @@ export default function ExecutiveNote({
           <div ref={textRef} className="text-[#122D1E] md:col-span-2">
             <SectionHeader text={displayTitle} />
             <div className="mt-6 space-y-4 leading-8 text-[16px] lg:text-[24px] text-[#2b4233]">
-              <p>
+              <div className="whitespace-pre-line">
                 {content}
-              </p>
+              </div>
 
               <div ref={signatureRef} className="pt-6 md:pt-16">
                 <p className="font-semibold text-lg sm:text-xl">{name}</p>

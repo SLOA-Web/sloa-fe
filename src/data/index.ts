@@ -121,7 +121,7 @@ export const eventCards: EventCardProp[] = [
     totalRegistrations: 150,
   },
   {
-    image: "/assets/images/member.webp",
+    image: "/assets/images/small_logo.png",
     date: "22/04/2026",
     time: "09:00 AM",
     title: "Young Surgeons Forum",

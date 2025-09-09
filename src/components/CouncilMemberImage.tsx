@@ -17,12 +17,20 @@ const CouncilMemberImage: React.FC<CouncilMemberImageProps> = ({
   const [imgSrc, setImgSrc] = useState(
     typeof src === "string" && src.trim().length > 0
       ? src
-      : "/assets/images/member.webp"
+      : "/assets/images/small_logo.png"
   );
 
+  const [hasError, setHasError] = useState(false);
+
   const handleError = () => {
-    setImgSrc("/assets/images/member.webp");
+    if (!hasError) {
+      setHasError(true);
+      setImgSrc("/assets/images/small_logo.png");
+    }
   };
+
+  // If it's an external URL, add unoptimized prop for Next.js Image
+  const isExternalUrl = imgSrc.startsWith('http://') || imgSrc.startsWith('https://');
 
   return (
     <Image
@@ -32,6 +40,8 @@ const CouncilMemberImage: React.FC<CouncilMemberImageProps> = ({
       onError={handleError}
       width={400}
       height={600}
+      unoptimized={isExternalUrl} // Allow external URLs to load without optimization
+      priority={!isExternalUrl} // Only prioritize local images
     />
   );
 };
