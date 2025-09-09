@@ -29,6 +29,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 }) => {
   const buttonRef = useRef<HTMLAnchorElement & HTMLButtonElement>(null);
 
+  const effectiveVariant = className?.includes('text-white') ? 'white' : variant;
+
   useEffect(() => {
     if (buttonRef.current) {
       gsap.fromTo(
@@ -60,7 +62,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       "border-white text-white hover:bg-primary hover:border-primary hover:text-white",
   };
 
-  const buttonClass = `${baseClasses} ${variantClasses[variant]} ${className}`;
+  const buttonClass = `${baseClasses} ${variantClasses[effectiveVariant]} ${className}`;
 
   const content = (
     <span className="flex items-center gap-3">
@@ -72,7 +74,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           width={16}
           height={20}
           className={`w-4 h-4 inline-block transition-transform duration-200 group-hover:rotate-45 ${
-            variant === "white"
+            effectiveVariant === "white"
               ? "brightness-0 invert"
               : "group-hover:brightness-0 group-hover:invert"
           }`}
