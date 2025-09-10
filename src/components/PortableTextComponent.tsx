@@ -3,7 +3,7 @@
 import { PortableText, PortableTextComponents } from '@portabletext/react'
 import { urlFor } from '@/libs/image'
 import Image from 'next/image'
-import Link from 'next/link'
+import type { SanityPortableText } from '@/types/sanity' // Adjust path if needed
 
 const components: PortableTextComponents = {
   types: {
@@ -41,6 +41,7 @@ const components: PortableTextComponents = {
   },
   listItem: {
     bullet: ({ children }) => <li style={{ marginBottom: '0.75em' }}>{children}</li>,
+    number: ({ children }) => <li style={{ marginBottom: '0.75em' }}>{children}</li>,
   },
 
   marks: {
@@ -55,6 +56,7 @@ const components: PortableTextComponents = {
   },
 }
 
-export function PortableTextComponent({ value }: { value: any[] }) {
+
+export function PortableTextComponent({ value }: { value: SanityPortableText }) {
   return <PortableText value={value} components={components} />
 }
