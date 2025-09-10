@@ -26,7 +26,7 @@ const BecomeAMember = () => {
         </div>
       </div>
 
-      <CustomImage imageUrl="/assets/images/join_today.jpg"  />
+      <CustomImage imageUrl="/assets/images/join_today.svg"  />
     </section>
   );
 };

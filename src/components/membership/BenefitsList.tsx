@@ -103,7 +103,7 @@ const BenefitsList: React.FC = () => {
           ref={imageRef}
           className="w-full md:w-1/2 flex justify-center items-center mb-8 md:mb-0"
         >
-          <div className="w-full h-64 md:h-full md:min-h-[600px] flex items-center justify-center">
+          <div className="w-full h-[400px] md:h-[500px] lg:h-[600px] min-h-[250px] md:min-h-[350px] lg:min-h-[400px] flex items-center justify-center">
             <Image
               src={BENEFITS_LIST[activeIdx].image}
               alt={BENEFITS_LIST[activeIdx].title}
