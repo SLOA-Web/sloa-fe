@@ -197,6 +197,16 @@ class ApiClient {
     const body = { profileImage: profileImage ?? '' } as const;
     return this.patch('/api/v1/users/me/profile-image', body);
   }
+
+  /**
+   * Change current user's password
+   * - Endpoint: POST /api/v1/auth/change-password
+   * - Auth: Uses cookie (credentials included by default) or Bearer token
+   */
+  async changeMyPassword(currentPassword: string, newPassword: string): Promise<{ message: string; user: User }>{
+    const body = { currentPassword, newPassword } as const;
+    return this.post('/api/v1/auth/change-password', body);
+  }
 }
 
 // Create and export a singleton instance

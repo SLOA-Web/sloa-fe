@@ -46,6 +46,12 @@ const portalLinks = [
     icon: CreditCard,
     description: 'Manage payments and billing'
   },
+  {
+    name: 'Settings',
+    href: '/member-portal/settings',
+    icon: User,
+    description: 'Account settings and preferences'
+  }
 ];
 
 export default function MemberPortalLayout({
