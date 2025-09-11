@@ -201,7 +201,7 @@ export default function ExecutiveNote({
     executive.user.name || role.charAt(0).toUpperCase() + role.slice(1);
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       {role === "secretary" ? (
         <section ref={sectionRef} className="py-12 lg:py-24">
           <div className="container mx-auto px-4 md:px-10 lg:px-16">
@@ -311,6 +311,6 @@ export default function ExecutiveNote({
           </div>
         </section>
       )}
-    </>
+    </div>
   );
 }
