@@ -20,7 +20,7 @@ export default function HowItStarted({
     <section className="relative bg-gradient-to-r from-[#122D1E] via-[#122D1E]/90 to-[#122D1E]/90 py-16 lg:py-20">
       <SectionHeader text="how it started" />
       <div className="container mx-auto">
-        <div className="mx-4 md:mx-10 lg:mx-16 my-12">
+        <div className="px-4 md:px-10 lg:px-16 my-12">
           {/* Main Title - spans full width */}
           <div className="mb-12">
             <h1 className="text-white font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight max-w-4xl">

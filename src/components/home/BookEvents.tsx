@@ -128,7 +128,7 @@ const BookEvents: React.FC = () => {
       <header>
         <SectionHeader text="Upcoming Events" />
       </header>
-      <main className="mx-4 md:mx-10 lg:mx-16">
+      <main className="px-4 md:px-10 lg:px-16">
         <h1
           ref={headingRef}
           className="text-[24px] md:text-[32px] lg:text-[40px] lg:w-[60%] font-roboto mt-6 mb-4"

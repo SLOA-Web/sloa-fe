@@ -16,7 +16,7 @@ export default function OurVision({
   imageAlt = "Medical facility"
 }: OurVisionProps) {
   return (
-    <section className="py-12 lg:py-24 bg-white px-5 md:px-8 lg:px-14">
+    <section className="py-12 lg:py-24 px-4 md:px-10 lg:px-16">
       <div className="container ">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Text */}
@@ -49,7 +49,7 @@ export default function OurVision({
             <SimpleImage
               src={imageUrl}
               alt={imageAlt}
-              className="w-full h-[595px] lg:h-[492px] object-cover rounded-[8px]"
+              className="w-full h-[300px] md:h-[350px] lg:h-[492px] object-cover rounded-[8px]"
             />
           </div>
         </div>

@@ -80,7 +80,7 @@ const Benefits: React.FC = () => {
     <div ref={sectionRef} className="py-12 lg:py-24">
       <SectionHeader text="membership criteria" />
 
-      <div className="mx-4 md:mx-10 lg:mx-16 lg:w-[50%] my-12">
+      <div className="px-4 md:px-10 lg:px-16 lg:w-[50%] my-12">
         <span
           ref={titleRef}
           className="font-roboto text-[32px] md:text-[40px] lg:text-[55px] basis-[72.5%]"
@@ -97,7 +97,7 @@ const Benefits: React.FC = () => {
         </p>
       </div>
 
-      <div className="mx-4 md:mx-10 lg:mx-16 lg:mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="px-4 md:px-10 lg:px-16 lg:mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         {BENEFITS.map((criteria, idx) => (
           <div
             key={idx}
