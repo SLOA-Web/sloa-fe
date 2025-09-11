@@ -18,8 +18,24 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
     nic: '',
     specialization: '',
     hospital: '',
-    location: 'local',
+    location: 'local' as 'local' | 'foreign',
     cv: '',
+    // Optional/additional fields per new schema
+    dateOfBirth: '',
+    gender: '',
+    nationality: '',
+    contactNumber: '',
+    email: '',
+    postalAddress: '',
+    medicalDegrees: '',
+    medicalRegistrationNumber: '',
+    institutionEmployer: '',
+    currentPositionTitle: '',
+    yearsOfExperience: '',
+    membershipCategory: '' as '' | 'full' | 'student',
+    declarationAccepted: false,
+    signature: '',
+    signatureDate: '',
   });
   const [files, setFiles] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -27,8 +43,12 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+    const { name } = target;
+    const value = (target as HTMLInputElement).type === 'checkbox'
+      ? (target as HTMLInputElement).checked
+      : target.value;
+    setFormData((prev) => ({ ...prev, [name]: value as never }));
   };
 
   const MAX_FILES = 5;
@@ -67,15 +87,68 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const nicValid = useMemo(() => {
+    const nic = formData.nic.trim();
+    if (!nic) return false;
+    const nic9 = /^[0-9]{9}[VvXx]$/; // 9 digits + V/X
+    const nic12 = /^[0-9]{12}$/; // 12 digits
+    return nic9.test(nic) || nic12.test(nic);
+  }, [formData.nic]);
+
+  const cvValid = useMemo(() => {
+    const cv = (formData.cv || '').trim();
+    if (!cv) return true; // optional
+    try {
+      // Accept valid URL as-is
+      const u = new URL(cv);
+      return !!u.protocol && !!u.host;
+    } catch {
+      // Otherwise require min length 50
+      return cv.length >= 50;
+    }
+  }, [formData.cv]);
+
   const canProceedInfo = useMemo(() => {
-    return (
-      formData.fullName.trim().length > 2 &&
-      formData.nic.trim().length > 5 &&
-      formData.specialization.trim().length > 2 &&
-      formData.hospital.trim().length > 2 &&
-      (formData.location === 'local' || formData.location === 'foreign')
-    );
-  }, [formData]);
+    // All fields except CV and Documents are mandatory
+    const requiredText = [
+      formData.fullName,
+      formData.specialization,
+      formData.hospital,
+      formData.dateOfBirth,
+      formData.gender,
+      formData.nationality,
+      formData.contactNumber,
+      formData.email,
+      formData.postalAddress,
+      formData.medicalDegrees,
+      formData.medicalRegistrationNumber,
+      formData.institutionEmployer,
+      formData.currentPositionTitle,
+      formData.yearsOfExperience,
+    ].every((v) => (v ?? '').toString().trim().length > 0);
+
+    const locationOk = formData.location === 'local' || formData.location === 'foreign';
+
+    return requiredText && locationOk && nicValid && cvValid;
+  }, [
+    formData.fullName,
+    formData.specialization,
+    formData.hospital,
+    formData.dateOfBirth,
+    formData.gender,
+    formData.nationality,
+    formData.contactNumber,
+    formData.email,
+    formData.postalAddress,
+    formData.medicalDegrees,
+    formData.medicalRegistrationNumber,
+    formData.institutionEmployer,
+    formData.currentPositionTitle,
+    formData.yearsOfExperience,
+    formData.location,
+    nicValid,
+    cvValid,
+  ]);
 
   // Handle Enter key within the form: advance steps only
   const handleSubmit = (e: React.FormEvent) => {
@@ -113,7 +186,46 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
         }
       }
 
-      const payload = { ...formData, documents: documentUrls } as const;
+      // Validate final required declarations
+      if (!formData.membershipCategory) {
+        throw new Error('Please select a membership category.');
+      }
+      if (!formData.declarationAccepted) {
+        throw new Error('You must accept the declaration to proceed.');
+      }
+      if (!formData.signature || !formData.signatureDate) {
+        throw new Error('Signature and date are required.');
+      }
+
+      // Prepare yearsOfExperience: send number when possible, else string
+      const yearsVal = typeof formData.yearsOfExperience === 'string'
+        ? (formData.yearsOfExperience.trim() === '' ? undefined : (isNaN(Number(formData.yearsOfExperience)) ? formData.yearsOfExperience : Number(formData.yearsOfExperience)))
+        : formData.yearsOfExperience;
+
+      const payload = {
+        fullName: formData.fullName.trim(),
+        nic: formData.nic.trim(),
+        specialization: formData.specialization.trim(),
+        hospital: formData.hospital.trim(),
+        location: formData.location,
+        cv: formData.cv?.trim() || '',
+        documents: documentUrls,
+        dateOfBirth: formData.dateOfBirth || undefined,
+        gender: formData.gender || undefined,
+        nationality: formData.nationality || undefined,
+        contactNumber: formData.contactNumber || undefined,
+        email: formData.email || undefined,
+        postalAddress: formData.postalAddress || undefined,
+        medicalDegrees: formData.medicalDegrees || undefined,
+        medicalRegistrationNumber: formData.medicalRegistrationNumber || undefined,
+        institutionEmployer: formData.institutionEmployer || undefined,
+        currentPositionTitle: formData.currentPositionTitle || undefined,
+        yearsOfExperience: yearsVal as number | string | undefined,
+        membershipCategory: formData.membershipCategory,
+        declarationAccepted: !!formData.declarationAccepted,
+        signature: formData.signature,
+        signatureDate: formData.signatureDate,
+      } as const;
       await api.post('/api/v1/membership/apply', payload);
 
       toast.success('Application submitted successfully');
@@ -138,8 +250,8 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h2 className="text-xl font-semibold text-foreground">Apply for Membership</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Follow the steps to submit your application.</p>
+          <h2 className="text-xl font-semibold text-foreground">Sri Lanka Orthopaedic Association</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Membership Application Form</p>
         </div>
       </div>
 
@@ -166,38 +278,84 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
             {error}
           </div>
         )}
+        <p className="mb-3 text-xs text-muted-foreground">Fields marked <span className="text-red-600">*</span> are required. CV and Supporting Documents are optional.</p>
 
         {step === 0 && (
           <div className="bg-card border border-border rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-foreground">Professional Information</h3>
+            <h3 className="text-lg font-semibold text-foreground">Personal Details</h3>
             <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
               <div>
-                <label htmlFor="fullName" className="block text-sm font-medium text-muted-foreground">Full Name</label>
+                <label htmlFor="fullName" className="block text-sm font-medium text-muted-foreground">Full Name <span className="text-red-600">*</span></label>
                 <input id="fullName" name="fullName" type="text" required value={formData.fullName} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label htmlFor="nic" className="block text-sm font-medium text-muted-foreground">NIC Number</label>
-                <input id="nic" name="nic" type="text" required value={formData.nic} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                <label htmlFor="nic" className="block text-sm font-medium text-muted-foreground">NIC Number <span className="text-red-600">*</span></label>
+                <input id="nic" name="nic" type="text" required value={formData.nic} onChange={handleChange} className={`w-full px-4 py-2 mt-1 text-foreground bg-background border rounded-lg focus:outline-none focus:ring-2 ${nicValid ? 'border-border focus:ring-primary' : 'border-red-300 focus:ring-red-500'}`} placeholder="9 digits + V/X or 12 digits" />
               </div>
               <div>
-                <label htmlFor="specialization" className="block text-sm font-medium text-muted-foreground">Specialization</label>
+                <label htmlFor="specialization" className="block text-sm font-medium text-muted-foreground">Orthopaedic Specialization <span className="text-red-600">*</span></label>
                 <input id="specialization" name="specialization" type="text" required value={formData.specialization} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label htmlFor="hospital" className="block text-sm font-medium text-muted-foreground">Hospital / Institution</label>
+                <label htmlFor="hospital" className="block text-sm font-medium text-muted-foreground">Hospital / Institution <span className="text-red-600">*</span></label>
                 <input id="hospital" name="hospital" type="text" required value={formData.hospital} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
               </div>
               <div>
-                <label htmlFor="location" className="block text-sm font-medium text-muted-foreground">Location</label>
-                <select id="location" name="location" value={formData.location} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                <label htmlFor="location" className="block text-sm font-medium text-muted-foreground">Location <span className="text-red-600">*</span></label>
+                <select id="location" name="location" required value={formData.location} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
                   <option value="local">Local</option>
                   <option value="foreign">Foreign</option>
                 </select>
               </div>
+              <div>
+                <label htmlFor="dateOfBirth" className="block text-sm font-medium text-muted-foreground">Date of Birth <span className="text-red-600">*</span></label>
+                <input id="dateOfBirth" name="dateOfBirth" type="date" required value={formData.dateOfBirth} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label htmlFor="gender" className="block text-sm font-medium text-muted-foreground">Gender <span className="text-red-600">*</span></label>
+                <input id="gender" name="gender" type="text" required value={formData.gender} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label htmlFor="nationality" className="block text-sm font-medium text-muted-foreground">Nationality <span className="text-red-600">*</span></label>
+                <input id="nationality" name="nationality" type="text" required value={formData.nationality} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label htmlFor="contactNumber" className="block text-sm font-medium text-muted-foreground">Contact Number <span className="text-red-600">*</span></label>
+                <input id="contactNumber" name="contactNumber" type="tel" required value={formData.contactNumber} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. +94 71 123 4567" />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-muted-foreground">Email Address <span className="text-red-600">*</span></label>
+                <input id="email" name="email" type="email" required value={formData.email} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="This won’t replace account email" />
+              </div>
+              <div className="sm:col-span-2">
+                <label htmlFor="postalAddress" className="block text-sm font-medium text-muted-foreground">Postal Address <span className="text-red-600">*</span></label>
+                <input id="postalAddress" name="postalAddress" type="text" required value={formData.postalAddress} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label htmlFor="medicalDegrees" className="block text-sm font-medium text-muted-foreground">Medical Degree(s) <span className="text-red-600">*</span></label>
+                <input id="medicalDegrees" name="medicalDegrees" type="text" required value={formData.medicalDegrees} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. MBBS, MS" />
+              </div>
+              <div>
+                <label htmlFor="medicalRegistrationNumber" className="block text-sm font-medium text-muted-foreground">Medical Registration Number <span className="text-red-600">*</span></label>
+                <input id="medicalRegistrationNumber" name="medicalRegistrationNumber" type="text" required value={formData.medicalRegistrationNumber} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. SLMC-123456" />
+              </div>
+              <div>
+                <label htmlFor="institutionEmployer" className="block text-sm font-medium text-muted-foreground">Institution/Employer <span className="text-red-600">*</span></label>
+                <input id="institutionEmployer" name="institutionEmployer" type="text" required value={formData.institutionEmployer} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label htmlFor="currentPositionTitle" className="block text-sm font-medium text-muted-foreground">Current Position/Title <span className="text-red-600">*</span></label>
+                <input id="currentPositionTitle" name="currentPositionTitle" type="text" required value={formData.currentPositionTitle} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              </div>
+              <div>
+                <label htmlFor="yearsOfExperience" className="block text-sm font-medium text-muted-foreground">Years of Experience in Orthopaedics <span className="text-red-600">*</span></label>
+                <input id="yearsOfExperience" name="yearsOfExperience" type="text" required value={formData.yearsOfExperience} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="e.g. 7" />
+              </div>
             </div>
             <div className="mt-4">
               <label htmlFor="cv" className="block text-sm font-medium text-muted-foreground">Curriculum Vitae (CV)</label>
-              <textarea id="cv" name="cv" rows={4} value={formData.cv} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Paste your CV here or provide a summary of your qualifications."></textarea>
+              <textarea id="cv" name="cv" rows={4} value={formData.cv} onChange={handleChange} className={`w-full px-4 py-2 mt-1 text-foreground bg-background border rounded-lg focus:outline-none focus:ring-2 ${cvValid ? 'border-border focus:ring-primary' : 'border-red-300 focus:ring-red-500'}`} placeholder="Optional: Paste a URL or at least 50 characters of text."></textarea>
+              <p className="text-xs text-muted-foreground mt-1">Optional: Provide a CV URL or at least 50 characters of text.</p>
             </div>
           </div>
         )}
@@ -205,7 +363,7 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
         {step === 1 && (
           <div className="bg-card border border-border rounded-lg p-6">
             <h3 className="text-lg font-semibold text-foreground">Supporting Documents</h3>
-            <p className="text-sm text-muted-foreground mt-1">PDF, DOC, DOCX, PNG, JPG (Max 5 MB)</p>
+            <p className="text-sm text-muted-foreground mt-1">PDF, DOC, DOCX, PNG, JPG (Max 10 MB each)</p>
             <div className="mt-4">
               <label htmlFor="documents" className="flex items-center justify-center w-full px-6 py-10 text-center border-2 border-border border-dashed rounded-lg cursor-pointer hover:border-primary">
                 <div className="text-center">
@@ -234,6 +392,9 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
                   ))}
                 </div>
               )}
+              {files.length === 0 && (
+                <p className="text-xs text-muted-foreground mt-2">Optional: You can upload supporting documents now or later.</p>
+              )}
             </div>
           </div>
         )}
@@ -247,9 +408,20 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
                 <div className="text-sm text-foreground/90 space-y-1">
                   <p><span className="text-muted-foreground">Full Name:</span> {formData.fullName || '—'}</p>
                   <p><span className="text-muted-foreground">NIC:</span> {formData.nic || '—'}</p>
-                  <p><span className="text-muted-foreground">Specialization:</span> {formData.specialization || '—'}</p>
+                  <p><span className="text-muted-foreground">Orthopaedic Specialization:</span> {formData.specialization || '—'}</p>
                   <p><span className="text-muted-foreground">Hospital:</span> {formData.hospital || '—'}</p>
                   <p><span className="text-muted-foreground">Location:</span> {formData.location}</p>
+                  <p><span className="text-muted-foreground">Date of Birth:</span> {formData.dateOfBirth || '—'}</p>
+                  <p><span className="text-muted-foreground">Gender:</span> {formData.gender || '—'}</p>
+                  <p><span className="text-muted-foreground">Nationality:</span> {formData.nationality || '—'}</p>
+                  <p><span className="text-muted-foreground">Contact Number:</span> {formData.contactNumber || '—'}</p>
+                  <p><span className="text-muted-foreground">Email Address:</span> {formData.email || '—'}</p>
+                  <p><span className="text-muted-foreground">Postal Address:</span> {formData.postalAddress || '—'}</p>
+                  <p><span className="text-muted-foreground">Medical Degree(s):</span> {formData.medicalDegrees || '—'}</p>
+                  <p><span className="text-muted-foreground">Medical Reg. No:</span> {formData.medicalRegistrationNumber || '—'}</p>
+                  <p><span className="text-muted-foreground">Institution/Employer:</span> {formData.institutionEmployer || '—'}</p>
+                  <p><span className="text-muted-foreground">Current Position/Title:</span> {formData.currentPositionTitle || '—'}</p>
+                  <p><span className="text-muted-foreground">Years of Experience in Orthopaedics:</span> {formData.yearsOfExperience || '—'}</p>
                 </div>
               </div>
               <div className="bg-muted/50 p-4 rounded-lg border border-border">
@@ -261,6 +433,32 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
                 ) : (
                   <p className="text-sm text-muted-foreground">No documents selected</p>
                 )}
+              </div>
+            </div>
+            <div className="mt-4 bg-muted/30 border border-border rounded-lg p-4">
+              <h4 className="font-semibold text-foreground mb-2">Membership & Declaration</h4>
+              <p className="text-sm text-foreground mb-3">I hereby apply for membership of the Sri Lanka Orthopaedic Association and agree to abide by its rules, regulations, and code of ethics.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="membershipCategory" className="block text-sm font-medium text-muted-foreground">Membership Category <span className="text-red-600">*</span></label>
+                  <select id="membershipCategory" name="membershipCategory" required value={formData.membershipCategory} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                    <option value="">Select category</option>
+                    <option value="full">Full</option>
+                    <option value="student">Student</option>
+                  </select>
+                </div>
+                <div className="flex items-center gap-3 mt-7 sm:mt-7">
+                  <input id="declarationAccepted" name="declarationAccepted" type="checkbox" required checked={formData.declarationAccepted} onChange={handleChange} className="h-4 w-4" />
+                  <label htmlFor="declarationAccepted" className="text-sm text-foreground">I declare the information provided is true and correct <span className="text-red-600">*</span></label>
+                </div>
+                <div>
+                  <label htmlFor="signature" className="block text-sm font-medium text-muted-foreground">Signature <span className="text-red-600">*</span></label>
+                  <input id="signature" name="signature" type="text" required value={formData.signature} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" placeholder="Type your full name" />
+                </div>
+                <div>
+                  <label htmlFor="signatureDate" className="block text-sm font-medium text-muted-foreground">Date <span className="text-red-600">*</span></label>
+                  <input id="signatureDate" name="signatureDate" type="date" required value={formData.signatureDate} onChange={handleChange} className="w-full px-4 py-2 mt-1 text-foreground bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                </div>
               </div>
             </div>
             {formData.cv && (
