@@ -252,10 +252,7 @@ export default function ExecutiveNote({
           </div>
         </section>
       ) : (
-        <section
-          ref={sectionRef}
-          className="py-12 lg:py-24 container mx-auto px-4 md:px-10 lg:px-16"
-        >
+        <section ref={sectionRef} className="py-12 lg:py-24">
           <div
             ref={imageRef}
             className="relative w-full aspect-square md:col-span-1 md:hidden mb-10"
@@ -272,39 +269,43 @@ export default function ExecutiveNote({
             </div>
           </div>
           <SectionHeader text={displayTitle} />
-          <div
-            ref={content1Ref}
-            className="whitespace-pre-line mt-6 space-y-4 leading-7 lg:leading-8 text-[12px] lg:text-[16px] text-[#2b4233]"
-          >
-            {content1}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-start">
-            <div ref={textRef} className="text-[#122D1E] md:col-span-2">
-              <div className="mt-6 space-y-4 leading-7 lg:leading-8 text-[12px] lg:text-[16px] text-[#2b4233]">
-                <div className="whitespace-pre-line">{content2}</div>
+          <div className="container mx-auto px-4 md:px-10 lg:px-16">
+            <div
+              ref={content1Ref}
+              className="whitespace-pre-line mt-6 space-y-4 leading-7 lg:leading-8 text-[12px] lg:text-[16px] text-[#2b4233]"
+            >
+              {content1}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 items-start">
+              <div ref={textRef} className="text-[#122D1E] md:col-span-2">
+                <div className="mt-6 space-y-4 leading-7 lg:leading-8 text-[12px] lg:text-[16px] text-[#2b4233]">
+                  <div className="whitespace-pre-line">{content2}</div>
 
-                <div ref={signatureRef} className="pt-6 md:pt-16">
-                  <p className="font-semibold text-[12px] lg:text-[16px]">
-                    {name}
-                  </p>
-                  <p className="text-[10px] lg:text-[14px]">{positionTitle}</p>
+                  <div ref={signatureRef} className="pt-6 md:pt-16">
+                    <p className="font-semibold text-[12px] lg:text-[16px]">
+                      {name}
+                    </p>
+                    <p className="text-[10px] lg:text-[14px]">
+                      {positionTitle}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div
-              ref={imageRef}
-              className="relative w-full aspect-square md:col-span-1 hidden md:block"
-            >
-              <div className="overflow-hidden rounded-xl bg-[#122D1E]/10 h-full">
-                <Image
-                  src={imageSrc}
-                  alt={`${name} portrait`}
-                  fill
-                  className="object-cover object-center object-top rounded-[8px]"
-                  sizes="33vw"
-                  priority
-                />
+              <div
+                ref={imageRef}
+                className="relative w-full aspect-square md:col-span-1 hidden md:block"
+              >
+                <div className="overflow-hidden rounded-xl bg-[#122D1E]/10 h-full">
+                  <Image
+                    src={imageSrc}
+                    alt={`${name} portrait`}
+                    fill
+                    className="object-cover object-center object-top rounded-[8px]"
+                    sizes="33vw"
+                    priority
+                  />
+                </div>
               </div>
             </div>
           </div>
