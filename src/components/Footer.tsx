@@ -51,7 +51,7 @@ const Footer = () => {
 
   return (
     <footer
-      className="w-full mt-auto relative overflow-hidden p-0 bg-white flex items-center justify-center"
+      className="w-full mt-auto relative overflow-hidden p-0 bg-white flex items-center justify-center z-0"
       style={{
         backgroundImage: 'url("/assets/images/footer.svg")',
         backgroundSize: "cover",
