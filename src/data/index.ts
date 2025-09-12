@@ -1,4 +1,4 @@
-import { BookEventData, EventCardProp, HeroSlide } from "@/types";
+import { BookEventData, EventCardProp, HeroSlide, Benefit } from "@/types";
 
 export const heroSlides: HeroSlide[] = [
   {
@@ -29,14 +29,23 @@ export const eventCards: EventCardProp[] = [
     date: "14/09/2023",
     time: "09:00 AM",
     title: "Past Conference - Spine Surgery 2023",
-    summary: "Past event on spinal surgery innovations. The conference featured leading experts discussing the latest advancements and techniques in spinal surgery, providing valuable insights for practitioners.",
+    summary:
+      "Past event on spinal surgery innovations. The conference featured leading experts discussing the latest advancements and techniques in spinal surgery, providing valuable insights for practitioners.",
     doctor: "Dr. Arjuna Aluwihare",
     location: "Mount Lavinia Hotel",
     capacity: "0 / 100",
     registrationDeadline: "10/09/2023",
     agenda: [
-      { time: "09:00 AM", topic: "Spinal Fusion Techniques", speaker: "Dr. Arjuna Aluwihare" },
-      { time: "11:00 AM", topic: "Minimally Invasive Spine Surgery", speaker: "Dr. Chaminda Ratnatunga" },
+      {
+        time: "09:00 AM",
+        topic: "Spinal Fusion Techniques",
+        speaker: "Dr. Arjuna Aluwihare",
+      },
+      {
+        time: "11:00 AM",
+        topic: "Minimally Invasive Spine Surgery",
+        speaker: "Dr. Chaminda Ratnatunga",
+      },
     ],
     totalRegistrations: 0,
   },
@@ -45,7 +54,8 @@ export const eventCards: EventCardProp[] = [
     date: "20/10/2025",
     time: "10:00 AM",
     title: "Upcoming Trauma Workshop",
-    summary: "A workshop on the latest trauma care techniques. Attendees will gain hands-on experience and learn from case studies, enhancing their skills in trauma assessment and emergency response.",
+    summary:
+      "A workshop on the latest trauma care techniques. Attendees will gain hands-on experience and learn from case studies, enhancing their skills in trauma assessment and emergency response.",
     doctor: "Dr. Umapathy",
     location: "Colombo General Hospital",
     capacity: "25 / 150",
@@ -61,14 +71,19 @@ export const eventCards: EventCardProp[] = [
     date: "05/12/2025",
     time: "08:30 AM",
     title: "Orthopaedic Innovations Summit",
-    summary: "Summit on new technologies in orthopaedics. This event brings together innovators and practitioners to explore robotics, AI, and other emerging trends shaping the future of orthopaedic care.",
+    summary:
+      "Summit on new technologies in orthopaedics. This event brings together innovators and practitioners to explore robotics, AI, and other emerging trends shaping the future of orthopaedic care.",
     doctor: "Dr. Perera",
     location: "Kandy City Center",
     capacity: "80 / 200",
     registrationDeadline: "01/12/2025",
     agenda: [
       { time: "08:30 AM", topic: "Robotics in Surgery", speaker: "Dr. Perera" },
-      { time: "10:00 AM", topic: "AI in Patient Care", speaker: "Dr. Fernando" },
+      {
+        time: "10:00 AM",
+        topic: "AI in Patient Care",
+        speaker: "Dr. Fernando",
+      },
     ],
     totalRegistrations: 80,
   },
@@ -77,13 +92,18 @@ export const eventCards: EventCardProp[] = [
     date: "12/01/2026",
     time: "09:30 AM",
     title: "Annual Members Meetup",
-    summary: "Networking and knowledge sharing for SLOA members. The meetup offers opportunities for collaboration, professional development, and updates on association initiatives.",
+    summary:
+      "Networking and knowledge sharing for SLOA members. The meetup offers opportunities for collaboration, professional development, and updates on association initiatives.",
     doctor: "Dr. Jayasinghe",
     location: "Galle Face Hotel",
     capacity: "60 / 120",
     registrationDeadline: "10/01/2026",
     agenda: [
-      { time: "09:30 AM", topic: "Welcome & Keynote", speaker: "Dr. Jayasinghe" },
+      {
+        time: "09:30 AM",
+        topic: "Welcome & Keynote",
+        speaker: "Dr. Jayasinghe",
+      },
       { time: "11:00 AM", topic: "Panel Discussion", speaker: "Various" },
     ],
     totalRegistrations: 60,
@@ -93,7 +113,8 @@ export const eventCards: EventCardProp[] = [
     date: "18/02/2026",
     time: "11:00 AM",
     title: "Mission Outreach Camp",
-    summary: "Free orthopaedic checkups and awareness. The camp aims to serve the community by providing essential screenings and educational sessions on bone health and injury prevention.",
+    summary:
+      "Free orthopaedic checkups and awareness. The camp aims to serve the community by providing essential screenings and educational sessions on bone health and injury prevention.",
     doctor: "Dr. Fernando",
     location: "Matara Base Hospital",
     capacity: "100 / 200",
@@ -109,13 +130,18 @@ export const eventCards: EventCardProp[] = [
     date: "10/03/2026",
     time: "10:30 AM",
     title: "Vision for Future Conference",
-    summary: "Discussing the future of orthopaedics in Sri Lanka. Experts will share insights on upcoming trends, challenges, and strategies for advancing orthopaedic care nationwide.",
+    summary:
+      "Discussing the future of orthopaedics in Sri Lanka. Experts will share insights on upcoming trends, challenges, and strategies for advancing orthopaedic care nationwide.",
     doctor: "Dr. Wijesinghe",
     location: "BMICH",
     capacity: "150 / 300",
     registrationDeadline: "05/03/2026",
     agenda: [
-      { time: "10:30 AM", topic: "Opening Ceremony", speaker: "Dr. Wijesinghe" },
+      {
+        time: "10:30 AM",
+        topic: "Opening Ceremony",
+        speaker: "Dr. Wijesinghe",
+      },
       { time: "12:00 PM", topic: "Future Trends", speaker: "Dr. Perera" },
     ],
     totalRegistrations: 150,
@@ -125,14 +151,23 @@ export const eventCards: EventCardProp[] = [
     date: "22/04/2026",
     time: "09:00 AM",
     title: "Young Surgeons Forum",
-    summary: "A platform for young orthopaedic surgeons to present research. The forum encourages knowledge exchange, mentorship, and the development of future leaders in orthopaedics.",
+    summary:
+      "A platform for young orthopaedic surgeons to present research. The forum encourages knowledge exchange, mentorship, and the development of future leaders in orthopaedics.",
     doctor: "Dr. Silva",
     location: "Jaffna Teaching Hospital",
     capacity: "40 / 80",
     registrationDeadline: "18/04/2026",
     agenda: [
-      { time: "09:00 AM", topic: "Research Presentations", speaker: "Dr. Silva" },
-      { time: "11:00 AM", topic: "Mentorship Session", speaker: "Dr. Umapathy" },
+      {
+        time: "09:00 AM",
+        topic: "Research Presentations",
+        speaker: "Dr. Silva",
+      },
+      {
+        time: "11:00 AM",
+        topic: "Mentorship Session",
+        speaker: "Dr. Umapathy",
+      },
     ],
     totalRegistrations: 40,
   },
@@ -141,7 +176,8 @@ export const eventCards: EventCardProp[] = [
     date: "15/05/2026",
     time: "08:00 AM",
     title: "Community Health Day",
-    summary: "Orthopaedic health awareness for the public. The event includes free consultations, seminars, and interactive sessions to promote bone and joint health in the community.",
+    summary:
+      "Orthopaedic health awareness for the public. The event includes free consultations, seminars, and interactive sessions to promote bone and joint health in the community.",
     doctor: "Dr. Perera",
     location: "Kurunegala Hospital",
     capacity: "90 / 150",
@@ -157,13 +193,18 @@ export const eventCards: EventCardProp[] = [
     date: "30/06/2026",
     time: "10:00 AM",
     title: "Surgical Skills Workshop",
-    summary: "Hands-on training for orthopaedic surgical skills. Participants will practice advanced techniques under expert guidance, improving their proficiency and confidence.",
+    summary:
+      "Hands-on training for orthopaedic surgical skills. Participants will practice advanced techniques under expert guidance, improving their proficiency and confidence.",
     doctor: "Dr. Jayasinghe",
     location: "Negombo Hospital",
     capacity: "70 / 100",
     registrationDeadline: "25/06/2026",
     agenda: [
-      { time: "10:00 AM", topic: "Surgical Techniques", speaker: "Dr. Jayasinghe" },
+      {
+        time: "10:00 AM",
+        topic: "Surgical Techniques",
+        speaker: "Dr. Jayasinghe",
+      },
       { time: "12:00 PM", topic: "Q&A Session", speaker: "Panel" },
     ],
     totalRegistrations: 70,
@@ -173,7 +214,8 @@ export const eventCards: EventCardProp[] = [
     date: "12/07/2026",
     time: "09:00 AM",
     title: "Book Launch & Seminar",
-    summary: "Launch of new orthopaedic reference book and seminar. The event features expert talks, book signings, and discussions on the latest research and clinical practices.",
+    summary:
+      "Launch of new orthopaedic reference book and seminar. The event features expert talks, book signings, and discussions on the latest research and clinical practices.",
     doctor: "Dr. Umapathy",
     location: "Colombo Library Auditorium",
     capacity: "30 / 60",
@@ -272,7 +314,7 @@ export const NAVBAR = [
 export const TOP_BAR_LINKS = [
   { title: "Resources", href: "/resources" },
   { title: "News & Media", href: "/news-media" },
-    { title: "Member Directory", href: "/member-directory" },
+  { title: "Member Directory", href: "/member-directory" },
   { title: "Log In", href: "/login" },
 ];
 
@@ -281,17 +323,20 @@ export const DOCUMENTATION_LINKS = [
   { title: "Terms and Conditions", href: "/terms-and-conditions" },
 ];
 
-export const BENEFITS = [
+export const BENEFITS: Benefit[] = [
   {
     title: "Medical Council Registration",
-    para: "Must be a registered medical practitioner approved by the Sri Lanka Medical Council with current license and certification in good standing.",
+    para: "Submission of a completed membership application form along with necessary supporting documents.\nPayment of the annual membership fee",
+    vector: "/assets/images/vector_member.svg",
   },
   {
     title: "Orthopaedic Specialization",
-    para: "Demonstrated expertise in orthopaedics through formal training, board certification, or equivalent qualification in musculoskeletal medicine.",
+    para: "Commitment to uphold the ethical standards and objectives of the Sri Lanka Orthopaedic Association.",
+    vector: "/assets/images/vector_orthopaedic.svg",
   },
   {
     title: "Professional Experience",
-    para: "Minimum of 2 years clinical experience in orthopaedics with commitment to continuing medical education and professional development.",
+    para: "Medical degree recognized by the relevant Sri Lankan medical authority\nCompletion of postgraduate training or specialization in orthopaedics or related fields.",
+    vector: "/assets/images/vector_professional.svg",
   },
 ];

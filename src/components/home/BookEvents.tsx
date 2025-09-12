@@ -131,12 +131,12 @@ const BookEvents: React.FC = () => {
       <main className="px-4 md:px-10 lg:px-16">
         <h1
           ref={headingRef}
-          className="text-[24px] md:text-[32px] lg:text-[40px] lg:w-[60%] font-roboto mt-6 mb-4"
+          className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[60%] font-roboto mt-6 mb-4"
         >
           Discover upcoming orthopaedic training events in Sri Lanka.
         </h1>
         <div className="flex flex-col-reverse lg:flex-row w-full mt-8">
-          <section className="lg:w-[55%] py-6 lg:p-6 rounded-lg mr-4 flex flex-col justify-center items-center min-h-[400px]">
+          <section className="lg:w-[55%] p-6 lg:px-6 lg:py-0 rounded-lg mr-4 flex flex-col justify-center items-center min-h-[400px]">
             {(() => {
               if (loading) {
                 return (

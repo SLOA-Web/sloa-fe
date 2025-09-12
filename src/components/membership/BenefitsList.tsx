@@ -101,9 +101,9 @@ const BenefitsList: React.FC = () => {
         {/* Image Container - Full Height */}
         <div
           ref={imageRef}
-          className="w-full md:w-1/2 flex justify-center items-center mb-8 md:mb-0"
+          className="w-full md:w-1/2 flex justify-center items-center mb-0 md:mb-0"
         >
-          <div className="w-full h-[400px] md:h-[500px] lg:h-[600px] min-h-[250px] md:min-h-[350px] lg:min-h-[400px] flex items-center justify-center">
+          <div className="w-full h-[250px] md:h-[350px] lg:h-[470px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px] flex items-center justify-center">
             <Image
               src={BENEFITS_LIST[activeIdx].image}
               alt={BENEFITS_LIST[activeIdx].title}
@@ -115,7 +115,7 @@ const BenefitsList: React.FC = () => {
         </div>
         {/* Cards Container - Stacked */}
         <div className="w-full md:w-1/2 flex flex-col justify-center">
-          <div className="flex flex-col h-[400px] md:h-[500px] lg:h-[600px] min-h-[250px] md:min-h-[350px] lg:min-h-[400px]">
+          <div className="flex flex-col h-[250px] md:h-[350px] lg:h-[450px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px]">
             {BENEFITS_LIST.map((benefit, idx) => (
               <button
                 key={idx}
