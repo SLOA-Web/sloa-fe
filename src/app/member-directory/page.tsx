@@ -19,7 +19,7 @@ const MemberDirectoryContent = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
-  const [roleFilter, setRoleFilter] = useState(searchParams.get("role") || "");
+  // Role filter removed per request
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
   const currentPage = parseInt(searchParams.get("page") || "1", 20);
@@ -32,9 +32,7 @@ const MemberDirectoryContent = () => {
       if (debouncedSearchTerm) {
         params.set("search", debouncedSearchTerm);
       }
-      if (roleFilter) {
-        params.set("role", roleFilter);
-      }
+      // role filter removed
       
       // Update URL without reloading
       const newUrl = `${window.location.pathname}?${params.toString()}`;
@@ -55,7 +53,7 @@ const MemberDirectoryContent = () => {
     };
 
     fetchMembers();
-  }, [currentPage, debouncedSearchTerm, roleFilter, router]);
+  }, [currentPage, debouncedSearchTerm, router]);
 
   return (
     <div>
@@ -68,18 +66,15 @@ const MemberDirectoryContent = () => {
           <SearchFilterBar
             search={searchTerm}
             onSearchChange={setSearchTerm}
-            selectedFilter={roleFilter}
-            onFilterChange={setRoleFilter}
-            filterOptions={[
-              { value: "", label: "All Roles" },
-              { value: "consultant", label: "Consultant" },
-              { value: "trainee", label: "Trainee" }
-            ]}
+            selectedFilter={""}
+            onFilterChange={() => {}}
+            filterOptions={[]}
             totalResults={members.length}
             searchPlaceholder="Search by name, specialization, etc."
             resultsLabel="members found"
             searchLabel="Search Members"
-            filterLabel="Filter by Role"
+            filterLabel={""}
+            showFilter={false}
           />
         </div>
         {loading ? (
