@@ -27,6 +27,16 @@ interface UserProfile {
   cv?: string;
   guestReason?: string;
   documents: string[] | null;
+  dateOfBirth?: string | null;
+  gender?: string | null;
+  nationality?: string | null;
+  phoneNumber?: string | null;
+  postalAddress?: string | null;
+  medicalDegrees?: string | null;
+  medicalRegNumber?: string | null;
+  institution?: string | null;
+  currentPosition?: string | null;
+  yearsOfExperience?: number | string | null;
 }
 
 interface User {
@@ -54,6 +64,10 @@ interface Membership {
   expiryDate?: string | null;
   lastRenewalReminderAt?: string | null;
   user: User;
+  membershipCategory?: 'full' | 'student';
+  declarationAccepted?: boolean;
+  signature?: string | null;
+  signedAt?: string | null;
 }
 
 interface ApiResponse {
@@ -198,11 +212,31 @@ const MembershipsPage = () => {
               <h4 className="text-lg font-semibold text-foreground">Current Status</h4>
               <StatusBadge status={membership.user?.status || membership.status} />
             </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <InfoField label="Membership Type" value={membership.membershipType || '—'} />
-              <InfoField label="Applied Date" value={new Date(membership.appliedAt).toLocaleDateString()} />
-              {membership.approvedAt && <InfoField label="Approved Date" value={new Date(membership.approvedAt).toLocaleDateString()} />}
-              {membership.expiryDate && <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InfoField
+              label="Membership Type"
+              value={
+              membership.membershipCategory
+                ? membership.membershipCategory.charAt(0).toUpperCase() + membership.membershipCategory.slice(1)
+                : '—'
+              }
+            />
+            <InfoField label="Applied Date" value={new Date(membership.appliedAt).toLocaleDateString()} />
+            {membership.approvedAt && (
+              <InfoField label="Approved Date" value={new Date(membership.approvedAt).toLocaleDateString()} />
+            )}
+            {membership.expiryDate && (
+              <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />
+            )}
+            </div>
+          </InfoCard>
+
+          <InfoCard title="Application Details">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <InfoField label="Membership Category" value={membership.membershipCategory ?? '—'} />
+              <InfoField label="Declaration Accepted" value={typeof membership.declarationAccepted === 'boolean' ? (membership.declarationAccepted ? 'Yes' : 'No') : '—'} />
+              <InfoField label="Signature" value={membership.signature ?? '—'} />
+              {membership.signedAt && <InfoField label="Signed Date" value={new Date(membership.signedAt).toLocaleDateString()} />}
             </div>
           </InfoCard>
 
@@ -240,25 +274,51 @@ const MembershipsPage = () => {
               <InfoField label="Full Name" value={membership.user?.fullName ?? null} />
               <InfoField label="Email" value={membership.user?.email ?? null} />
               <InfoField label="NIC" value={membership.user?.profile?.nic ?? null} />
-              <InfoField label="Specialization" value={membership.user?.profile?.specialization ?? null} />
-              <InfoField label="Hospital" value={membership.user?.profile?.hospital ?? null} />
+              <InfoField label="Orthopaedic Specialization" value={membership.user?.profile?.specialization ?? null} />
+              <InfoField label="Hospital / Institution" value={membership.user?.profile?.hospital ?? null} />
               <InfoField label="Location" value={membership.user?.location ?? null} />
+              <InfoField label="Date of Birth" value={membership.user?.profile?.dateOfBirth ?? null} />
+              <InfoField label="Gender" value={membership.user?.profile?.gender ?? null} />
+              <InfoField label="Nationality" value={membership.user?.profile?.nationality ?? null} />
+              <InfoField label="Contact Number" value={membership.user?.profile?.phoneNumber ?? null} />
+              <InfoField label="Postal Address" value={membership.user?.profile?.postalAddress ?? null} />
+              <InfoField label="Medical Degree(s)" value={membership.user?.profile?.medicalDegrees ?? null} />
+              <InfoField label="Medical Registration No" value={membership.user?.profile?.medicalRegNumber ?? null} />
+              <InfoField label="Institution/Employer" value={membership.user?.profile?.institution ?? null} />
+              <InfoField label="Current Position/Title" value={membership.user?.profile?.currentPosition ?? null} />
+              <InfoField label="Years of Experience" value={(membership.user?.profile?.yearsOfExperience as string) ?? null} />
             </div>
           </InfoCard>
+
+          {membership.user?.profile?.cv && (
+            <InfoCard title="CV">
+              {(() => {
+                const cv = membership.user?.profile?.cv as string;
+                try {
+                  const u = new URL(cv);
+                  return (
+                    <a href={u.toString()} target="_blank" rel="noreferrer" className="text-primary underline">Open CV</a>
+                  );
+                } catch {
+                  return (
+                    <p className="text-sm text-foreground whitespace-pre-wrap">{cv}</p>
+                  );
+                }
+              })()}
+            </InfoCard>
+          )}
 
           <InfoCard title="Documents">
             <div className="space-y-3">
               {(() => { const docs = Array.isArray(membership.documents) ? membership.documents : []; return docs.length > 0 ? (
                 docs.map((doc, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <a key={index} href={doc} target="_blank" rel="noreferrer" className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border hover:bg-muted transition-colors">
                     <div className="flex items-center gap-3">
                       <FileText className="h-5 w-5 text-primary" />
-                      <span className="text-sm font-medium text-foreground">Document {index + 1}</span>
+                      <span className="text-sm font-medium text-foreground truncate">{`Document ${index + 1}`}</span>
                     </div>
-                    <button className="px-3 py-1 text-xs bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors">
-                      Download
-                    </button>
-                  </div>
+                    <span className="px-3 py-1 text-xs bg-primary text-primary-foreground rounded">Open</span>
+                  </a>
                 ))
               ) : (
                 <p className="text-muted-foreground text-center py-4">No documents uploaded</p>

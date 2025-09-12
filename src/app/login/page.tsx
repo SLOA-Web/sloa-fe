@@ -148,20 +148,7 @@ const LoginPage = () => {
               {/* Remember Me & Forgot Password */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-                  />
-                  <label
-                    htmlFor="remember-me"
-                    className="text-sm text-foreground"
-                  >
-                    Remember me
-                  </label>
+         
                 </div>
                 <Link
                   href="/reset-password"
