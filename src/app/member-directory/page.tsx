@@ -59,7 +59,7 @@ const MemberDirectoryContent = () => {
     <div>
       <CommonBanner
         text="Member Directory"
-        imageUrl="/assets/images/aboutus_hero.svg"
+        imageUrl="/assets/images/member_directory_hero.svg"
       />
       <div className="container mx-auto px-4 py-12 min-h-[70vh]">
         <div className="mb-8">
