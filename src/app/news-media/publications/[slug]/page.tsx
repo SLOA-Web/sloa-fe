@@ -97,7 +97,7 @@ export default async function PublicationPage(props: PublicationPageProps) {
       {/* Back Navigation */}
       <Link 
         href="/news-media"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6 transition-colors"
+        className="inline-flex items-center text-primary hover:text-primary/80 mb-6 transition-colors"
       >
         <ArrowLeft size={20} className="mr-2" />
         Back to News & Media
@@ -122,7 +122,7 @@ export default async function PublicationPage(props: PublicationPageProps) {
             </div>
 
             {publication.category && (
-              <span className="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">
+              <span className="bg-primary-100 text-primary-800 text-sm font-medium px-3 py-1 rounded-full inline-block w-fit">
                 {publication.category}
               </span>
             )}

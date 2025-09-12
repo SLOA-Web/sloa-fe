@@ -1,11 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 import api from "@/utils/api";
 import { Eye, EyeOff, Save } from "lucide-react";
 
 const SettingsPage = () => {
-  const { user } = useAuth();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -17,12 +15,6 @@ const SettingsPage = () => {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-
-  const [settings, setSettings] = useState({
-    twoFactorAuth: true,
-    loginNotifications: true,
-    sessionTimeout: "24 hours",
-  });
 
 
   const handlePasswordUpdate = async () => {
