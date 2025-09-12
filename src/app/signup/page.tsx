@@ -38,7 +38,7 @@ const SignupPage = () => {
 
   return (
     <AuthRedirect>
-      <div className="min-h-screen w-full flex items-center justify-center bg-[#FBFBFB] p-4 relative overflow-hidden">
+      <div className="min-h-0 w-full flex items-center justify-center bg-[#FBFBFB] p-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.03)_1px,transparent_1px)] bg-[size:100px_100px]" />
         <div className="relative z-10 w-full max-w-md space-y-6">
           {/* Header */}

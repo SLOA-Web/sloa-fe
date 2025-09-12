@@ -246,7 +246,7 @@ const MembershipApplicationForm: React.FC<Props> = ({ className, onSubmitted }) 
   };
 
   return (
-    <div className={className}>
+    <div className={`${className} min-h-0`}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div>

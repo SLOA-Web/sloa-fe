@@ -2,15 +2,17 @@
 import React, { useState, useEffect, useCallback, JSX } from 'react';
 import { useRouter } from 'next/navigation';
 import MembershipApplicationForm from '@/components/MembershipApplicationForm';
-import { 
-  Crown, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
+import {
+  Crown,
+  Clock,
+  CheckCircle,
+  XCircle,
   AlertCircle,
   User,
   RefreshCw,
-  FileText
+  FileText,
+  CreditCard,
+  ArrowRight
 } from 'lucide-react';
 import api from '@/utils/api';
 import { handleApiError } from '@/utils/errorHandler';
@@ -190,7 +192,7 @@ const MembershipsPage = () => {
     return (
       <div className="space-y-6">
         <div className="space-y-6">
-          
+
           <InfoCard title="Membership Status">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-lg font-semibold text-foreground">Current Status</h4>
@@ -203,6 +205,38 @@ const MembershipsPage = () => {
               {membership.expiryDate && <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />}
             </div>
           </InfoCard>
+
+          {/* Payment Required Tile */}
+          {membership.status === 'approved' && membership.user?.status === 'pending' && (
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                    <CreditCard className="h-6 w-6 text-blue-600" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-blue-900 mb-2">Payment Required</h3>
+                  <p className="text-blue-700 mb-4">
+                    Congratulations! Your membership application has been approved. To complete your registration and activate your membership, please proceed with the payment.
+                  </p>
+                  <div className="flex items-center gap-4">
+                    <button
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                      onClick={() => router.push('/member-portal/payments')}
+                    >
+                      <CreditCard className="h-4 w-4" />
+                      Make Payment
+                      <ArrowRight className="h-4 w-4" />
+                    </button>
+                    <span className="text-sm text-blue-600">
+                      Complete your membership activation
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           <InfoCard title="Profile Information">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
