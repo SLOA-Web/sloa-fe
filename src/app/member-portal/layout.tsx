@@ -89,7 +89,7 @@ export default function MemberPortalLayout({
       setUploadingImage(true);
       const fd = new FormData();
       fd.append('profileImage', file);
-      const resp = await api.upload('/api/v1/upload/profile/me', fd) as {
+      await api.upload('/api/v1/upload/profile/me', fd) as {
         message: string;
         file: {
           url: string;
@@ -97,7 +97,7 @@ export default function MemberPortalLayout({
           originalSize: number;
           compressedSize: number;
           compressionRatio: string;
-          metadata: Record<string, any>;
+          metadata: Record<string, unknown>;
         };
         profileImage: string;
       };

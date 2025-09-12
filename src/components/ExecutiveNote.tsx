@@ -173,7 +173,7 @@ export default function ExecutiveNote({
 
       initAnimations();
     }
-  }, [loading, executive]);
+  }, [loading, executive, role]);
 
   if (loading) {
     return (
