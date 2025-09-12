@@ -89,7 +89,7 @@ const Benefits: React.FC = () => {
         </span>
         <p
           ref={descRef}
-          className="font-poppins text-[16px] 16 lg:mr-24 leading-8 my-4"
+          className="font-poppins text-[14px] lg:text-[16px] 16 lg:mr-24 leading-8 my-4"
         >
           Become part of the Sri Lanka Orthopaedic Association (SLOA), the premier
           professional body representing orthopaedic surgeons and musculoskeletal
@@ -109,7 +109,7 @@ const Benefits: React.FC = () => {
             <h3 className="font-roboto text-[24px] mb-4 font-medium text-primary">
               {criteria.title}
             </h3>
-            <p className="font-poppins text-[16px] leading-6">{criteria.para}</p>
+            <p className="font-poppins text-[14px] lg:text-[16px] leading-6">{criteria.para}</p>
           </div>
         ))}
       </div>

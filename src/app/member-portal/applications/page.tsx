@@ -229,9 +229,6 @@ const MembershipsPage = () => {
                       Make Payment
                       <ArrowRight className="h-4 w-4" />
                     </button>
-                    <span className="text-sm text-blue-600">
-                      Complete your membership activation
-                    </span>
                   </div>
                 </div>
               </div>
