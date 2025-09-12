@@ -188,7 +188,7 @@ const Navbar = () => {
             alt="logo"
             width={400}
             height={160}
-            className="relative w-72 lg:w-[28rem] z-[999] mr-16"
+            className="relative w-52 lg:w-[28rem] z-[999] mr-16"
             priority
           />
         </Link>
@@ -299,7 +299,7 @@ const Navbar = () => {
                   alt="logo"
                   width={160}
                   height={64}
-                  className="h-8 w-auto"
+                  className="w-52"
                   priority
                 />
                 <span className="sr-only">Home</span>

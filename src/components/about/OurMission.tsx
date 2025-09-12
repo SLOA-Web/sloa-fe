@@ -17,16 +17,16 @@ export default function OurMission({
   imageAlt = "Physical rehabilitation with forearm crutches",
 }: OurMissionProps) {
   return (
-    <section className="py-12 lg:py-24 bg-white ">
+    <section className="py-12 lg:py-24 bg-white">
       <SectionHeader text="What Drives Us" className="mb-8 lg:mb-24" />
-      <div className="container mx-auto px-5 md:px-8">
+      <div className="px-4 md:px-10 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
           {/* Left Column - Image */}
           <div className="order-1">
             <SimpleImage
               src={imageUrl}
               alt={imageAlt}
-              className="w-full h-[595px] lg:h-[492px] object-cover rounded-[8px]"
+              className="w-full h-[300px] md:h-[350px] lg:h-[492px] object-cover rounded-[8px]"
             />
           </div>
 
