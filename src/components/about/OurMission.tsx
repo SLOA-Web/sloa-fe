@@ -20,7 +20,7 @@ export default function OurMission({
   imageAlt = "Physical rehabilitation with forearm crutches",
 }: OurMissionProps) {
   return (
-    <section className="py-12 lg:py-24 bg-white">
+    <section className="py-12 lg:py-24">
       <SectionHeader text="What Drives Us" className="mb-8 lg:mb-24" />
       <div className="px-4 md:px-10 lg:px-16">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">

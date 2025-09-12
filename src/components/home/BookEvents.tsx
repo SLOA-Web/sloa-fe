@@ -136,7 +136,7 @@ const BookEvents: React.FC = () => {
           Discover upcoming orthopaedic training events in Sri Lanka.
         </h1>
         <div className="flex flex-col-reverse lg:flex-row w-full mt-8">
-          <section className="lg:w-[55%] py-6 lg:p-6 rounded-lg mr-4 flex flex-col justify-center items-center min-h-[400px]">
+          <section className="lg:w-[55%] rounded-lg mr-4 flex flex-col justify-center items-center min-h-[400px]">
             {(() => {
               if (loading) {
                 return (
