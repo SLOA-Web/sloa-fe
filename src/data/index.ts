@@ -279,7 +279,6 @@ export const TOP_BAR_LINKS = [
 export const DOCUMENTATION_LINKS = [
   { title: "Privacy Policy", href: "/privacy-policy" },
   { title: "Terms and Conditions", href: "/terms-and-conditions" },
-  { title: "Copyright", href: "/copyright" },
 ];
 
 export const BENEFITS = [

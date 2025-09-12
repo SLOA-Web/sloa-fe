@@ -88,17 +88,21 @@ export default function MemberPortalLayout({
     try {
       setUploadingImage(true);
       const fd = new FormData();
-      fd.append('documents', file);
-      const resp = await api.upload('/api/v1/upload/documents/membership', fd) as { files?: Array<{ url?: string; path?: string }>; urls?: string[] };
-      let uploadedUrl: string | undefined;
-      if ('files' in resp && Array.isArray(resp.files) && resp.files.length > 0) {
-        uploadedUrl = (resp.files[0].url || resp.files[0].path) as string | undefined;
-      } else if ('urls' in resp && Array.isArray(resp.urls) && resp.urls.length > 0) {
-        uploadedUrl = resp.urls[0];
-      }
-      if (!uploadedUrl) return;
-      await api.updateMyProfileImage(uploadedUrl);
-      // Refresh auth context to show the latest
+      fd.append('profileImage', file);
+      const resp = await api.upload('/api/v1/upload/profile/me', fd) as {
+        message: string;
+        file: {
+          url: string;
+          path: string;
+          originalSize: number;
+          compressedSize: number;
+          compressionRatio: string;
+          metadata: Record<string, any>;
+        };
+        profileImage: string;
+      };
+
+      // The new API automatically updates the profile, so we just need to refresh auth context
       await login();
     } finally {
       setUploadingImage(false);
