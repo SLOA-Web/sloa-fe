@@ -1,4 +1,4 @@
-import { BookEventData, EventCardProp, HeroSlide } from "@/types";
+import { BookEventData, EventCardProp, HeroSlide, Benefit } from "@/types";
 
 export const heroSlides: HeroSlide[] = [
   {
@@ -324,20 +324,20 @@ export const DOCUMENTATION_LINKS = [
   { title: "Copyright", href: "/copyright" },
 ];
 
-export const BENEFITS = [
+export const BENEFITS: Benefit[] = [
   {
     title: "Medical Council Registration",
-    para: "Must be a registered medical practitioner approved by the Sri Lanka Medical Council with current license and certification in good standing.",
+    para: "Submission of a completed membership application form along with necessary supporting documents.\nPayment of the annual membership fee",
     vector: "/assets/images/vector_member.svg",
   },
   {
     title: "Orthopaedic Specialization",
-    para: "Demonstrated expertise in orthopaedics through formal training, board certification, or equivalent qualification in musculoskeletal medicine.",
+    para: "Commitment to uphold the ethical standards and objectives of the Sri Lanka Orthopaedic Association.",
     vector: "/assets/images/vector_orthopaedic.svg",
   },
   {
     title: "Professional Experience",
-    para: "Minimum of 2 years clinical experience in orthopaedics with commitment to continuing medical education and professional development.",
+    para: "Medical degree recognized by the relevant Sri Lankan medical authority\nCompletion of postgraduate training or specialization in orthopaedics or related fields.",
     vector: "/assets/images/vector_professional.svg",
   },
 ];

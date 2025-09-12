@@ -117,7 +117,7 @@ function NoMembershipMessage() {
 
 export default function GetInvolvedPage() {
   return (
-    <main>
+    <main className="overflow-x-hidden">
       <CommonBanner
         imageUrl="assets/images/membership.svg"
         text="Membership"

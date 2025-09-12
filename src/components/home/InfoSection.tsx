@@ -87,7 +87,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText, imageSrc, descrip
   return (
     <section
       ref={sectionRef}
-      className="mx-0 md:mx-8 lg:mx-16 py-12 lg:py-244 flex items-center justify-center"
+      className="mx-0 md:mx-8 lg:mx-16 py-12 lg:py-24 flex items-center justify-center"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 items-center">
         {/* Left side: Image */}

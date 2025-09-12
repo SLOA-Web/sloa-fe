@@ -11,7 +11,10 @@ interface OurMissionProps {
 export default function OurMission({
   title = "Our Mission",
   content = [
-    "To advance orthopaedic practice in Sri Lanka by providing high-quality education and CPD, enabling research and audit, setting and promoting clinical standards, and advocating for patient safety and musculoskeletal health nationwide. We strive to foster a culture of continuous professional development among orthopaedic practitioners, support innovative research that addresses local and global challenges, and collaborate with healthcare partners to improve patient outcomes. Through our commitment to excellence, we aim to empower clinicians, enhance public awareness, and ensure equitable access to the highest standards of musculoskeletal care throughout the country.",
+    "To promote the highest standards in orthopaedic practice through continuous professional development, training, and research.",
+    "To foster collaboration among orthopaedic professionals locally and internationally.",
+    "To advocate for patient-centered care and improved musculoskeletal health nationwide.",
+    "To mentor and support the next generation of orthopaedic surgeons in Sri Lanka.",
   ],
   imageUrl = "/assets/images/our_mission.svg",
   imageAlt = "Physical rehabilitation with forearm crutches",
@@ -31,15 +34,18 @@ export default function OurMission({
           </div>
 
           {/* Right Column - Text */}
-          <div className="order-2">
-            <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight mb-8 font-normal whitespace-pre-line">
+          <div className="order-2 lg:mb-12">
+            <h2 className="text-[#122D1E] font-roboto text-3xl lg:text-5xl xl:text-[55px] leading-tight mb-6 lg:mb-12 font-normal whitespace-pre-line">
               {title}
             </h2>
-            <div className="space-y-6">
+            <div>
               {content.map((paragraph, index) => (
-                <p key={index} className="text-[#122D1E] font-poppins text-base leading-7">
+                <p
+                  key={index}
+                  className="text-[#122D1E] font-poppins text-[16px] md:text-[20px] lg:text-[24px] "
+                >
                   {paragraph
-                    .split('\n')
+                    .split("\n")
                     .map((line, i, arr) =>
                       i < arr.length - 1 ? (
                         <span key={i}>

@@ -81,7 +81,7 @@ const Benefits: React.FC = () => {
     <div ref={sectionRef} className="py-12 lg:py-24">
       <SectionHeader text="membership criteria" />
 
-      <div className="px-4 md:px-10 lg:px-16 lg:w-[50%] my-12">
+      <div className="px-4 md:px-10 lg:px-16 lg:w-[65%] my-12">
         <span
           ref={titleRef}
           className="font-roboto text-[32px] md:text-[40px] lg:text-[55px] basis-[72.5%]"
@@ -90,7 +90,7 @@ const Benefits: React.FC = () => {
         </span>
         <p
           ref={descRef}
-          className="font-poppins text-[16px] 16 lg:mr-24 leading-8 my-4"
+          className="font-poppins text-[16px] lg:text-[16px] lg:mr-24 leading-8 my-4"
         >
           Become part of the Sri Lanka Orthopaedic Association (SLOA), the
           premier professional body representing orthopaedic surgeons and
@@ -99,16 +99,16 @@ const Benefits: React.FC = () => {
         </p>
       </div>
 
-      <div className="px-4 md:px-10 lg:px-16 lg:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="px-4 md:px-10 lg:px-16 lg:mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-16">
         {BENEFITS.map((criteria, idx) => (
           <div
-            key={idx}
+            key={criteria.title}
             ref={(el) => {
               if (el) cardsRef.current[idx] = el;
             }}
             className="bg-white hover:bg-secondary hover:text-white transition-colors duration-300 rounded-lg shadow p-8 cursor-pointer group"
           >
-            <h3 className="font-roboto text-[24px] mb-2 font-medium text-primary">
+            <h3 className="font-roboto text-[24px] lg:text-[32px] mb-2 font-normal text-primary">
               {criteria.title}
             </h3>
              <Image
@@ -119,7 +119,18 @@ const Benefits: React.FC = () => {
               className="w-24 h-24 md:w-32 md:h-32 lg:w-52 lg:h-52 mb-2 mx-auto group-hover:brightness-0 group-hover:invert"
             />
             <p className="font-poppins text-[16px] leading-6">
-              {criteria.para}
+              {criteria.para
+                .split("\n")
+                .map((line, i, arr) =>
+                  i < arr.length - 1 ? (
+                    <span key={`${criteria.title}-${i}`}>
+                      {line}
+                      <br />
+                    </span>
+                  ) : (
+                    <span key={`${criteria.title}-${i}`}>{line}</span>
+                  )
+                )}
             </p>
           </div>
         ))}

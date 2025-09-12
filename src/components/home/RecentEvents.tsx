@@ -76,7 +76,7 @@ const RecentEvents: React.FC = () => {
       <SectionHeader text="recent events" />
       <div className="my-12">
         <div className="px-4 md:px-10 lg:px-16">
-          <h1 className="text-[24px] md:text-[32px] lg:text-[40px] font-roboto mb-8">
+          <h1 className="text-[32px] md:text-[40px] lg:text-[55px] font-roboto mb-8">
             Explore recent orthopaedic events in Sri Lanka.
           </h1>
           

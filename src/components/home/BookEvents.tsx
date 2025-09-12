@@ -131,7 +131,7 @@ const BookEvents: React.FC = () => {
       <main className="px-4 md:px-10 lg:px-16">
         <h1
           ref={headingRef}
-          className="text-[24px] md:text-[32px] lg:text-[40px] lg:w-[60%] font-roboto mt-6 mb-4"
+          className="text-[32px] md:text-[40px] lg:text-[55px] lg:w-[60%] font-roboto mt-6 mb-4"
         >
           Discover upcoming orthopaedic training events in Sri Lanka.
         </h1>
