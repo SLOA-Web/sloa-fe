@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "Sri Lanka Orthopaedic Association",
     images: [
       {
-        url: "/assets/images/logo.png",
+        url: "/assets/images/small_logo.png",
         width: 1200,
         height: 630,
         alt: "Sri Lanka Orthopaedic Association Logo",
