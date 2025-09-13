@@ -220,8 +220,8 @@ const EventCard: React.FC<any> = (props) => {
         <div className="flex-1" />
         <CustomButton
           onClick={onReadMore}
-          text={loading ? "Redirecting..." : "Read More"}
-          className="border-none px-0 py-0 w-fit mt-2"
+          text={loading ? "Redirecting..." : "View More"}
+          className="border border-primary px-0 py-0 w-fit mt-2"
           hideIcon={!!loading}
         />
       </div>

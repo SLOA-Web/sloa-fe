@@ -1,9 +1,8 @@
 "use client";
 import Image from "next/image";
 import EventCard from "./EventCard";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import gsap from "gsap";
-import { heroSlides } from "@/data";
 import { UpcomingEvent, Banner, BannersResponse, HeroSlide } from "@/types";
 import api from "@/utils/api";
 import { handleApiError } from "@/utils/errorHandler";
@@ -22,6 +21,17 @@ const HeroBanner = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   const isAnimatingRef = useRef(false);
   const router = useRouter();
+
+  // Use banners from API
+  const slidesData = useMemo(() => {
+    return banners as (Banner | HeroSlide)[];
+  }, [banners]);
+
+  const nextSlide = () => {
+    if (!isAnimatingRef.current) {
+      setCurrentSlide((prev) => (prev + 1) % slidesData.length);
+    }
+  };
 
   // Fetch banners
   useEffect(() => {
@@ -155,23 +165,17 @@ const HeroBanner = () => {
     }
   };
 
-  const nextSlide = () => {
-    if (!isAnimatingRef.current) {
-      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-    }
-  };
-
-  // Auto-advance slides every 5 seconds
+  // Auto-advance slides every 5 seconds only if more than one banner
   useEffect(() => {
-    const interval = setInterval(() => {
-      nextSlide();
-    }, 5000);
+    if (banners.length > 1) {
+      const interval = setInterval(() => {
+        nextSlide();
+      }, 5000);
 
-    return () => clearInterval(interval);
-  }, []);
+      return () => clearInterval(interval);
+    }
+  }, [banners.length]);
 
-  // Use banners if available, fallback to static slides
-  const slidesData = banners.length > 0 ? (banners as (Banner | HeroSlide)[]) : (heroSlides as (Banner | HeroSlide)[]);
   const currentSlideData = slidesData[currentSlide];
 
   const isBanner = (item: Banner | HeroSlide): item is Banner => {

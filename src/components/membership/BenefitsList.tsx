@@ -147,15 +147,15 @@ const BenefitsList: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                    <div className="mt-auto -mb-2 md:-mb-3 lg:-mb-4 pt-2 md:pt-3 lg:pt-4 flex">
+                    {/* <div className="mt-auto -mb-2 md:-mb-3 lg:-mb-4 pt-2 md:pt-3 lg:pt-4 flex">
                       <span className="font-roboto text-[10px] md:text-[14px] lg:text-[16px] px-6 md:px-10 lg:px-12 uppercase">
                         Benefit {idx + 1}
                       </span>
-                    </div>
+                    </div> */}
                   </div>
                 ) : (
                   <span className="font-roboto text-[10px] md:text-[14px] lg:text-[16px] px-6 md:px-10 lg:px-12 uppercase">
-                    Benefit {idx + 1}
+                    {benefit.title}
                   </span>
                 )}
               </button>
