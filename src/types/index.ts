@@ -167,10 +167,19 @@ export interface PublicMember {
   };
 }
 
+// Generic pagination interface
+export interface PaginationInfo {
+  page: string | number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface PublicMembersResponse {
   users: PublicMember[];
-  total: number;
-  pages: number;
+  total: number; // Keep for backward compatibility
+  pages: number; // Keep for backward compatibility
+  pagination?: PaginationInfo; // New pagination structure
 }
 
 export interface Attendee {
