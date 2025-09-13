@@ -64,27 +64,28 @@ const ProfilePage = () => {
   });
   const [, setLoading] = useState(true);
   const [, setError] = useState<string | null>(null);
-  
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       setLoading(true);
       setError(null);
       try {
-        const response = await api.get("/api/v1/auth/me") as ApiResponse;
-        const fetchedUser: ApiResponse['user'] = response.user;
+        const response = (await api.get("/api/v1/auth/me")) as ApiResponse;
+        const fetchedUser: ApiResponse["user"] = response.user;
         const fullName = fetchedUser?.fullName || "";
-        const nameParts = fullName.split(' ');
-        
+        const nameParts = fullName.split(" ");
+
         // Ensure location is a valid value
-        const location = fetchedUser?.location === 'local' || fetchedUser?.location === 'foreign' 
-          ? fetchedUser.location 
-          : 'local'; // Default to local if invalid
-        
+        const location =
+          fetchedUser?.location === "local" ||
+          fetchedUser?.location === "foreign"
+            ? fetchedUser.location
+            : "local"; // Default to local if invalid
+
         setFormData((prev) => ({
           ...prev,
           firstName: nameParts[0] || "",
-          secondName: nameParts.slice(1).join(' ') || "",
+          secondName: nameParts.slice(1).join(" ") || "",
           email: fetchedUser?.email || "",
           phone: fetchedUser?.profile?.phoneNumber || "",
           location: location,
@@ -92,9 +93,10 @@ const ProfilePage = () => {
           education: fetchedUser?.profile?.specialization || "",
           bio: fetchedUser?.profile?.cv || "",
           nic: fetchedUser?.profile?.nic || "",
-          birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
+          birthDate: fetchedUser?.profile?.dateOfBirth
+            ? fetchedUser.profile.dateOfBirth.slice(0, 10)
+            : "",
         }));
-        
       } catch (err) {
         console.error("Failed to fetch user profile:", err);
         setError("Failed to load profile data. Please try again.");
@@ -122,8 +124,36 @@ const ProfilePage = () => {
     setLoading(true);
     setError(null);
     try {
+      // Mandatory field validation
+      // NIC: 9 digits + V/X or 12 digits
+      const nicRegex = /^(\d{9}[VXvx]|\d{12})$/;
+      if (!formData.nic || !nicRegex.test(formData.nic)) {
+        setError("NIC must be 9 digits plus 'V' or 'X', or 12 digits");
+        setLoading(false);
+        return;
+      }
+      // Hospital: at least 2 characters
+      if (!formData.company || formData.company.trim().length < 2) {
+        setError("Hospital must be at least 2 characters");
+        setLoading(false);
+        return;
+      }
+      // Phone Number: must be a non-empty string
+      if (
+        !formData.phone ||
+        typeof formData.phone !== "string" ||
+        formData.phone.trim().length === 0
+      ) {
+        setError("Invalid input: expected string, received null");
+        setLoading(false);
+        return;
+      }
+
       // Validate location field
-      if (!formData.location || (formData.location !== 'local' && formData.location !== 'foreign')) {
+      if (
+        !formData.location ||
+        (formData.location !== "local" && formData.location !== "foreign")
+      ) {
         setError("Please select a valid location (Local or Foreign)");
         setLoading(false);
         return;
@@ -140,28 +170,29 @@ const ProfilePage = () => {
         dateOfBirth: formData.birthDate ? formData.birthDate : null,
         phoneNumber: formData.phone ? formData.phone : null,
       };
-      
+
       // Use the new convenience method
       const response = await api.updateUserProfile(payload);
       console.log("Profile updated successfully:", response);
-      
+
       setIsEditing(false);
-      
+
       // Re-fetch profile to ensure data consistency after save
       const userResponse = await api.getCurrentUser();
-      const fetchedUser: ApiResponse['user'] = userResponse.user;
+      const fetchedUser: ApiResponse["user"] = userResponse.user;
       const fullName = fetchedUser?.fullName || "";
-      const nameParts = fullName.split(' ');
-      
+      const nameParts = fullName.split(" ");
+
       // Ensure location is a valid value
-      const location = fetchedUser?.location === 'local' || fetchedUser?.location === 'foreign' 
-        ? fetchedUser.location 
-        : 'local'; // Default to local if invalid
-      
+      const location =
+        fetchedUser?.location === "local" || fetchedUser?.location === "foreign"
+          ? fetchedUser.location
+          : "local"; // Default to local if invalid
+
       setFormData((prev) => ({
         ...prev,
         firstName: nameParts[0] || "",
-        secondName: nameParts.slice(1).join(' ') || "",
+        secondName: nameParts.slice(1).join(" ") || "",
         email: fetchedUser?.email || "",
         phone: fetchedUser?.profile?.phoneNumber || "",
         location: location,
@@ -169,12 +200,16 @@ const ProfilePage = () => {
         education: fetchedUser?.profile?.specialization || "",
         bio: fetchedUser?.profile?.cv || "",
         nic: fetchedUser?.profile?.nic || "",
-        birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
+        birthDate: fetchedUser?.profile?.dateOfBirth
+          ? fetchedUser.profile.dateOfBirth.slice(0, 10)
+          : "",
       }));
-      
     } catch (err) {
       console.error("Failed to save profile:", err);
-      const errorMessage = err instanceof Error ? err.message : "Failed to save profile data. Please check your input.";
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "Failed to save profile data. Please check your input.";
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -188,20 +223,22 @@ const ProfilePage = () => {
         setLoading(true);
         setError(null);
         try {
-          const response = await api.get("/api/v1/auth/me") as ApiResponse;
-          const fetchedUser: ApiResponse['user'] = response.user;
+          const response = (await api.get("/api/v1/auth/me")) as ApiResponse;
+          const fetchedUser: ApiResponse["user"] = response.user;
           const fullName = fetchedUser?.fullName || "";
-          const nameParts = fullName.split(' ');
-          
+          const nameParts = fullName.split(" ");
+
           // Ensure location is a valid value
-          const location = fetchedUser?.location === 'local' || fetchedUser?.location === 'foreign' 
-            ? fetchedUser.location 
-            : 'local'; // Default to local if invalid
-          
+          const location =
+            fetchedUser?.location === "local" ||
+            fetchedUser?.location === "foreign"
+              ? fetchedUser.location
+              : "local"; // Default to local if invalid
+
           setFormData((prev) => ({
             ...prev,
             firstName: nameParts[0] || "",
-            secondName: nameParts.slice(1).join(' ') || "",
+            secondName: nameParts.slice(1).join(" ") || "",
             email: fetchedUser?.email || "",
             phone: fetchedUser?.profile?.phoneNumber || "",
             location: location,
@@ -209,9 +246,10 @@ const ProfilePage = () => {
             education: fetchedUser?.profile?.specialization || "",
             bio: fetchedUser?.profile?.cv || "",
             nic: fetchedUser?.profile?.nic || "",
-            birthDate: fetchedUser?.profile?.dateOfBirth ? fetchedUser.profile.dateOfBirth.slice(0,10) : "",
+            birthDate: fetchedUser?.profile?.dateOfBirth
+              ? fetchedUser.profile.dateOfBirth.slice(0, 10)
+              : "",
           }));
-          
         } catch (err) {
           console.error("Failed to fetch user profile on cancel:", err);
           setError("Failed to revert changes. Please refresh the page.");
@@ -223,8 +261,6 @@ const ProfilePage = () => {
     }
     setIsEditing(false);
   };
-
-  
 
   return (
     <div className="space-y-8 mx-auto">
@@ -239,7 +275,9 @@ const ProfilePage = () => {
                   <UserIcon className="h-8 w-8 text-primary" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-foreground">My Details</h2>
+                  <h2 className="text-3xl font-bold text-foreground">
+                    My Details
+                  </h2>
                   <p className="text-muted-foreground mt-1">
                     Manage your personal information and account details
                   </p>
@@ -286,7 +324,9 @@ const ProfilePage = () => {
                 <input
                   type="text"
                   value={formData.firstName}
-                  onChange={(e) => handleInputChange("firstName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("firstName", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                   placeholder="Enter first name"
@@ -301,7 +341,9 @@ const ProfilePage = () => {
                 <input
                   type="text"
                   value={formData.secondName}
-                  onChange={(e) => handleInputChange("secondName", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("secondName", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                   placeholder="Enter second name"
@@ -317,7 +359,9 @@ const ProfilePage = () => {
                   <input
                     type="date"
                     value={formData.birthDate}
-                    onChange={(e) => handleInputChange("birthDate", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("birthDate", e.target.value)
+                    }
                     disabled={!isEditing}
                     className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                     placeholder="Select birth date"
@@ -333,7 +377,7 @@ const ProfilePage = () => {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <Smartphone className="h-4 w-4 text-primary" />
-                  PHONE NUMBER
+                  PHONE NUMBER <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="tel"
@@ -343,15 +387,11 @@ const ProfilePage = () => {
                   className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-200"
                   placeholder="Enter phone number"
                 />
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <AlertCircle className="h-3 w-3" />
-                  Keep 9-digit format with no spaces and dashes
-                </p>
               </div>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <UserIcon className="h-4 w-4 text-primary" />
-                  NIC
+                  NIC <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -378,7 +418,8 @@ const ProfilePage = () => {
               </h3>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
-              Your primary email for communications and account access (cannot be changed)
+              Your primary email for communications and account access (cannot
+              be changed)
             </p>
           </div>
 
@@ -425,7 +466,7 @@ const ProfilePage = () => {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <Building className="h-4 w-4 text-green-600" />
-                  COMPANY
+                  COMPANY <span className="text-red-600">*</span>
                 </label>
                 <input
                   type="text"
@@ -437,8 +478,6 @@ const ProfilePage = () => {
                 />
               </div>
 
-              
-
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-semibold text-foreground">
                   <GraduationCap className="h-4 w-4 text-green-600" />
@@ -447,7 +486,9 @@ const ProfilePage = () => {
                 <input
                   type="text"
                   value={formData.education}
-                  onChange={(e) => handleInputChange("education", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("education", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
                   placeholder="Enter your specialization"
@@ -461,7 +502,9 @@ const ProfilePage = () => {
                 </label>
                 <select
                   value={formData.location}
-                  onChange={(e) => handleInputChange("location", e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("location", e.target.value)
+                  }
                   disabled={!isEditing}
                   className="w-full px-4 py-3 border border-border rounded-xl bg-background text-foreground disabled:bg-muted/50 disabled:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all duration-200"
                 >
@@ -485,7 +528,9 @@ const ProfilePage = () => {
               <div className="p-2 bg-purple-500/20 rounded-lg">
                 <BookOpen className="h-5 w-5 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground">About Me</h3>
+              <h3 className="text-xl font-semibold text-foreground">
+                About Me
+              </h3>
             </div>
             <p className="text-sm text-muted-foreground mt-1">
               Tell us about yourself and your professional interests
