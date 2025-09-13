@@ -103,10 +103,10 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText, imageSrc, descrip
           </div>
         </div>
         {/* Right side: Content */}
-        <div className="lg:-ml-12">
+        <div className="lg:-ml-14">
           <SectionHeader text={headerText} />
-          <div className="mx-4 lg:ml-12">
-            <p ref={pRef} className="font-poppins text-[14px] lg:text-[24px] leading-7 lg:leading-8 my-8 mx-0 lg:mx-12">
+          <div className="mx-4 lg:ml-16">
+            <p ref={pRef} className="font-poppins text-[14px] lg:text-[24px] leading-7 lg:leading-8 my-8">
               {description}
             </p>
             <CustomButton text="Apply Now" onClick={handleClick} />

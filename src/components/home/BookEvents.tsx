@@ -180,7 +180,7 @@ const BookEvents: React.FC = () => {
                           ref={(el) => {
                             cardsRef.current[idx] = el;
                           }}
-                          className="flex flex-col lg:flex-row items-stretch bg-white rounded-lg shadow-custom p-4 gap-4 mx-auto min-h-[350px] md:min-h-[400px] lg:min-h-[150px]"
+                          className="flex flex-col lg:flex-row items-stretch bg-white rounded-lg shadow-custom p-4 gap-4 w-full min-h-[350px] md:min-h-[400px] lg:min-h-[150px]"
                         >
                           <aside className="flex items-center justify-center w-full lg:w-36 h-24 lg:h-36 mr-2 flex-shrink-0">
                             <div

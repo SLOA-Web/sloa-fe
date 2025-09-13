@@ -50,7 +50,7 @@ export default function OurVision({
             <SimpleImage
               src={imageUrl}
               alt={imageAlt}
-              className="w-full h-[300px] md:h-[350px] lg:h-[492px] object-cover rounded-[8px]"
+              className="w-full h-[300px] md:h-[350px]  lg:h-full object-cover rounded-[8px]"
             />
           </div>
         </div>
