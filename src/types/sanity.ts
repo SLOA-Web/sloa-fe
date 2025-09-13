@@ -86,3 +86,14 @@ export interface SanityAnnouncement {
   isActive: boolean;
   expiryDate?: string;
 }
+
+// Aggregated response helpers used by data fetchers
+export interface SanityEventsResponse {
+  events: SanityEvent[];
+  total: number;
+}
+
+export interface SanityPublicationsResponse {
+  publications: SanityPost[];
+  total: number;
+}

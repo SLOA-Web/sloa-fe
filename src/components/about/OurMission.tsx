@@ -42,7 +42,7 @@ export default function OurMission({
               {content.map((paragraph, index) => (
                 <p
                   key={index}
-                  className="text-[#122D1E] font-poppins text-[16px] md:text-[20px] lg:text-[24px] "
+                  className="text-[#122D1E] font-poppins text-sm lg:text-base leading-7 lg:leading-8"
                 >
                   {paragraph
                     .split("\n")

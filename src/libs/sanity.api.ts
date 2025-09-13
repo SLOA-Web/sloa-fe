@@ -2,7 +2,7 @@ import { client } from './client'
 import { groq } from 'next-sanity'
 import imageUrlBuilder from '@sanity/image-url'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
-import type { SanityEvent, SanityPost, SanityAnnouncement, SanityPage } from '@/types/sanity'
+import type { SanityEvent, SanityPost, SanityAnnouncement, SanityPage, SanityEventsResponse, SanityPublicationsResponse } from '@/types/sanity'
 
 export const EVENTS_PER_PAGE = 6;
 export const PUBLICATIONS_PER_PAGE = 10;
@@ -21,11 +21,11 @@ export function urlFor(source: SanityImageSource) {
   return builder.image(source)
 }
 
-export async function getFilteredEvents({ page, searchTerm, year }: GetEventsParams): Promise<SanityEvent[]> {
+export async function getFilteredEvents({ page, searchTerm, year }: GetEventsParams): Promise<SanityEventsResponse> {
   const start = (page - 1) * EVENTS_PER_PAGE;
   const end = start + EVENTS_PER_PAGE;
 
-  let query = `*[_type == "event"`;
+  let baseQuery = `*[_type == "event"`;
   const params: Record<string, string | number> = {};
 
   // Build the query conditions
@@ -41,12 +41,23 @@ export async function getFilteredEvents({ page, searchTerm, year }: GetEventsPar
   }
 
   if (conditions.length > 0) {
-    query += ` && (${conditions.join(' && ')})`;
+    baseQuery += ` && (${conditions.join(' && ')})`;
   }
+  baseQuery += `]`;
 
-  query += `] | order(eventDate desc) [${start}...${end}]`;
+  // Get paginated events
+  const eventsQuery = `${baseQuery} | order(eventDate desc) [${start}...${end}]`;
   
-  return client.fetch(query, params);
+  // Get total count
+  const countQuery = `count(${baseQuery})`;
+
+  // Execute both queries in parallel
+  const [events, total] = await Promise.all([
+    client.fetch(eventsQuery, params),
+    client.fetch(countQuery, params)
+  ]);
+  
+  return { events, total };
 }
 
 
@@ -55,21 +66,32 @@ interface GetPublicationsParams {
   page: number;
   searchTerm?: string;
 }
-export async function getFilteredPublications({ page, searchTerm }: GetPublicationsParams): Promise<SanityPost[]> {
+export async function getFilteredPublications({ page, searchTerm }: GetPublicationsParams): Promise<SanityPublicationsResponse> {
   const start = (page - 1) * PUBLICATIONS_PER_PAGE;
   const end = start + PUBLICATIONS_PER_PAGE;
 
-  let query = `*[_type == "post"`;
+  let baseQuery = `*[_type == "post"`;
   const params: Record<string, string> = {};
 
   if (searchTerm) {
-    query += ` && title match $searchTerm`;
+    baseQuery += ` && title match $searchTerm`;
     params.searchTerm = `${searchTerm}*`;
   }
+  baseQuery += `]`;
 
-  query += `] | order(publishedAt desc) [${start}...${end}]`;
+  // Get paginated publications
+  const publicationsQuery = `${baseQuery} | order(publishedAt desc) [${start}...${end}]`;
+  
+  // Get total count
+  const countQuery = `count(${baseQuery})`;
 
-  return client.fetch(query, params);
+  // Execute both queries in parallel
+  const [publications, total] = await Promise.all([
+    client.fetch(publicationsQuery, params),
+    client.fetch(countQuery, params)
+  ]);
+
+  return { publications, total };
 }
 
 // --- Announcement Functions ---

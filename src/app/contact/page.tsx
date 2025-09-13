@@ -1,6 +1,11 @@
 import CommonHero from "@/components/CommonHero";
 import ContactForm from "@/components/contact/ContactForm";
 import Info from "@/components/contact/Info";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact - Sri Lanka Orthopaedic Association",
+};
 
 const ContactPage = () => {
   return (

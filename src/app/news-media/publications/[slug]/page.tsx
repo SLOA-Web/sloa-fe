@@ -189,14 +189,14 @@ export async function generateMetadata(props: PublicationPageProps): Promise<Met
 
   if (!publication) {
     return {
-      title: 'Publication Not Found | SLOA',
+      title: 'Publication Not Found - Sri Lanka Orthopaedic Association',
       description: 'The requested publication could not be found.',
     }
   }
 
   return {
-    title: `${publication.title} | SLOA Publications`,
-    description: publication.seo?.metaDescription || publication.excerpt || `A publication by ${publication.author} published by SLOA.`,
+    title: `${publication.title} - Sri Lanka Orthopaedic Association`,
+    description: publication.seo?.metaDescription || publication.excerpt || `A publication by ${publication.author} published by Sri Lanka Orthopaedic Association.`,
     keywords: publication.seo?.keywords?.join(', '),
     authors: [{ name: publication.author }],
     openGraph: {

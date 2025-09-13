@@ -31,6 +31,8 @@ interface NewsMediaClientProps {
   initialAnnouncements: SanityAnnouncement[]
   initialHasMoreEvents: boolean
   initialHasMorePublications: boolean
+  initialEventsTotal: number
+  initialPublicationsTotal: number
 }
 
 export default function NewsMediaClient({ 
@@ -38,12 +40,18 @@ export default function NewsMediaClient({
   initialPublications, 
   initialAnnouncements,
   initialHasMoreEvents,
-  initialHasMorePublications 
+  initialHasMorePublications,
+  initialEventsTotal,
+  initialPublicationsTotal
 }: NewsMediaClientProps) {
   // Data State
   const [events, setEvents] = useState<SanityEvent[]>(initialEvents)
   const [publications, setPublications] = useState<SanityPost[]>(initialPublications)
   const [announcements] = useState<SanityAnnouncement[]>(initialAnnouncements)
+  
+  // Total counts state
+  const [eventsTotal, setEventsTotal] = useState(initialEventsTotal)
+  const [publicationsTotal, setPublicationsTotal] = useState(initialPublicationsTotal)
 
   // Filter & Search State
   const [eventSearchTerm, setEventSearchTerm] = useState('')
@@ -80,13 +88,14 @@ export default function NewsMediaClient({
   useEffect(() => {
     const fetchEvents = async () => {
       setEventsLoading(true)
-      const newEvents = await getFilteredEvents({ 
+      const response = await getFilteredEvents({ 
         page: eventPage, 
         searchTerm: debouncedEventSearch, 
         year: selectedYear 
       })
-      setEvents(newEvents)
-      setHasMoreEvents(newEvents.length === EVENTS_PER_PAGE)
+      setEvents(response.events)
+      setEventsTotal(response.total)
+      setHasMoreEvents(response.events.length === EVENTS_PER_PAGE)
       setEventsLoading(false)
     }
     fetchEvents()
@@ -96,12 +105,13 @@ export default function NewsMediaClient({
   useEffect(() => {
     const fetchPubs = async () => {
       setPubsLoading(true)
-      const newPubs = await getFilteredPublications({ 
+      const response = await getFilteredPublications({ 
         page: publicationPage, 
         searchTerm: debouncedPublicationSearch 
       })
-      setPublications(newPubs)
-      setHasMorePublications(newPubs.length === PUBLICATIONS_PER_PAGE)
+      setPublications(response.publications)
+      setPublicationsTotal(response.total)
+      setHasMorePublications(response.publications.length === PUBLICATIONS_PER_PAGE)
       setPubsLoading(false)
     }
     fetchPubs()
@@ -126,7 +136,7 @@ export default function NewsMediaClient({
           { value: 'all', label: 'All Years' },
           ...years.map(year => ({ value: year.toString(), label: year.toString() }))
         ]}
-        totalResults={events.length}
+        totalResults={eventsTotal}
         searchPlaceholder="Search events by title, location..."
         resultsLabel="events found"
         searchLabel="Search Events"
@@ -197,7 +207,7 @@ export default function NewsMediaClient({
         selectedFilter=""
         onFilterChange={() => {}}
         filterOptions={[]}
-        totalResults={publications.length}
+        totalResults={publicationsTotal}
         searchPlaceholder="Search publications by title or author..."
         resultsLabel="publications found"
         searchLabel="Search Publications"

@@ -32,6 +32,10 @@ const styles = {
   },
 };
 
+export const metadata = {
+  title: "Terms and Conditions - Sri Lanka Orthopaedic Association",
+};
+
 export default async function TermsAndConditionsPage() {
   const page = await getPageBySlug('terms-and-conditions');
 

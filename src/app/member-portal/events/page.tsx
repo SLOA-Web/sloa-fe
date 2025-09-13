@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { 
   Calendar, 
   Clock, 
@@ -117,15 +118,6 @@ const EventsPage = () => {
                           </div>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center gap-2 ml-4">
-                        <button className="p-2 hover:bg-accent rounded-lg transition-colors">
-                          <Bookmark className="h-4 w-4 text-muted-foreground" />
-                        </button>
-                        <button className="p-2 hover:bg-accent rounded-lg transition-colors">
-                          <Share2 className="h-4 w-4 text-muted-foreground" />
-                        </button>
-                      </div>
                     </div>
                     
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
@@ -141,10 +133,13 @@ const EventsPage = () => {
                           <Trash2 className="h-4 w-4" />
                           Unregister
                         </button>
-                        <button className="px-4 py-2 text-sm font-medium border border-border text-foreground rounded-lg hover:bg-accent transition-colors">
+                        <Link
+                          href={`/events/${event.id}`}
+                          className="px-4 py-2 text-sm font-medium border border-border text-foreground rounded-lg hover:bg-accent transition-colors flex items-center"
+                        >
                           <ExternalLink className="h-4 w-4 mr-2 inline" />
                           Details
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </div>

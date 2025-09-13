@@ -339,9 +339,9 @@ const EventsSection: React.FC = () => {
                             year: "numeric",
                           })
                         : event.date;
-                      // Use posterUrl or fallback image
+                      // Use coverImage or fallback to posterUrl or default image
                       const image =
-                        event.posterUrl || "/assets/images/small_logo.png";
+                        event.coverImage || event.posterUrl || "/assets/images/small_logo.png";
                       // Use description as summary
                       const summary = event.description || "";
                       // Use first agenda speaker as doctor (if available)

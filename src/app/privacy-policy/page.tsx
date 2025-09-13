@@ -32,6 +32,10 @@ const styles = {
   },
 };
 
+export const metadata = {
+  title: "Privacy Policy - Sri Lanka Orthopaedic Association",
+};
+
 export default async function PrivacyPolicyPage() {
   const page = await getPageBySlug('privacy-policy');
 
