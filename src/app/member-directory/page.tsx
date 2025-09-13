@@ -16,13 +16,14 @@ const MemberDirectoryContent = () => {
   const searchParams = useSearchParams();
   const [members, setMembers] = useState<PublicMember[]>([]);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalMembers, setTotalMembers] = useState(0); // Add total members count
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
   // Role filter removed per request
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-  const currentPage = parseInt(searchParams.get("page") || "1", 20);
+  const currentPage = parseInt(searchParams.get("page") || "1", 10);
 
   useEffect(() => {
     const fetchMembers = async () => {
@@ -42,8 +43,12 @@ const MemberDirectoryContent = () => {
         const response = await api.get<PublicMembersResponse>(
           `/api/v1/membership/members/public?${params.toString()}`
         );
+        
         setMembers(response.users || []);
-        setTotalPages(response.pages || 1);
+        // Use pagination totalPages if available, otherwise fallback to response.pages
+        setTotalPages(response.pagination?.totalPages || response.pages || 1);
+        // Use pagination total if available, otherwise fallback to response.total
+        setTotalMembers(response.pagination?.total || response.total || 0);
       } catch (err) {
         const errorMessage = handleApiError(err, router);
         setError(errorMessage);
@@ -69,7 +74,7 @@ const MemberDirectoryContent = () => {
             selectedFilter={""}
             onFilterChange={() => {}}
             filterOptions={[]}
-            totalResults={members.length}
+            totalResults={totalMembers} // Use total from pagination instead of current page
             searchPlaceholder="Search by name, specialization, etc."
             resultsLabel="members found"
             searchLabel="Search Members"
@@ -90,7 +95,7 @@ const MemberDirectoryContent = () => {
                 <MemberCard key={member.membershipId} member={member} />
               ))}
             </div>
-            {totalPages >= 1 && <Pagination currentPage={currentPage} totalPages={totalPages} />}
+            {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} />}
           </>
         ) : (
           <div className="text-center text-gray-500 min-h-[50vh] flex items-center justify-center">

@@ -197,7 +197,7 @@ const EventCard: React.FC<any> = (props) => {
           src={safeImage}
           alt={altText}
           fill
-          className="object-contain object-center bg-secondary py-2"
+          className="object-cover object-center object-top"
           sizes="100vw"
         />
       </div>
