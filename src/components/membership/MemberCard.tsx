@@ -12,7 +12,7 @@ const MemberCard = ({ member }: { member: PublicMember }) => {
           <CouncilMemberImage
             src={imageSrc}
             alt={member.fullName}
-            className="w-full h-[300px] object-cover object-center object-top transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-[300px] object-cover object-center md:object-top transition-transform duration-300 group-hover:scale-105"
           />
           {/* Gradient Overlay */}
           <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#122D1E]/80 via-[#122D1E]/40 to-transparent rounded-b-lg"></div>
@@ -33,9 +33,6 @@ const MemberCard = ({ member }: { member: PublicMember }) => {
               {member.profile.hospital}
             </p>
           )}
-          <p className="text-[#587565] font-poppins text-sm capitalize">
-            {member.membershipType}
-          </p>
           <p className="text-gray-400 group-hover:text-gray-500 text-sm transition-colors duration-300">
             ID: {member.membershipId}
           </p>

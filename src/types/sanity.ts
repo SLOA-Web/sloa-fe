@@ -34,7 +34,7 @@ export interface SanityImageBlock {
   alt?: string;
 }
 
-type SanityPortableText = (SanityBlock | SanityImageBlock)[];
+export type SanityPortableText = (SanityBlock | SanityImageBlock)[];
 
 export interface SanityPost {
   _id: string;

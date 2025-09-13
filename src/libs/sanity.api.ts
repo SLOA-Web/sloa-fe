@@ -1,9 +1,8 @@
-// /lib/sanity.api.ts
 import { client } from './client'
 import { groq } from 'next-sanity'
 import imageUrlBuilder from '@sanity/image-url'
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
-import type { SanityEvent, SanityPost, SanityAnnouncement } from '@/types/sanity'
+import type { SanityEvent, SanityPost, SanityAnnouncement, SanityPage } from '@/types/sanity'
 
 export const EVENTS_PER_PAGE = 6;
 export const PUBLICATIONS_PER_PAGE = 10;
@@ -101,4 +100,12 @@ export async function getRecentEvents(): Promise<SanityEvent[]> {
       imageGallery // Fetching the full gallery array
     }`
   )
+}
+
+// --- Page Fetching Function ---
+
+const pageBySlugQuery = `*[_type == "page" && slug.current == $slug][0]`
+
+export async function getPageBySlug(slug: string): Promise<SanityPage> {
+  return client.fetch(pageBySlugQuery, { slug })
 }

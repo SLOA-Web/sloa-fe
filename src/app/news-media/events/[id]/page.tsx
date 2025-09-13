@@ -32,7 +32,7 @@ export default async function EventPage(props: EventPageProps) {
       {/* Back Navigation */}
       <Link 
         href="/news-media"
-        className="inline-flex items-center text-blue-600 hover:text-blue-700 mb-6 transition-colors"
+        className="inline-flex items-center text-primary hover:text-primary/80 mb-6 transition-colors"
       >
         <ArrowLeft size={20} className="mr-2" />
         Back to News & Media

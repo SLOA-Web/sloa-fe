@@ -89,7 +89,7 @@ const BenefitsList: React.FC = () => {
       }}
     >
       <SectionHeader text="benefits" />
-      <div className="mx-4 md:mx-10 lg:mx-16 lg:w-[70%] my-6 lg:my-12">
+      <div className="px-4 md:px-10 lg:px-16 lg:w-[70%] my-6 lg:my-12">
         <span
           ref={titleRef}
           className="font-roboto text-[32px] md:text-[40px] lg:text-[55px]"
@@ -97,13 +97,13 @@ const BenefitsList: React.FC = () => {
           Explore the exclusive benefits of joining the Sri Lanka Orthopaedic Association.
         </span>
       </div>
-      <div className="mx-4 md:mx-10 lg:mx-16 flex flex-col md:flex-row items-start gap-10 lg:h-full">
+      <div className="px-4 md:px-10 lg:px-16 flex flex-col md:flex-row items-start gap-10 lg:h-full">
         {/* Image Container - Full Height */}
         <div
           ref={imageRef}
-          className="w-full md:w-1/2 flex justify-center items-center mb-8 md:mb-0"
+          className="w-full md:w-1/2 flex justify-center items-center mb-0 md:mb-0"
         >
-          <div className="w-full h-64 md:h-full md:min-h-[600px] flex items-center justify-center">
+          <div className="w-full h-[250px] md:h-[350px] lg:h-[470px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px] flex items-center justify-center">
             <Image
               src={BENEFITS_LIST[activeIdx].image}
               alt={BENEFITS_LIST[activeIdx].title}
@@ -115,7 +115,7 @@ const BenefitsList: React.FC = () => {
         </div>
         {/* Cards Container - Stacked */}
         <div className="w-full md:w-1/2 flex flex-col justify-center">
-          <div className="flex flex-col h-[400px] md:h-[500px] lg:h-[600px] min-h-[250px] md:min-h-[350px] lg:min-h-[400px]">
+          <div className="flex flex-col h-[250px] md:h-[350px] lg:h-[450px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px]">
             {BENEFITS_LIST.map((benefit, idx) => (
               <button
                 key={idx}

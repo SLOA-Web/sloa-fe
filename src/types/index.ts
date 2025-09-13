@@ -233,3 +233,9 @@ export interface CouncilAssignment {
     membershipId?: string;
   };
 }
+
+export interface Benefit {
+  title: string;
+  para: string;
+  vector: string;
+}

@@ -89,7 +89,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText, imageSrc, descrip
       ref={sectionRef}
       className="mx-0 md:mx-8 lg:mx-16 py-12 lg:py-24 flex items-center justify-center"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-8 lg:gap-0">
         {/* Left side: Image */}
         <div ref={imgRef} className="flex justify-center w-full">
           <div className="relative w-full aspect-[1/1] md:aspect-[4/3] max-w-full overflow-hidden rounded-[8px]">
@@ -106,7 +106,7 @@ const InfoSection: React.FC<InfoSectionProps> = ({ headerText, imageSrc, descrip
         <div className="lg:-ml-12">
           <SectionHeader text={headerText} />
           <div className="mx-4 lg:ml-12">
-            <p ref={pRef} className="text-[24px] my-8">
+            <p ref={pRef} className="font-poppins text-[14px] lg:text-[24px] leading-7 lg:leading-8 my-8 mx-0 lg:mx-12">
               {description}
             </p>
             <CustomButton text="Apply Now" onClick={handleClick} />

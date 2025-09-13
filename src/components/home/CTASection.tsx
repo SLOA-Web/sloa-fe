@@ -30,7 +30,7 @@ const CTASection: React.FC<CTASectionProps> = ({
       />
 
       <SectionHeader text={title} color="white" />
-      <div className="relative z-10 flex flex-col items-start mx-4 md:mx-10 lg:mx-16">
+      <div className="relative z-10 flex flex-col items-start px-4 md:px-10 lg:px-16">
         <p className="text-[32px] md:text-[40px] lg:text-[55px] my-12 text-white mb-8 text-left lg:w-[85%] font-roboto leading-[55px]">
           {description}
         </p>

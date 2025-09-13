@@ -34,7 +34,6 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [rememberMe, setRememberMe] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,24 +144,8 @@ const LoginPage = () => {
                 </div>
               </div>
 
-              {/* Remember Me & Forgot Password */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input
-                    id="remember-me"
-                    name="remember-me"
-                    type="checkbox"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 text-primary border-gray-300 rounded focus:ring-primary"
-                  />
-                  <label
-                    htmlFor="remember-me"
-                    className="text-sm text-foreground"
-                  >
-                    Remember me
-                  </label>
-                </div>
+              {/* Forgot Password */}
+              <div className="flex justify-end">
                 <Link
                   href="/reset-password"
                   className="text-sm font-medium text-primary hover:underline"

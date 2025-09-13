@@ -1,15 +1,12 @@
 "use client";
 import React, { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
 import api from "@/utils/api";
-import { User, Shield, Eye, EyeOff, Save } from "lucide-react";
+import { Eye, EyeOff, Save } from "lucide-react";
 
 const SettingsPage = () => {
-  const { user } = useAuth();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [activeTab, setActiveTab] = useState("account");
 
   // Password update state
   const [currentPassword, setCurrentPassword] = useState("");
@@ -19,25 +16,6 @@ const SettingsPage = () => {
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
-  const [settings, setSettings] = useState({
-    // Account settings
-    email: user?.email || "",
-    phone: "+1 (555) 123-4567",
-    language: "English",
-    timezone: "UTC-8 (Pacific Time)",
-
-    // Security settings
-    twoFactorAuth: true,
-    loginNotifications: true,
-    sessionTimeout: "24 hours",
-  });
-
-  const handleSettingChange = (key: string, value: string | boolean) => {
-    setSettings((prev) => ({
-      ...prev,
-      [key]: value,
-    }));
-  };
 
   const handlePasswordUpdate = async () => {
     // Clear previous messages
@@ -60,23 +38,16 @@ const SettingsPage = () => {
       return;
     }
 
-    if (!user?.email) {
-      setPasswordError("User email not found. Please log in again.");
+    if (newPassword === currentPassword) {
+      setPasswordError("New password must be different from current password");
       return;
     }
 
     setIsUpdatingPassword(true);
 
     try {
-      // Call the API to update password
-      const requestBody = {
-        currentPassword,
-        newPassword,
-      };
-
-      console.log("Sending password update request:", requestBody);
-
-      await api.post("/api/v1/auth/change-password", requestBody);
+      // Call the API to update password using client helper
+      await api.changeMyPassword(currentPassword, newPassword);
 
       setPasswordSuccess("Password updated successfully!");
 
@@ -87,19 +58,19 @@ const SettingsPage = () => {
     } catch (err: unknown) {
       // Handle specific error cases
       let message = "Failed to update password. Please try again.";
-      if (typeof err === "object" && err !== null && "message" in err && typeof (err as { message?: unknown }).message === "string") {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "message" in err &&
+        typeof (err as { message?: unknown }).message === "string"
+      ) {
         const errMsg = (err as { message: string }).message;
-        if (errMsg.includes("404") || errMsg.includes("Not Found")) {
-          setPasswordError(
-            "Password update endpoint not available yet. Please contact support."
-          );
-          return;
-        } else if (
-          errMsg.includes("401") ||
-          errMsg.includes("Unauthorized")
-        ) {
+        if (/401|unauthorized/i.test(errMsg)) {
           setPasswordError("Current password is incorrect. Please try again.");
           return;
+        }
+        if (/400|validation/i.test(errMsg)) {
+          message = "Invalid input. Check password requirements and try again.";
         } else {
           message = errMsg;
         }
@@ -110,50 +81,10 @@ const SettingsPage = () => {
     }
   };
 
-  const tabs = [
-    { id: "account", name: "Account", icon: User },
-    { id: "security", name: "Security", icon: Shield },
-  ];
 
-  const renderAccountSettings = () => (
-    <div className="space-y-4">
-      <div className="card">
-        <div className="card-header">
-          <h3 className="card-title">Basic Information</h3>
-          <p className="card-description">Update your account details</p>
-        </div>
-        <div className="card-content space-y-4">
-          <div>
-            <label className="text-sm font-medium text-foreground">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={settings.email}
-              onChange={(e) => handleSettingChange("email", e.target.value)}
-              className="input mt-1"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-foreground">
-              Phone Number
-            </label>
-            <input
-              type="tel"
-              value={settings.phone}
-              onChange={(e) => handleSettingChange("phone", e.target.value)}
-              className="input mt-1"
-              placeholder="Enter your phone number"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  );
 
   const renderSecuritySettings = () => (
-    <div className="space-y-4">
+    <div className="space-y-4 py-2">
       <div className="card">
         <div className="card-header">
           <h3 className="card-title">Change Password</h3>
@@ -181,7 +112,7 @@ const SettingsPage = () => {
             <div className="relative mt-1">
               <input
                 type={showCurrentPassword ? "text" : "password"}
-                className="input pr-10"
+                className="input pr-10 border-border"
                 placeholder="Enter current password"
                 value={currentPassword}
                 onChange={(e) => {
@@ -210,7 +141,7 @@ const SettingsPage = () => {
             <div className="relative mt-1">
               <input
                 type={showNewPassword ? "text" : "password"}
-                className="input pr-10"
+                className="input pr-10 border-border"
                 placeholder="Enter new password"
                 value={newPassword}
                 onChange={(e) => {
@@ -239,7 +170,7 @@ const SettingsPage = () => {
             <div className="relative mt-1">
               <input
                 type={showConfirmPassword ? "text" : "password"}
-                className="input pr-10"
+                className="input pr-10 border-border"
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={(e) => {
@@ -296,58 +227,9 @@ const SettingsPage = () => {
     </div>
   );
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case "account":
-        return renderAccountSettings();
-      case "security":
-        return renderSecuritySettings();
-      default:
-        return renderAccountSettings();
-    }
-  };
-
   return (
     <div className="space-y-4 animate-in fade-in">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">Settings</h1>
-        <p className="text-muted-foreground">
-          Manage your account settings and preferences
-        </p>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <div className="card">
-            <div className="card-content p-0">
-              <nav className="space-y-1">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                        activeTab === tab.id
-                          ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-                      }`}
-                    >
-                      <Icon className="h-4 w-4" />
-                      <span>{tab.name}</span>
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="lg:col-span-3">{renderContent()}</div>
-      </div>
+      <div className="lg:col-span-3">{renderSecuritySettings()}</div>
     </div>
   );
 };
