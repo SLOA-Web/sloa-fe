@@ -44,7 +44,7 @@ export default async function NewsAndMediaPage() {
 export const revalidate = 60;
 
 export const metadata = {
-  title: "News & Media | SLOA",
+  title: "News & Media - Sri Lanka Orthopaedic Association",
   description:
-    "Stay updated with our latest events, publications, and announcements from the Sri Lankan Organization of America.",
+    "Stay updated with our latest events, publications, and announcements from the Sri Lanka Orthopaedic Association.",
 };

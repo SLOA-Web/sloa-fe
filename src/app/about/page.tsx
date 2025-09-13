@@ -7,6 +7,11 @@ import {
   CouncilMembers,
 } from "@/components/about";
 import ExecutiveNote from "@/components/ExecutiveNote";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About - Sri Lanka Orthopaedic Association",
+};
 
 export default function AboutPage() {
   return (

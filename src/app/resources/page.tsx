@@ -1,10 +1,18 @@
 "use client";
 
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import { ExternalLink, BookOpen, Download, Play, FileText, Link as LinkIcon } from "lucide-react";
+import {
+  ExternalLink,
+  BookOpen,
+  Download,
+  Play,
+  FileText,
+  Link as LinkIcon,
+} from "lucide-react";
 import { api } from "@/utils/api";
 import { Resource } from "@/types";
 import SearchFilterBar from "@/components/ui/SearchFilterBar";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const ResourcesPage = () => {
   const [resources, setResources] = useState<Resource[]>([]);
@@ -13,7 +21,7 @@ const ResourcesPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLElement[]>([]);
@@ -21,17 +29,19 @@ const ResourcesPage = () => {
   // Get unique categories from resources
   const categoryOptions = useMemo(() => {
     const categories = new Set<string>();
-    resources.forEach(resource => {
+    resources.forEach((resource) => {
       if (resource.category) {
         categories.add(resource.category);
       }
     });
     return [
       { value: "all", label: "All Categories" },
-      ...Array.from(categories).sort().map(category => ({
-        value: category,
-        label: category
-      }))
+      ...Array.from(categories)
+        .sort()
+        .map((category) => ({
+          value: category,
+          label: category,
+        })),
     ];
   }, [resources]);
 
@@ -50,11 +60,16 @@ const ResourcesPage = () => {
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'documentation': return <BookOpen className="w-5 h-5" />;
-      case 'tutorial': return <Play className="w-5 h-5" />;
-      case 'guide': return <FileText className="w-5 h-5" />;
-      case 'library': return <Download className="w-5 h-5" />;
-      default: return <LinkIcon className="w-5 h-5" />;
+      case "documentation":
+        return <BookOpen className="w-5 h-5" />;
+      case "tutorial":
+        return <Play className="w-5 h-5" />;
+      case "guide":
+        return <FileText className="w-5 h-5" />;
+      case "library":
+        return <Download className="w-5 h-5" />;
+      default:
+        return <LinkIcon className="w-5 h-5" />;
     }
   };
 
@@ -64,8 +79,8 @@ const ResourcesPage = () => {
 
   useEffect(() => {
     // Animate header only on mount/loading change, not on filteredResources change
-    if (typeof window !== 'undefined') {
-      import('gsap').then(({ gsap }) => {
+    if (typeof window !== "undefined") {
+      import("gsap").then(({ gsap }) => {
         if (!loading && headerRef.current) {
           gsap.fromTo(
             headerRef.current,
@@ -79,8 +94,8 @@ const ResourcesPage = () => {
 
   useEffect(() => {
     // Animate cards on filteredResources change
-    if (typeof window !== 'undefined') {
-      import('gsap').then(({ gsap }) => {
+    if (typeof window !== "undefined") {
+      import("gsap").then(({ gsap }) => {
         if (!loading && cardsRef.current.length > 0) {
           gsap.fromTo(
             cardsRef.current,
@@ -92,7 +107,7 @@ const ResourcesPage = () => {
               duration: 0.6,
               stagger: 0.1,
               ease: "power2.out",
-              delay: 0.3
+              delay: 0.3,
             }
           );
         }
@@ -101,10 +116,12 @@ const ResourcesPage = () => {
   }, [loading, filteredResources]);
 
   useEffect(() => {
-    const filtered = resources.filter(resource => {
-      const matchesSearch = resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           (resource.shortDesc?.toLowerCase().includes(searchTerm.toLowerCase()));
-      const matchesCategory = selectedCategory === "all" || resource.category === selectedCategory;
+    const filtered = resources.filter((resource) => {
+      const matchesSearch =
+        resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resource.shortDesc?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "all" || resource.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
     setFilteredResources(filtered);
@@ -117,14 +134,7 @@ const ResourcesPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mb-4"></div>
-          <p className="text-slate-600 font-medium">Loading resources...</p>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner text="Loading resources..." />;
   }
 
   return (
@@ -160,7 +170,7 @@ const ResourcesPage = () => {
           <div className="text-center py-12">
             <div className="bg-red-50 border border-red-200 rounded-xl p-6 max-w-md mx-auto">
               <p className="text-red-600 font-medium">{error}</p>
-              <button 
+              <button
                 onClick={fetchResources}
                 className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
@@ -175,12 +185,13 @@ const ResourcesPage = () => {
           <div className="text-center py-12">
             <div className="bg-white/50 backdrop-blur-sm border border-slate-200 rounded-xl p-8 max-w-md mx-auto">
               <BookOpen className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-slate-600 mb-2">No resources found</h3>
+              <h3 className="text-xl font-semibold text-slate-600 mb-2">
+                No resources found
+              </h3>
               <p className="text-slate-500">
                 {searchTerm
                   ? "Try adjusting your search or filter criteria"
-                  : "No resources are available yet"
-                }
+                  : "No resources are available yet"}
               </p>
             </div>
           </div>
@@ -211,25 +222,28 @@ const ResourcesPage = () => {
                   </div>
                   <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-primary-500 transition-colors ml-2" />
                 </div>
-                
+
                 <h3 className="font-semibold text-slate-800 mb-2 group-hover:text-primary-600 transition-colors">
                   {resource.name}
                 </h3>
-                
+
                 {resource.shortDesc && (
-                  <p className="text-sm text-slate-600 mb-3 overflow-hidden" style={{
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical'
-                  }}>
+                  <p
+                    className="text-sm text-slate-600 mb-3 overflow-hidden"
+                    style={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 2,
+                      WebkitBoxOrient: "vertical",
+                    }}
+                  >
                     {resource.shortDesc}
                   </p>
                 )}
-                
+
                 <p className="text-xs text-slate-400 mb-4 capitalize">
-                  {(resource.type ? resource.type.replace('_', ' ') : '')}
+                  {resource.type ? resource.type.replace("_", " ") : ""}
                 </p>
-                
+
                 <div className="mt-auto">
                   <div className="inline-flex items-center space-x-2 text-primary-600 group-hover:text-primary-700 font-medium transition-colors">
                     <span>Explore Resource</span>

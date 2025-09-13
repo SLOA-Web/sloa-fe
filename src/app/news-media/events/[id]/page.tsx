@@ -104,14 +104,14 @@ export async function generateMetadata(props: EventPageProps): Promise<Metadata>
 
   if (!event) {
     return {
-      title: 'Event Not Found | SLOA',
+      title: 'Event Not Found - Sri Lanka Orthopaedic Association',
       description: 'The requested event could not be found.',
     }
   }
 
   return {
-    title: `${event.title} | SLOA Events`,
-    description: event.shortDescription || `Details about the ${event.title} event hosted by SLOA.`,
+    title: `${event.title} - Sri Lanka Orthopaedic Association`,
+    description: event.shortDescription || `Details about the ${event.title} event hosted by Sri Lanka Orthopaedic Association.`,
     openGraph: {
       title: event.title,
       description: event.shortDescription,
