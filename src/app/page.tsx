@@ -1,27 +1,38 @@
-"use client";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import HeroBanner from "../components/home/HeroBanner";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy } from "react";
 
 const RecentEvents = lazy(() => import("../components/home/RecentEvents"));
 const BecomeAMember = lazy(() => import("../components/home/BecomeAMember"));
 const BookEvents = lazy(() => import("@/components/home/BookEvents"));
 const ExecutiveNote = lazy(() => import("@/components/ExecutiveNote"));
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Sri Lanka Orthopaedic Association - Advancing Orthopaedic Care",
+  description:
+    "Welcome to the Sri Lanka Orthopaedic Association (SLOA). Discover our mission, events, and opportunities to join our community of orthopaedic professionals.",
+  openGraph: {
+    title: "Sri Lanka Orthopaedic Association - Advancing Orthopaedic Care",
+    description:
+      "Welcome to the Sri Lanka Orthopaedic Association (SLOA). Discover our mission, events, and opportunities to join our community of orthopaedic professionals.",
+    url: "https://sloa.axle.global/",
+    siteName: "Sri Lanka Orthopaedic Association",
+    images: [
+      {
+        url: "/assets/images/logo.png",
+        width: 1200,
+        height: 630,
+        alt: "Sri Lanka Orthopaedic Association Logo",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+};
+
 export default function Home() {
-  useEffect(() => {
-    // Refresh ScrollTrigger after all components have loaded
-    const timer = setTimeout(() => {
-      if (typeof window !== "undefined") {
-        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
-          ScrollTrigger.refresh();
-        });
-      }
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   return (
     <>
       <HeroBanner />

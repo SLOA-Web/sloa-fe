@@ -10,7 +10,24 @@ import ExecutiveNote from "@/components/ExecutiveNote";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About - Sri Lanka Orthopaedic Association",
+  title: "About Us - Sri Lanka Orthopaedic Association",
+  description: "Learn about the Sri Lanka Orthopaedic Association (SLOA), our mission, vision, history, and leadership in advancing orthopaedic care.",
+  openGraph: {
+    title: "About Us - Sri Lanka Orthopaedic Association",
+    description: "Learn about the Sri Lanka Orthopaedic Association (SLOA), our mission, vision, history, and leadership in advancing orthopaedic care.",
+    url: "https://sloa.axle.global/about",
+    siteName: "Sri Lanka Orthopaedic Association",
+    images: [
+      {
+        url: "/assets/images/aboutus_hero.svg",
+        width: 1200,
+        height: 630,
+        alt: "About Sri Lanka Orthopaedic Association",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function AboutPage() {
