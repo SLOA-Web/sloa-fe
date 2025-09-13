@@ -44,11 +44,6 @@ const MemberDirectoryContent = () => {
           `/api/v1/membership/members/public?${params.toString()}`
         );
         
-        // Debug logging to see the response structure
-        console.log('Member Directory API Response:', response);
-        console.log('Pagination object:', response.pagination);
-        console.log('Total pages:', response.pagination?.totalPages || response.pages);
-        
         setMembers(response.users || []);
         // Use pagination totalPages if available, otherwise fallback to response.pages
         setTotalPages(response.pagination?.totalPages || response.pages || 1);

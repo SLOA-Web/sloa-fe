@@ -334,7 +334,7 @@ export default function EventDetailPage() {
           </div>
         </section>
         {/* Main Content Section */}
-        {event.posterUrl ? (
+        {event.posterUrl || event.coverImage ? (
           <section className="mx-auto mt-6 sm:mt-10 md:mt-12 px-2 sm:px-4 md:px-6 lg:px-12 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {/* Image Column: 1/3 on large screens */}
             <div className="w-full flex justify-center lg:justify-start mb-8 lg:mb-0 col-span-1">
@@ -343,7 +343,7 @@ export default function EventDetailPage() {
                 className="w-full max-w-md aspect-[4/5] overflow-hidden shadow-lg bg-white flex items-center justify-center"
               >
                 <Image
-                  src={event.posterUrl as string}
+                  src={(event.posterUrl || event.coverImage) as string}
                   alt={event.title || "Event poster"}
                   width={400}
                   height={500}
