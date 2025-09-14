@@ -63,7 +63,7 @@ const Footer = () => {
           <div className="flex-1 flex items-start justify-between mb-8 lg:mb-0">
             <Image
               src="/assets/images/logo.png"
-              alt="logo"
+              alt="Sri Lanka Orthopaedic Association Logo - SLOA"
               width={400}
               height={160}
               className="relative w-72 lg:w-[28rem] z-[999] mr-16"
