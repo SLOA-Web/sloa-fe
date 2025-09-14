@@ -7,6 +7,32 @@ import CTASection from "@/components/home/CTASection";
 import Benefits from "@/components/membership/Benefits";
 import BenefitsList from "@/components/membership/BenefitsList";
 import { Crown, ArrowRight, CheckCircle } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Membership & Get Involved - Sri Lanka Orthopaedic Association",
+  description: "Join the Sri Lanka Orthopaedic Association (SLOA) to advance orthopaedic care through education, training, research, and professional development. Discover membership benefits and how to get involved.",
+  keywords: ["SLOA membership", "orthopaedic association", "medical membership", "Sri Lanka healthcare", "orthopaedic professionals", "medical education"],
+  alternates: {
+    canonical: "https://sloa.axle.global/get-involved",
+  },
+  openGraph: {
+    title: "Membership & Get Involved - Sri Lanka Orthopaedic Association",
+    description: "Join the Sri Lanka Orthopaedic Association (SLOA) to advance orthopaedic care through education, training, research, and professional development.",
+    url: "https://sloa.axle.global/get-involved",
+    siteName: "Sri Lanka Orthopaedic Association",
+    images: [
+      {
+        url: "/assets/images/membership.svg",
+        width: 1200,
+        height: 630,
+        alt: "Sri Lanka Orthopaedic Association Membership",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+};
 
 function NoMembershipMessage() {
   const searchParams = useSearchParams();

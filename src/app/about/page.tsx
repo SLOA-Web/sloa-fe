@@ -12,6 +12,9 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "About Us - Sri Lanka Orthopaedic Association",
   description: "Learn about the Sri Lanka Orthopaedic Association (SLOA), our mission, vision, history, and leadership in advancing orthopaedic care.",
+  alternates: {
+    canonical: "https://sloa.axle.global/about",
+  },
   openGraph: {
     title: "About Us - Sri Lanka Orthopaedic Association",
     description: "Learn about the Sri Lanka Orthopaedic Association (SLOA), our mission, vision, history, and leadership in advancing orthopaedic care.",

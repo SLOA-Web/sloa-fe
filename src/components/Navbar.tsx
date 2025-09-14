@@ -185,7 +185,7 @@ const Navbar = () => {
         <Link href="/">
           <Image
             src="/assets/images/logo.png"
-            alt="logo"
+            alt="Sri Lanka Orthopaedic Association Logo - SLOA"
             width={400}
             height={160}
             className="relative w-52 lg:w-[28rem] z-[999] mr-16"
@@ -296,7 +296,7 @@ const Navbar = () => {
               >
                 <Image
                   src="/assets/images/logo.png"
-                  alt="logo"
+                  alt="Sri Lanka Orthopaedic Association Logo - SLOA"
                   width={160}
                   height={64}
                   className="w-52"
