@@ -13,12 +13,12 @@ export const metadata: Metadata = {
   title: "About Us - Sri Lanka Orthopaedic Association",
   description: "Learn about the Sri Lanka Orthopaedic Association (SLOA), our mission, vision, history, and leadership in advancing orthopaedic care.",
   alternates: {
-    canonical: "https://sloa.axle.global/about",
+    canonical: "https://srilankaortho.org/about",
   },
   openGraph: {
     title: "About Us - Sri Lanka Orthopaedic Association",
     description: "Learn about the Sri Lanka Orthopaedic Association (SLOA), our mission, vision, history, and leadership in advancing orthopaedic care.",
-    url: "https://sloa.axle.global/about",
+    url: "https://srilankaortho.org/about",
     siteName: "Sri Lanka Orthopaedic Association",
     images: [
       {

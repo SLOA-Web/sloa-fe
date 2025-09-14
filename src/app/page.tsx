@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     title: "Sri Lanka Orthopaedic Association - Advancing Orthopaedic Care",
     description:
       "Welcome to the Sri Lanka Orthopaedic Association (SLOA). Discover our mission, events, and opportunities to join our community of orthopaedic professionals.",
-    url: "https://sloa.axle.global/",
+    url: "https://srilankaortho.org/",
     siteName: "Sri Lanka Orthopaedic Association",
     images: [
       {

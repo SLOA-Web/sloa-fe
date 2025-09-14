@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next'
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://sloa.axle.global'
+  const baseUrl = 'https://srilankaortho.org'
 
   return {
     rules: {

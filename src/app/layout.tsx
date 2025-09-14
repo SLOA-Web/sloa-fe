@@ -30,14 +30,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://sloa.axle.global/"),
+  metadataBase: new URL("https://srilankaortho.org/"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "Sri Lanka Orthopaedic Association - Advancing Orthopaedic Care",
     description: "The Sri Lanka Orthopaedic Association (SLOA) is dedicated to advancing orthopaedic care through education, training, research, and professional development.",
-    url: "https://sloa.axle.global/",
+    url: "https://srilankaortho.org/",
     siteName: "Sri Lanka Orthopaedic Association",
     images: [
       {
@@ -103,8 +103,8 @@ export default function RootLayout({
             "@type": "Organization",
             "name": "Sri Lanka Orthopaedic Association",
             "alternateName": "SLOA",
-            "url": "https://sloa.axle.global",
-            "logo": "https://sloa.axle.global/assets/images/small_logo.png",
+            "url": "https://srilankaortho.org",
+            "logo": "https://srilankaortho.org/assets/images/small_logo.png",
             "description": "The Sri Lanka Orthopaedic Association (SLOA) is dedicated to advancing orthopaedic care through education, training, research, and professional development.",
             "address": {
               "@type": "PostalAddress",
@@ -113,7 +113,7 @@ export default function RootLayout({
             "contactPoint": {
               "@type": "ContactPoint",
               "contactType": "customer service",
-              "url": "https://sloa.axle.global/contact"
+              "url": "https://srilankaortho.org/contact"
             },
             "sameAs": [
               // Add social media URLs here when available

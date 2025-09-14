@@ -6,12 +6,12 @@ export const metadata: Metadata = {
   title: "Events - Sri Lanka Orthopaedic Association",
   description: "Explore upcoming events, conferences, and workshops organized by the Sri Lanka Orthopaedic Association (SLOA) for orthopaedic professionals.",
   alternates: {
-    canonical: "https://sloa.axle.global/events",
+    canonical: "https://srilankaortho.org/events",
   },
   openGraph: {
     title: "Events - Sri Lanka Orthopaedic Association",
     description: "Explore upcoming events, conferences, and workshops organized by the Sri Lanka Orthopaedic Association (SLOA) for orthopaedic professionals.",
-    url: "https://sloa.axle.global/events",
+    url: "https://srilankaortho.org/events",
     siteName: "Sri Lanka Orthopaedic Association",
     images: [
       {
