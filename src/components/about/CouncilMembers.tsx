@@ -56,7 +56,7 @@ export default function CouncilMembers({ title = "Council members" }: Readonly<{
     <section className="py-16 lg:py-24">
       <SectionHeader text={title} />
       <div className="container mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12 px-4 md:px-10 lg:px-16 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 lg:gap-12 px-4 md:px-10 lg:px-16 py-12">
           {members.map((member) => (
             <div key={member.id} className="group cursor-pointer">
               <div className="flex flex-col space-y-6">
