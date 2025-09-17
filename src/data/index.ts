@@ -230,7 +230,7 @@ export const eventCards: EventCardProp[] = [
 
 export const BENEFITS_LIST = [
   {
-    image: "/assets/images/networking.jpg",
+    image: "/assets/images/exclusiveNetworking.jpg",
     title: "Exclusive Networking",
     para: "Connect with top professionals, researchers, and peers at national and international events. Build strong collaborations, share knowledge, and grow your presence in the field. Networking opportunities open doors to partnerships and career advancement." },
   {
@@ -239,12 +239,12 @@ export const BENEFITS_LIST = [
     para: "Access exclusive funding to support your innovative research projects. Grants help cover essential costs so you can focus on impactful studies. Strengthen your academic profile while driving real-world progress.",
   },
   {
-    image: "/assets/images/mentorship.jpg",
+    image: "/assets/images/mentorshipPrograms.jpg",
     title: "Mentorship Programs",
     para: "Learn directly from experienced mentors who guide your career growth. Gain clinical and research insights through structured support. Accelerate your skills with personalized advice from leaders in the field.",
   },
   {
-    image: "/assets/images/journals.jpg",
+    image: "/assets/images/accessToJournals.jpg",
     title: "Access to Journals",
     para: "Stay informed with complimentary access to top orthopaedic journals. Explore the latest scientific research and medical breakthroughs. Enhance your expertise by keeping up with global evidence-based practices.",
   },
