@@ -271,7 +271,7 @@ export default function EventDetailPage() {
         {/* Hero Banner Section */}
         <section
           ref={heroRef}
-          className="relative w-full h-[320px] md:h-[360px] lg:h-[400px] flex items-end justify-center overflow-hidden shadow-lg"
+          className="relative w-full h-[360px] md:h-[400px] lg:h-[450px] flex items-end justify-center overflow-hidden shadow-lg"
           style={{
             backgroundImage: event.coverImage
               ? `url(${event.coverImage})`

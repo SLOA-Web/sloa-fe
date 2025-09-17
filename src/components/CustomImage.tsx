@@ -47,7 +47,7 @@ const CustomImage: React.FC<CustomImageProps> = ({
               className="w-full h-full bg-cover bg-center"
               style={{ 
                 backgroundImage: `url('${imageUrl}')`, 
-                backgroundAttachment: 'fixed'
+                // backgroundAttachment: 'fixed'
               }}
             />
           )}

@@ -11,10 +11,15 @@ gsap.registerPlugin(ScrollTrigger);
 
 const BenefitsList: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLButtonElement[]>([]);
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [activeIdx]);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -103,13 +108,20 @@ const BenefitsList: React.FC = () => {
           ref={imageRef}
           className="w-full md:w-1/2 flex justify-center items-center mb-0 md:mb-0"
         >
-          <div className="w-full h-[250px] md:h-[350px] lg:h-[470px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px] flex items-center justify-center">
+          <div className="w-full h-[250px] md:h-[350px] lg:h-[470px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px] flex items-center justify-center relative">
+            {isLoading && (
+              <div className="absolute inset-0 flex items-center justify-center bg-transparent rounded-lg">
+                <div className="w-8 h-8 border-4 border-gray-300 border-t-[#D47045] rounded-full animate-spin"></div>
+              </div>
+            )}
             <Image
               src={BENEFITS_LIST[activeIdx].image}
               alt={BENEFITS_LIST[activeIdx].title}
-              className="w-full h-full object-cover rounded-lg"
+              className={`w-full h-full object-cover rounded-lg ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
               width={500}
               height={300}
+              onLoad={() => setIsLoading(false)}
+              onError={() => setIsLoading(false)}
             />
           </div>
         </div>
@@ -139,7 +151,7 @@ const BenefitsList: React.FC = () => {
                       <div className="inline-block w-2 md:w-2.5 lg:w-3 h-2 md:h-2.5 lg:h-3 aspect-square rounded-full mr-2 md:mr-2.5 lg:mr-3 bg-[#D47045] mt-2 md:mt-2.5 lg:mt-3" />
 
                       <div className="overflow-hidden">
-                        <h3 className="font-roboto text-[20px] md:text-[26px] lg:text-[32px] font-normal">
+                        <h3 className="font-roboto text-[16px] md:text-[20px] lg:text-[24px] font-normal">
                           {benefit.title}
                         </h3>
                         <p className="font-poppins text-[12px] md:text-[14px] lg:text-[16px] opacity-75 py-2 md:py-3 lg:py-4 leading-relaxed font-thin animate-in slide-in-from-top-2 duration-300">
