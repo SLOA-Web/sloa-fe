@@ -24,7 +24,7 @@ export default async function NewsAndMediaPage() {
     <>
       <CommonBanner
         text="News & Media"
-        imageUrl="/assets/images/homepage_hero.svg"
+        imageUrl="/assets/images/newsAndMedia.jpg"
       />
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <NewsMediaClient

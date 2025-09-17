@@ -234,7 +234,7 @@ export const BENEFITS_LIST = [
     title: "Exclusive Networking",
     para: "Connect with top professionals, researchers, and peers at national and international events. Build strong collaborations, share knowledge, and grow your presence in the field. Networking opportunities open doors to partnerships and career advancement." },
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/researchGrants.jpg",
     title: "Research Grants",
     para: "Access exclusive funding to support your innovative research projects. Grants help cover essential costs so you can focus on impactful studies. Strengthen your academic profile while driving real-world progress.",
   },
@@ -249,7 +249,7 @@ export const BENEFITS_LIST = [
     para: "Stay informed with complimentary access to top orthopaedic journals. Explore the latest scientific research and medical breakthroughs. Enhance your expertise by keeping up with global evidence-based practices.",
   },
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/discountedConference.jpg",
     title: "Discounted Conference Fees",
     para: "Attend workshops, seminars, and conferences at reduced fees. Gain hands-on learning and exposure to new techniques. Save on costs while expanding knowledge and professional connections.",
   },
