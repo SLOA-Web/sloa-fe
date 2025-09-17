@@ -320,11 +320,10 @@ const EventsSection: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Events Grid */}
                   <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                     {events.map((event: EventApiType) => {
                       const eventId = event.id;
-                      // Format date for display (e.g., 14 Sep 2023)
+                      // Determine if event is upcoming
                       let dateObj: Date;
                       if (event.date.includes('/')) {
                         const [day, month, year] = event.date.split('/').map(Number);
@@ -332,34 +331,12 @@ const EventsSection: React.FC = () => {
                       } else {
                         dateObj = new Date(event.date);
                       }
-                      const dateStr = !isNaN(dateObj.getTime())
-                        ? dateObj.toLocaleDateString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                          })
-                        : event.date;
-                      // Use coverImage or fallback to posterUrl or default image
-                      const image =
-                        event.coverImage || event.posterUrl || "/assets/images/small_logo.png";
-                      // Use description as summary
-                      const summary = event.description || "";
-                      // Use first agenda speaker as doctor (if available)
-                      const doctor =
-                        event.agenda && event.agenda.length > 0
-                          ? event.agenda[0].speaker
-                          : "";
-                      // Determine if event is upcoming
                       const now = new Date();
                       const isUpcoming = event.isRegistrationOpen && dateObj > now;
                       return (
                         <EventCard
                           key={event.id}
-                          image={image}
-                          date={dateStr}
-                          title={event.title}
-                          summary={summary}
-                          doctor={doctor}
+                          event={event}
                           state={isUpcoming ? "upcoming" : undefined}
                           onReadMore={() => handleReadMore(eventId)}
                           loading={loadingSlug === eventId}

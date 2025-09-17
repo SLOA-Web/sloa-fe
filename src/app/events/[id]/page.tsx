@@ -267,18 +267,18 @@ export default function EventDetailPage() {
 
   return (
     <div ref={containerRef}>
-      <main className="min-h-screen bg-background pb-12 md:pb-20 relative overflow-hidden">
+      <main className="bg-background pb-12 md:pb-20 relative overflow-hidden">
         {/* Hero Banner Section */}
         <section
           ref={heroRef}
-          className="relative w-full h-[320px] md:h-[360px] lg:h-[400px] flex items-end justify-center overflow-hidden shadow-lg"
+          className="relative w-full h-[360px] md:h-[400px] lg:h-[450px] flex items-end justify-center overflow-hidden shadow-lg"
           style={{
-            backgroundImage: event.coverImage 
-              ? `url(${event.coverImage})` 
+            backgroundImage: event.coverImage
+              ? `url(${event.coverImage})`
               : "linear-gradient(135deg, var(--secondary) 0%, color-mix(in srgb, var(--secondary) 85%, black) 100%)",
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/25 to-transparent z-10" />
@@ -290,8 +290,18 @@ export default function EventDetailPage() {
                 className="bg-white/10 hover:bg-white/20 text-white p-2 rounded transition shadow focus:outline-none focus:ring-2 focus:ring-white/40"
                 aria-label="Back"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
                 </svg>
               </button>
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white drop-shadow font-roboto">
@@ -300,32 +310,77 @@ export default function EventDetailPage() {
             </div>
             <div className="flex flex-wrap gap-3 text-white/95 text-sm sm:text-base font-medium mt-4">
               <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0v10a2 2 0 002 2h4a2 2 0 002-2V7m-8 0H6a2 2 0 00-2 2v10a2 2 0 002 2h1m5-10V9a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2h2v-6" />
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0v10a2 2 0 002 2h4a2 2 0 002-2V7m-8 0H6a2 2 0 00-2 2v10a2 2 0 002 2h1m5-10V9a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2h2v-6"
+                  />
                 </svg>
                 <span>{event.date ? formatDate(event.date) : "-"}</span>
               </div>
               {event.time && event.time !== "1970-01-01T00:00:00.000Z" && (
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                   <span>{formatTime(event.time)}</span>
                 </div>
               )}
               {event.location && (
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
                   </svg>
                   <span>{event.location}</span>
                 </div>
               )}
               {typeof event.maxCapacity === "number" && (
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                    />
                   </svg>
                   <span>{event.maxCapacity} attendees</span>
                 </div>
@@ -364,11 +419,21 @@ export default function EventDetailPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                   {typeof event._count?.registrations === "number" && (
                     <div className="flex items-center gap-4 p-6 bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl shadow-sm">
-                        <div className="p-3 bg-primary/10 rounded-full border border-primary/20">
-                          <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                          </svg>
-                        </div>
+                      <div className="p-3 bg-primary/10 rounded-full border border-primary/20">
+                        <svg
+                          className="w-6 h-6 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                          />
+                        </svg>
+                      </div>
                       <div>
                         <p className="text-gray-800 font-semibold text-sm uppercase tracking-wide">
                           Total Registrations
@@ -385,8 +450,18 @@ export default function EventDetailPage() {
                     event.agenda[0].speaker && (
                       <div className="flex items-center gap-4 p-6 bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl shadow-sm">
                         <div className="p-3 bg-primary/10 rounded-full border border-primary/20">
-                          <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          <svg
+                            className="w-6 h-6 text-primary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
                           </svg>
                         </div>
                         <div>
@@ -401,11 +476,21 @@ export default function EventDetailPage() {
                     )}
                   {event.registrationDeadline && (
                     <div className="flex items-center gap-4 p-6 bg-gradient-to-br from-white to-gray-50 border border-gray-200 rounded-xl shadow-sm">
-                        <div className="p-3 bg-primary/10 rounded-full border border-primary/20">
-                          <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
+                      <div className="p-3 bg-primary/10 rounded-full border border-primary/20">
+                        <svg
+                          className="w-6 h-6 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
                       <div>
                         <p className="text-gray-800 font-semibold text-sm uppercase tracking-wide">
                           Registration Deadline
@@ -424,11 +509,23 @@ export default function EventDetailPage() {
                 <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow border border-gray-200">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="p-2 bg-primary/10 rounded-lg">
-                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="w-5 h-5 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">About This Event</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      About This Event
+                    </h3>
                   </div>
                   <div className="prose prose-base sm:prose-lg max-w-none">
                     <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-poppins m-0">
@@ -444,8 +541,18 @@ export default function EventDetailPage() {
                   <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-gray-200 p-6 sm:p-8 shadow">
                     <div className="flex items-center gap-3 mb-6 sm:mb-8">
                       <div className="p-2 bg-primary/10 rounded-lg">
-                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 8l2 2 4-4" />
+                        <svg
+                          className="w-6 h-6 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 8l2 2 4-4"
+                          />
                         </svg>
                       </div>
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -456,7 +563,8 @@ export default function EventDetailPage() {
                       {event.agenda.map((item, index) => (
                         <div
                           key={item.time + item.topic}
-                          className="agenda-item group relative">
+                          className="agenda-item group relative"
+                        >
                           <div className="flex flex-col sm:flex-row items-start gap-4 p-4 sm:p-6 bg-gradient-to-r from-white to-gray-50/50 rounded-xl border border-gray-100 hover:border-primary/20 hover:shadow-md transition-all duration-300">
                             <div className="flex items-center gap-3 min-w-fit">
                               <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">
@@ -472,8 +580,18 @@ export default function EventDetailPage() {
                               </h4>
                               {item.speaker && (
                                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    />
                                   </svg>
                                   <span className="font-medium text-gray-700">
                                     {item.speaker}
@@ -494,30 +612,40 @@ export default function EventDetailPage() {
                 ref={buttonsRef}
                 className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
               >
-                {/* Extracted button text logic to a variable */}
-                {(() => {
-                  let buttonText = "";
-                  let isBtnLoading = registerLoading || checkingRegistration;
-                  if (checkingRegistration) {
-                    buttonText = "Loading...";
-                  } else if (registerLoading) {
-                    buttonText = isRegistered
-                      ? "Unregistering..."
-                      : "Registering...";
-                  } else {
-                    buttonText = isRegistered ? "Unregister" : "Register Now";
-                    isBtnLoading = false;
-                  }
-                  return (
-                    <button
-                      className="btn btn-lg btn-primary w-full shadow hover:shadow-md transition-all"
-                      onClick={handleRegisterClick}
-                      disabled={isBtnLoading}
-                    >
-                      {buttonText}
-                    </button>
-                  );
-                })()}
+                {event.isRegistrationOpen ? (
+                  // Registration open: show register/unregister button
+                  (() => {
+                    let buttonText = "";
+                    let isBtnLoading = registerLoading || checkingRegistration;
+                    if (checkingRegistration) {
+                      buttonText = "Loading...";
+                    } else if (registerLoading) {
+                      buttonText = isRegistered
+                        ? "Unregistering..."
+                        : "Registering...";
+                    } else {
+                      buttonText = isRegistered ? "Unregister" : "Register Now";
+                      isBtnLoading = false;
+                    }
+                    return (
+                      <button
+                        className="btn btn-lg btn-primary w-full shadow hover:shadow-md transition-all"
+                        onClick={handleRegisterClick}
+                        disabled={isBtnLoading}
+                      >
+                        {buttonText}
+                      </button>
+                    );
+                  })()
+                ) : (
+                  // Registration closed: show disabled button
+                  <button
+                    className="btn btn-lg w-full shadow bg-gray-200 text-gray-600 cursor-not-allowed"
+                    disabled
+                  >
+                    Registration Closed
+                  </button>
+                )}
                 {/* Success Message */}
                 {registerSuccess && (
                   <div className="w-full mt-2 flex justify-center">
@@ -549,11 +677,21 @@ export default function EventDetailPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                   {typeof event._count?.registrations === "number" && (
                     <div className="flex items-center gap-4 p-6 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200/50 rounded-xl shadow-sm">
-                        <div className="p-3 bg-green-100 rounded-full">
-                          <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                          </svg>
-                        </div>
+                      <div className="p-3 bg-green-100 rounded-full">
+                        <svg
+                          className="w-6 h-6 text-green-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                          />
+                        </svg>
+                      </div>
                       <div>
                         <p className="text-green-800 font-semibold text-sm uppercase tracking-wide">
                           Total Registrations
@@ -570,8 +708,18 @@ export default function EventDetailPage() {
                     event.agenda[0].speaker && (
                       <div className="flex items-center gap-4 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200/50 rounded-xl shadow-sm">
                         <div className="p-3 bg-blue-100 rounded-full">
-                          <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          <svg
+                            className="w-6 h-6 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                            />
                           </svg>
                         </div>
                         <div>
@@ -586,11 +734,21 @@ export default function EventDetailPage() {
                     )}
                   {event.registrationDeadline && (
                     <div className="flex items-center gap-4 p-6 bg-gradient-to-br from-orange-50 to-amber-50 border border-orange-200/50 rounded-xl shadow-sm">
-                        <div className="p-3 bg-orange-100 rounded-full">
-                          <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                        </div>
+                      <div className="p-3 bg-orange-100 rounded-full">
+                        <svg
+                          className="w-6 h-6 text-orange-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                      </div>
                       <div>
                         <p className="text-orange-800 font-semibold text-sm uppercase tracking-wide">
                           Registration Deadline
@@ -609,11 +767,23 @@ export default function EventDetailPage() {
                 <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 sm:p-8 shadow-lg border border-white/20">
                   <div className="flex items-center gap-3 mb-6">
                     <div className="p-2 bg-primary/10 rounded-lg">
-                      <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      <svg
+                        className="w-5 h-5 text-primary"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900">About This Event</h3>
+                    <h3 className="text-xl font-bold text-gray-900">
+                      About This Event
+                    </h3>
                   </div>
                   <div className="prose prose-base sm:prose-lg max-w-none">
                     <p className="text-gray-700 leading-relaxed text-base sm:text-lg font-poppins m-0">
@@ -629,8 +799,18 @@ export default function EventDetailPage() {
                   <div className="bg-white/90 backdrop-blur-sm rounded-2xl border border-white/20 p-6 sm:p-8 shadow-lg">
                     <div className="flex items-center gap-3 mb-6 sm:mb-8">
                       <div className="p-2 bg-primary/10 rounded-lg">
-                        <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 8l2 2 4-4" />
+                        <svg
+                          className="w-6 h-6 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 8l2 2 4-4"
+                          />
                         </svg>
                       </div>
                       <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
@@ -641,7 +821,8 @@ export default function EventDetailPage() {
                       {event.agenda.map((item, index) => (
                         <div
                           key={item.time + item.topic}
-                          className="agenda-item group relative">
+                          className="agenda-item group relative"
+                        >
                           <div className="flex flex-col sm:flex-row items-start gap-4 p-4 sm:p-6 bg-gradient-to-r from-white to-gray-50/50 rounded-xl border border-gray-100 hover:border-primary/20 hover:shadow-md transition-all duration-300">
                             <div className="flex items-center gap-3 min-w-fit">
                               <div className="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center text-sm font-bold">
@@ -657,8 +838,18 @@ export default function EventDetailPage() {
                               </h4>
                               {item.speaker && (
                                 <div className="flex items-center gap-2 text-gray-600 text-sm">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                  <svg
+                                    className="w-4 h-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                                    />
                                   </svg>
                                   <span className="font-medium text-gray-700">
                                     {item.speaker}
@@ -679,30 +870,40 @@ export default function EventDetailPage() {
                 ref={buttonsRef}
                 className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
               >
-                {/* Extracted button text logic to a variable */}
-                {(() => {
-                  let buttonText = "";
-                  let isBtnLoading = registerLoading || checkingRegistration;
-                  if (checkingRegistration) {
-                    buttonText = "Loading...";
-                  } else if (registerLoading) {
-                    buttonText = isRegistered
-                      ? "Unregistering..."
-                      : "Registering...";
-                  } else {
-                    buttonText = isRegistered ? "Unregister" : "Register Now";
-                    isBtnLoading = false;
-                  }
-                  return (
-                    <button
-                      className="btn btn-lg btn-primary w-full shadow hover:shadow-md transition-all"
-                      onClick={handleRegisterClick}
-                      disabled={isBtnLoading}
-                    >
-                      {buttonText}
-                    </button>
-                  );
-                })()}
+                {event.isRegistrationOpen ? (
+                  // Registration open: show register/unregister button
+                  (() => {
+                    let buttonText = "";
+                    let isBtnLoading = registerLoading || checkingRegistration;
+                    if (checkingRegistration) {
+                      buttonText = "Loading...";
+                    } else if (registerLoading) {
+                      buttonText = isRegistered
+                        ? "Unregistering..."
+                        : "Registering...";
+                    } else {
+                      buttonText = isRegistered ? "Unregister" : "Register Now";
+                      isBtnLoading = false;
+                    }
+                    return (
+                      <button
+                        className="btn btn-lg btn-primary w-full shadow hover:shadow-md transition-all"
+                        onClick={handleRegisterClick}
+                        disabled={isBtnLoading}
+                      >
+                        {buttonText}
+                      </button>
+                    );
+                  })()
+                ) : (
+                  // Registration closed: show disabled button
+                  <button
+                    className="btn btn-lg w-full shadow bg-gray-200 text-gray-600 cursor-not-allowed"
+                    disabled
+                  >
+                    Registration Closed
+                  </button>
+                )}
                 {/* Success Message */}
                 {registerSuccess && (
                   <div className="w-full mt-2 flex justify-center">

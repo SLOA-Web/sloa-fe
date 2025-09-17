@@ -6,21 +6,18 @@ import CustomButton from "../ui/CustomButton";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SUMMARY_LIMIT } from "@/utils/constants";
+import { EventCardProps } from "@/types";
+import { parseEventProps } from "@/utils/eventcard";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const EventCard: React.FC<any> = (props) => {
-  // Handle both old and new data structures
-  const image = props.image;
-  const date = props.date;
-  const title = props.title;
-  const summary = props.summary || props.shortDesc || "";
-  const doctor = props.doctor || props.speaker || "";
+const EventCard: React.FC<EventCardProps> = (props) => {
+  const { image, date, title, summary, doctor } = parseEventProps(props);
+
   const onReadMore = props.onReadMore;
   const state = props.state;
   const loading = props.loading;
-  const disableAnimations = props.disableAnimations || false; // New prop to disable individual animations
+  const disableAnimations = props.disableAnimations || false;
 
   const cardRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
@@ -29,7 +26,6 @@ const EventCard: React.FC<any> = (props) => {
   const dateRef = useRef<HTMLSpanElement>(null);
   const summaryRef = useRef<HTMLParagraphElement>(null);
 
-  // Helper to DRY up GSAP animation logic
   const animateElement = (
     ref: React.RefObject<HTMLElement | null>,
     fromVars: gsap.TweenVars,
@@ -137,9 +133,10 @@ const EventCard: React.FC<any> = (props) => {
     });
 
     return () => {
-      triggers.forEach((trigger) => trigger && trigger.kill());
+      triggers.forEach((trigger) => trigger?.kill());
     };
   }, [disableAnimations]);
+
   const safeImage =
     typeof image === "string" && image.trim().length > 0
       ? image
@@ -170,7 +167,7 @@ const EventCard: React.FC<any> = (props) => {
         <div className="p-4 flex flex-col w-full flex-1">
           <h3 className="text-[16px] mb-2 font-roboto">{title}</h3>
           <p className="text-[14px] mb-2 font-poppins font-thin">
-            {date} | {doctor}
+            {date} | By {doctor || "SLOA"}
           </p>
           <div className="flex-1" />
           <div className="flex justify-end">
@@ -192,7 +189,10 @@ const EventCard: React.FC<any> = (props) => {
       className="bg-white overflow-hidden shadow-lg flex flex-col items-center w-full max-w-lg min-h-[425px] max-h-[500px]"
     >
       {/* Top half image */}
-      <div className="w-full h-40 flex-shrink-0 relative bg-secondary" ref={imageRef}>
+      <div
+        className="w-full h-40 flex-shrink-0 relative bg-secondary"
+        ref={imageRef}
+      >
         <Image
           src={safeImage}
           alt={altText}
@@ -212,6 +212,9 @@ const EventCard: React.FC<any> = (props) => {
         <h3 className="text-[24px] font-normal my-3 font-roboto" ref={titleRef}>
           {title}
         </h3>
+        <p className="text-[12px] mb-2 font-poppins font-thin">
+          By {doctor || "SLOA"}
+        </p>
         <p className="text-[12px] mb-4 font-poppins" ref={summaryRef}>
           {summary.length > SUMMARY_LIMIT
             ? summary.slice(0, SUMMARY_LIMIT) + "..."

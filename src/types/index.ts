@@ -5,6 +5,22 @@ export interface HeroSlide {
   content?: string;
 }
 
+export interface EventCardProps {
+  event?: EventApiType;
+  image?: string;
+  date?: string;
+  title?: string;
+  summary?: string;
+  doctor?: string;
+  shortDesc?: string;
+  speaker?: string;
+  onReadMore?: () => void;
+  state?: string;
+  loading?: boolean;
+  disableAnimations?: boolean;
+}
+
+
 export interface EventAgendaItem {
   time: string;
   topic: string;

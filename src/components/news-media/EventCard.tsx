@@ -26,7 +26,7 @@ export default function EventCard({ event }: EventCardProps) {
   return (
     <Link
       href={`/news-media/events/${event._id}`}
-      className="group block bg-card rounded-lg border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-0.5 "
+      className="group block bg-card rounded-lg border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden hover:-translate-y-0.5 h-96 flex flex-col"
     >
       {/* Cover Image */}
       <div className="relative h-48 overflow-hidden ">
@@ -57,12 +57,12 @@ export default function EventCard({ event }: EventCardProps) {
       </div>
 
       {/* Content */}
-      <div className="p-6">
-        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
+      <div className="p-6 flex-1 flex flex-col">
+        <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors line-clamp-2">
           {event.title}
         </h3>
 
-        <div className="space-y-2 mb-4">
+        <div className="space-y-2 mb-4 flex-shrink-0">
           <div className="flex items-center text-sm text-muted-foreground">
             <Calendar size={16} className="mr-2" />
             {formatDate(event.eventDate)}
@@ -77,7 +77,7 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         {event.shortDescription && (
-          <p className="text-sm line-clamp-3">{event.shortDescription}</p>
+          <p className="text-sm line-clamp-3 flex-1">{event.shortDescription}</p>
         )}
       </div>
     </Link>

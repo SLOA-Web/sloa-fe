@@ -230,29 +230,28 @@ export const eventCards: EventCardProp[] = [
 
 export const BENEFITS_LIST = [
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/networking.jpg",
     title: "Exclusive Networking",
-    para: "Connect with leading professionals and peers in your field at national and international events.",
-  },
+    para: "Connect with top professionals, researchers, and peers at national and international events. Build strong collaborations, share knowledge, and grow your presence in the field. Networking opportunities open doors to partnerships and career advancement." },
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/researchGrants.jpg",
     title: "Research Grants",
-    para: "Apply for special funding opportunities to support your innovative research projects.",
+    para: "Access exclusive funding to support your innovative research projects. Grants help cover essential costs so you can focus on impactful studies. Strengthen your academic profile while driving real-world progress.",
   },
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/mentorship.jpg",
     title: "Mentorship Programs",
-    para: "Gain guidance from experienced mentors to accelerate your career growth and clinical skills.",
+    para: "Learn directly from experienced mentors who guide your career growth. Gain clinical and research insights through structured support. Accelerate your skills with personalized advice from leaders in the field.",
   },
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/journals.jpg",
     title: "Access to Journals",
-    para: "Enjoy complimentary access to top orthopaedic journals and the latest scientific publications.",
+    para: "Stay informed with complimentary access to top orthopaedic journals. Explore the latest scientific research and medical breakthroughs. Enhance your expertise by keeping up with global evidence-based practices.",
   },
   {
-    image: "/assets/images/benefit1.svg",
+    image: "/assets/images/discountedConference.jpg",
     title: "Discounted Conference Fees",
-    para: "Benefit from reduced registration fees for workshops, seminars, and annual conferences.",
+    para: "Attend workshops, seminars, and conferences at reduced fees. Gain hands-on learning and exposure to new techniques. Save on costs while expanding knowledge and professional connections.",
   },
 ];
 
@@ -308,7 +307,7 @@ export const NAVBAR = [
   { title: "About Us", href: "/about" },
   { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
-  { title: "Membership", href: "/get-involved" },
+  { title: "Membership", href: "/membership" },
 ];
 
 export const TOP_BAR_LINKS = [

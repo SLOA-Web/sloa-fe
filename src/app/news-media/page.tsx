@@ -22,12 +22,10 @@ export default async function NewsAndMediaPage() {
 
   return (
     <>
-      <div className="py-8 md:py-16">
-        <CommonBanner
-          text="News & Media"
-          imageUrl="/assets/images/homepage_hero.svg"
-        />
-      </div>
+      <CommonBanner
+        text="News & Media"
+        imageUrl="/assets/images/newsAndMedia.jpg"
+      />
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <NewsMediaClient
           initialEvents={eventsResponse.events}

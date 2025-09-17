@@ -197,7 +197,7 @@ const BookEvents: React.FC = () => {
                             <div className="flex flex-col min-w-0">
                               <p className="text-[24px] font-roboto">{event.title}</p>
                               <p className="text-[16px] font-thin font-poppins text-[#39604B] mb-4">
-                                by {event.speaker}
+                                By {event.speaker || 'SLOA'}
                               </p>
                               <p className="text-[12px] font-poppins mb-3">
                                 {event.shortDesc}

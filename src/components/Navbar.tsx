@@ -171,16 +171,21 @@ const Navbar = () => {
   // Helper for mobile nav keys
   const getNavKey = (item: NavbarItem) => item.href || item.title;
 
+  let backgroundClass;
+  if (/^\/events\/[^/]+$/.test(pathname)) {
+    backgroundClass = "bg-white";
+  } else if (isMobileMenuOpen || isScrolled) {
+    backgroundClass = "bg-white shadow";
+  } else {
+    backgroundClass = "bg-gradient-to-b from-white via-white/90 to-transparent";
+  }
+
   return (
     <>
       {/* Main Header */}
       <nav
         ref={headerRef}
-        className={`fixed w-full font-roboto px-3 lg:px-6 max-w-[1560px] mx-auto font-lato py-2 flex items-center justify-between left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out z-[999] ${
-          isMobileMenuOpen || isScrolled
-            ? "bg-white shadow"
-            : "bg-gradient-to-b from-white via-white/90 to-transparent"
-        }`}
+        className={`fixed w-full font-roboto px-3 lg:px-6 max-w-[1560px] mx-auto font-lato py-2 flex items-center justify-between left-1/2 -translate-x-1/2 transition-all duration-500 ease-in-out z-[999] ${backgroundClass}`}
       >
         <Link href="/">
           <Image
