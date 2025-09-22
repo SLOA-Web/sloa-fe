@@ -16,8 +16,14 @@ const BenefitsList: React.FC = () => {
   const titleRef = useRef<HTMLSpanElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLButtonElement[]>([]);
+  const rightContentRef = useRef<HTMLDivElement>(null);
 
+  // Update image height based on right-side content
   useEffect(() => {
+    if (imageRef.current && rightContentRef.current) {
+      const rightHeight = rightContentRef.current.offsetHeight;
+      imageRef.current.style.height = `${rightHeight}px`;
+    }
     setIsLoading(true);
   }, [activeIdx]);
 
@@ -102,13 +108,13 @@ const BenefitsList: React.FC = () => {
           Explore the exclusive benefits of joining the Sri Lanka Orthopaedic Association.
         </span>
       </div>
-      <div className="px-4 md:px-10 lg:px-16 flex flex-col md:flex-row items-start gap-10 lg:h-full">
-        {/* Image Container - Full Height */}
+      <div className="px-4 md:px-10 lg:px-16 flex flex-col md:flex-row items-start gap-0 md:gap-6 lg:gap-10 h-full">
+        {/* Image Container - Fixed Height based on Right Content */}
         <div
           ref={imageRef}
-          className="w-full md:w-1/2 flex justify-center items-center mb-0 md:mb-0"
+          className="w-full md:w-1/2 flex justify-center items-start transition-all duration-300 h-fit md:h-full"
         >
-          <div className="w-full h-[250px] md:h-[350px] lg:h-[470px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px] flex items-center justify-center relative">
+          <div className="w-full h-[250px] md:h-full flex items-center justify-center relative">
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-transparent rounded-lg">
                 <div className="w-8 h-8 border-4 border-gray-300 border-t-[#D47045] rounded-full animate-spin"></div>
@@ -117,7 +123,7 @@ const BenefitsList: React.FC = () => {
             <Image
               src={BENEFITS_LIST[activeIdx].image}
               alt={BENEFITS_LIST[activeIdx].title}
-              className={`w-full h-full object-cover rounded-lg ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+              className={`w-full h-full object-cover rounded-lg ${isLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
               width={500}
               height={300}
               onLoad={() => setIsLoading(false)}
@@ -125,9 +131,13 @@ const BenefitsList: React.FC = () => {
             />
           </div>
         </div>
+
         {/* Cards Container - Stacked */}
-        <div className="w-full md:w-1/2 flex flex-col justify-center">
-          <div className="flex flex-col h-[250px] md:h-[350px] lg:h-[450px] min-h-[150px] md:min-h-[250px] lg:min-h-[300px]">
+        <div
+          ref={rightContentRef}
+          className="w-full md:w-1/2 flex flex-col justify-center h-full"
+        >
+          <div className="flex flex-col">
             {BENEFITS_LIST.map((benefit, idx) => (
               <button
                 key={idx}
@@ -137,7 +147,7 @@ const BenefitsList: React.FC = () => {
                 onClick={() => setActiveIdx(idx)}
                 className={`text-left flex flex-col transition-all duration-300 px-4 md:px-6 lg:px-8 border-y border-white/50 cursor-pointer bg-transparent overflow-hidden ${
                   idx === activeIdx
-                    ? "flex-grow min-h-[150px] md:min-h-[220px] lg:min-h-[300px] py-3 md:py-4 lg:py-6 opacity-100"
+                    ? "flex-grow py-3 md:py-4 lg:py-6 opacity-100"
                     : "flex-shrink-0 py-1 md:py-2 lg:py-2 opacity-25"
                 }`}
                 style={{
@@ -159,11 +169,6 @@ const BenefitsList: React.FC = () => {
                         </p>
                       </div>
                     </div>
-                    {/* <div className="mt-auto -mb-2 md:-mb-3 lg:-mb-4 pt-2 md:pt-3 lg:pt-4 flex">
-                      <span className="font-roboto text-[10px] md:text-[14px] lg:text-[16px] px-6 md:px-10 lg:px-12 uppercase">
-                        Benefit {idx + 1}
-                      </span>
-                    </div> */}
                   </div>
                 ) : (
                   <span className="font-roboto text-[10px] md:text-[14px] lg:text-[16px] px-6 md:px-10 lg:px-12 uppercase">
