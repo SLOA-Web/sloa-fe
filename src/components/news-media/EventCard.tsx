@@ -77,7 +77,21 @@ export default function EventCard({ event }: EventCardProps) {
         </div>
 
         {event.shortDescription && (
-          <p className="text-sm line-clamp-3 flex-1">{event.shortDescription}</p>
+          <p className="text-sm line-clamp-3 flex-1">
+            {event.shortDescription.length > 100
+              ? (
+            <>
+              {event.shortDescription.slice(0, 100)}...
+              <Link
+                href={`/news-media/events/${event._id}`}
+                className="text-primary underline ml-1"
+              >
+                Read more
+              </Link>
+            </>
+          )
+              : event.shortDescription}
+          </p>
         )}
       </div>
     </Link>
