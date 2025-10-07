@@ -221,12 +221,33 @@ const MembershipsPage = () => {
                 : '—'
               }
             />
-            <InfoField label="Applied Date" value={new Date(membership.appliedAt).toLocaleDateString()} />
+            <InfoField 
+              label="Applied Date" 
+              value={new Date(membership.appliedAt).toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric'
+              })} 
+            />
             {membership.approvedAt && (
-              <InfoField label="Approved Date" value={new Date(membership.approvedAt).toLocaleDateString()} />
+              <InfoField 
+                label="Approved Date" 
+                value={new Date(membership.approvedAt).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                })} 
+              />
             )}
             {membership.expiryDate && (
-              <InfoField label="Expiry Date" value={new Date(membership.expiryDate).toLocaleDateString()} />
+              <InfoField 
+                label="Expiry Date" 
+                value={new Date(membership.expiryDate).toLocaleDateString('en-GB', {
+                  day: '2-digit',
+                  month: 'short',
+                  year: 'numeric'
+                })} 
+              />
             )}
             </div>
           </InfoCard>

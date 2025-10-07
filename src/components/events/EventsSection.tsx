@@ -20,17 +20,27 @@ const EventsSection: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [selectedMonth, setSelectedMonth] = useState<string>("all");
+  
+  // Helper to parse event date safely
+  const parseEventDate = (dateStr: string): Date => {
+    if (dateStr.includes('/')) {
+      // DD/MM/YYYY format
+      const [day, month, year] = dateStr.split('/').map(Number);
+      return new Date(year, month - 1, day);
+    } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      // YYYY-MM-DD format - parse as UTC to avoid timezone shift
+      const [year, month, day] = dateStr.split('-').map(Number);
+      return new Date(Date.UTC(year, month - 1, day));
+    } else {
+      return new Date(dateStr);
+    }
+  };
+  
   // Get unique months from events
   const monthsList = useMemo(() => {
     const monthsSet = new Set<string>();
     events.forEach((event) => {
-      let dateObj: Date;
-      if (event.date.includes('/')) {
-        const [day, month, year] = event.date.split('/').map(Number);
-        dateObj = new Date(year, month - 1, day);
-      } else {
-        dateObj = new Date(event.date);
-      }
+      const dateObj = parseEventDate(event.date);
       if (!isNaN(dateObj.getTime())) {
         const monthName = dateObj.toLocaleString("default", { month: "long" });
         const yearNum = dateObj.getFullYear();
@@ -97,13 +107,7 @@ const EventsSection: React.FC = () => {
           matchesDate = true;
         } else {
           // Try DD/MM/YYYY or MM/YYYY
-          let dateObj: Date;
-          if (event.date.includes('/')) {
-            const [day, month, year] = event.date.split('/').map(Number);
-            dateObj = new Date(year, month - 1, day);
-          } else {
-            dateObj = new Date(event.date);
-          }
+          const dateObj = parseEventDate(event.date);
           if (!isNaN(dateObj.getTime())) {
             const day = dateObj.getDate();
             const month = dateObj.getMonth() + 1;
@@ -127,13 +131,7 @@ const EventsSection: React.FC = () => {
       // Filter by selectedMonth if not 'all'
       let matchesMonth = true;
       if (selectedMonth !== "all") {
-        let dateObj: Date;
-        if (event.date.includes('/')) {
-          const [day, month, year] = event.date.split('/').map(Number);
-          dateObj = new Date(year, month - 1, day);
-        } else {
-          dateObj = new Date(event.date);
-        }
+        const dateObj = parseEventDate(event.date);
         if (!isNaN(dateObj.getTime())) {
           const monthName = dateObj.toLocaleString("default", { month: "long" });
           const yearNum = dateObj.getFullYear();
@@ -148,13 +146,7 @@ const EventsSection: React.FC = () => {
     });
 
     return filtered.reduce((acc: Record<string, EventApiType[]>, event) => {
-      let dateObj: Date;
-      if (event.date.includes('/')) {
-        const [day, month, year] = event.date.split('/').map(Number);
-        dateObj = new Date(year, month - 1, day);
-      } else {
-        dateObj = new Date(event.date);
-      }
+      const dateObj = parseEventDate(event.date);
       if (isNaN(dateObj.getTime())) return acc;
       const monthName = dateObj.toLocaleString("default", { month: "long" });
       const yearNum = dateObj.getFullYear();
@@ -324,13 +316,7 @@ const EventsSection: React.FC = () => {
                     {events.map((event: EventApiType) => {
                       const eventId = event.id;
                       // Determine if event is upcoming
-                      let dateObj: Date;
-                      if (event.date.includes('/')) {
-                        const [day, month, year] = event.date.split('/').map(Number);
-                        dateObj = new Date(year, month - 1, day);
-                      } else {
-                        dateObj = new Date(event.date);
-                      }
+                      const dateObj = parseEventDate(event.date);
                       const now = new Date();
                       const isUpcoming = event.isRegistrationOpen && dateObj > now;
                       return (

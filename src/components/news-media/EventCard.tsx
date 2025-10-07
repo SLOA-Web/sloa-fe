@@ -12,12 +12,25 @@ interface EventCardProps {
 
 export default function EventCard({ event }: EventCardProps) {
   const formatDate = (dateString: string) => {
-    const d = new Date(dateString);
+    // Parse date safely to avoid timezone issues
+    const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
+    let d: Date;
+    
+    if (dateOnlyRegex.test(dateString)) {
+      // Parse as UTC date to avoid timezone shifts
+      const [year, month, day] = dateString.split('-').map(Number);
+      d = new Date(Date.UTC(year, month - 1, day));
+    } else {
+      d = new Date(dateString);
+    }
+    
     if (isNaN(d.getTime())) return "Date TBA";
+    
     return d.toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
       day: "numeric",
+      timeZone: dateOnlyRegex.test(dateString) ? "UTC" : undefined
     });
   };
 
