@@ -24,17 +24,25 @@ export function parseEventProps(props: EventCardProps) {
 export  function formatEventDate(dateStr: string): string {
   if (!dateStr) return "";
   let dateObj: Date;
+  
   if (dateStr.includes('/')) {
+    // DD/MM/YYYY format - create as local date
     const [day, month, year] = dateStr.split('/').map(Number);
     dateObj = new Date(year, month - 1, day);
+  } else if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    // YYYY-MM-DD format - parse as UTC to avoid timezone shift
+    const [year, month, day] = dateStr.split('-').map(Number);
+    dateObj = new Date(Date.UTC(year, month - 1, day));
   } else {
     dateObj = new Date(dateStr);
   }
+  
   return !isNaN(dateObj.getTime())
     ? dateObj.toLocaleDateString("en-GB", {
         day: "2-digit",
         month: "short",
         year: "numeric",
+        timeZone: dateStr.includes('-') ? "UTC" : undefined
       })
     : dateStr;
 }

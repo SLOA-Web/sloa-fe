@@ -13,18 +13,28 @@ import { formatDateRange } from "@/utils/helper";
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Helper function to safely parse dates
+const parseEventDate = (dateStr: string): Date => {
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    // YYYY-MM-DD format - parse as UTC to avoid timezone shift
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(Date.UTC(year, month - 1, day));
+  }
+  return new Date(dateStr);
+};
+
 // Helper function to format date for display - handles multi-day events
 const formatEventDate = (startDate: string, endDate?: string | null) => {
   const dateRange = formatDateRange(startDate, endDate);
-  const startDateObj = new Date(startDate);
-  const startDay = startDateObj.getDate().toString().padStart(2, "0");
-  const month = startDateObj.toLocaleDateString("en-US", { month: "short" });
+  const startDateObj = parseEventDate(startDate);
+  const startDay = startDateObj.getUTCDate().toString().padStart(2, "0");
+  const month = startDateObj.toLocaleDateString("en-US", { month: "short", timeZone: "UTC" });
   
   // Check if it's a multi-day event
   let displayDay = startDay;
   if (endDate) {
-    const endDateObj = new Date(endDate);
-    const endDay = endDateObj.getDate().toString().padStart(2, "0");
+    const endDateObj = parseEventDate(endDate);
+    const endDay = endDateObj.getUTCDate().toString().padStart(2, "0");
     // Only show range if different days
     if (startDay !== endDay) {
       displayDay = `${startDay}-${endDay}`;

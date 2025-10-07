@@ -19,11 +19,24 @@ export default async function EventPage(props: EventPageProps) {
   }
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    // Parse date safely to avoid timezone issues
+    const dateOnlyRegex = /^\d{4}-\d{2}-\d{2}$/;
+    let d: Date;
+    
+    if (dateOnlyRegex.test(dateString)) {
+      // Parse as UTC date to avoid timezone shifts
+      const [year, month, day] = dateString.split('-').map(Number);
+      d = new Date(Date.UTC(year, month - 1, day));
+    } else {
+      d = new Date(dateString);
+    }
+    
+    return d.toLocaleDateString('en-US', {
       weekday: 'long',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: dateOnlyRegex.test(dateString) ? 'UTC' : undefined
     })
   }
 

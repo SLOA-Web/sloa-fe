@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { api } from "@/utils/api";
 import { toast } from "react-hot-toast";
-import { formatDateRange } from "@/utils/helper";
+import { formatDateRange, formatTime } from "@/utils/helper";
 
 interface Event {
   id: string;
@@ -110,7 +110,7 @@ const EventsPage = () => {
                           </div>
                           <div className="flex items-center gap-2">
                             <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm text-foreground">{event.time}</span>
+                            <span className="text-sm text-foreground">{formatTime(event.time)}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <MapPin className="h-4 w-4 text-muted-foreground" />
