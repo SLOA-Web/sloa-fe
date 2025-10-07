@@ -8,6 +8,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Attendee, EventApiType } from "@/types";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import MealPreferenceModal from "@/components/MealPreferenceModal";
 import { useAuth } from "@/context/AuthContext";
 import { formatDate, formatDateRange, formatTime } from "@/utils/helper";
 // Removed react-icons dependency
@@ -29,6 +30,7 @@ export default function EventDetailPage() {
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
   const [isRegistered, setIsRegistered] = useState<boolean>(false);
+  const [showMealModal, setShowMealModal] = useState<boolean>(false);
   const containerRef = useRef(null);
   const heroRef = useRef(null);
   const contentRef = useRef(null);
@@ -203,16 +205,23 @@ export default function EventDetailPage() {
     };
   }, [event]);
 
-  const handleRegister = async () => {
+  const handleRegister = async (mealPreference: string | null = null) => {
     if (!user) return;
     setRegisterLoading(true);
     setRegisterError(null);
     setRegisterSuccess(null);
     try {
-      await api.post(`/api/v1/events/${params.id}/register`, {
+      const registrationData: any = {
         userId: user.id,
         eventId: params.id,
-      });
+      };
+
+      // Add meal preference if provided
+      if (mealPreference) {
+        registrationData.mealPreference = mealPreference;
+      }
+
+      await api.post(`/api/v1/events/${params.id}/register`, registrationData);
       setIsRegistered(true);
       setRegisterSuccess("Registered successfully!");
     } catch (err: unknown) {
@@ -224,6 +233,15 @@ export default function EventDetailPage() {
     } finally {
       setRegisterLoading(false);
     }
+  };
+
+  const handleMealPreferenceConfirm = (mealPreference: string | null) => {
+    setShowMealModal(false);
+    handleRegister(mealPreference);
+  };
+
+  const handleShowMealModal = () => {
+    setShowMealModal(true);
   };
 
   const handleUnregister = async () => {
@@ -261,7 +279,12 @@ export default function EventDetailPage() {
     if (isRegistered) {
       handleUnregister();
     } else {
-      handleRegister();
+      // Only show meal preference modal if event provides food
+      if (event?.providesFood) {
+        handleShowMealModal();
+      } else {
+        handleRegister(); // Register directly without meal preference
+      }
     }
   };
 
@@ -658,7 +681,11 @@ export default function EventDetailPage() {
                         ? "Unregistering..."
                         : "Registering...";
                     } else {
-                      buttonText = isRegistered ? "Unregister" : "Register Now";
+                      if (isRegistered) {
+                        buttonText = "Unregister";
+                      } else {
+                        buttonText = event?.providesFood ? "Register & Select Meal" : "Register Now";
+                      }
                       isBtnLoading = false;
                     }
                     return (
@@ -943,7 +970,11 @@ export default function EventDetailPage() {
                         ? "Unregistering..."
                         : "Registering...";
                     } else {
-                      buttonText = isRegistered ? "Unregister" : "Register Now";
+                      if (isRegistered) {
+                        buttonText = "Unregister";
+                      } else {
+                        buttonText = event?.providesFood ? "Register & Select Meal" : "Register Now";
+                      }
                       isBtnLoading = false;
                     }
                     return (
@@ -986,6 +1017,14 @@ export default function EventDetailPage() {
           </section>
         )}
       </main>
+
+      {/* Meal Preference Modal */}
+      <MealPreferenceModal
+        isOpen={showMealModal}
+        onClose={() => setShowMealModal(false)}
+        onConfirm={handleMealPreferenceConfirm}
+        isLoading={registerLoading}
+      />
     </div>
   );
 }

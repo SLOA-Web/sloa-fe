@@ -61,6 +61,7 @@ export interface EventApiType {
   externalRegistrationUrl?: string | null;
   criteria?: unknown;
   isRegistrationOpen: boolean;
+  providesFood?: boolean;
   maxCapacity?: number;
   registrationDeadline?: string;
   createdBy?: string;
