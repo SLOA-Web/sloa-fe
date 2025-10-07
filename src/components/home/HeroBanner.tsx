@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import EventCard from "./EventCard";
-import { useEffect, useRef, useState, useMemo } from "react";
+import { useEffect, useRef, useState, useMemo, useCallback } from "react";
 import gsap from "gsap";
 import { UpcomingEvent, Banner, BannersResponse, HeroSlide } from "@/types";
 import api from "@/utils/api";
@@ -27,11 +27,11 @@ const HeroBanner = () => {
     return banners as (Banner | HeroSlide)[];
   }, [banners]);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     if (!isAnimatingRef.current) {
       setCurrentSlide((prev) => (prev + 1) % slidesData.length);
     }
-  };
+  }, [slidesData.length]);
 
   // Fetch banners
   useEffect(() => {
@@ -174,7 +174,7 @@ const HeroBanner = () => {
 
       return () => clearInterval(interval);
     }
-  }, [banners.length]);
+  }, [banners.length, nextSlide]);
 
   const currentSlideData = slidesData[currentSlide];
 

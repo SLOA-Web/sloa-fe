@@ -211,7 +211,11 @@ export default function EventDetailPage() {
     setRegisterError(null);
     setRegisterSuccess(null);
     try {
-      const registrationData: any = {
+      const registrationData: {
+        userId: string;
+        eventId: string;
+        mealPreference?: string;
+      } = {
         userId: user.id,
         eventId: params.id,
       };

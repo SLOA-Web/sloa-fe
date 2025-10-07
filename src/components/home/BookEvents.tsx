@@ -254,7 +254,7 @@ const BookEvents: React.FC = () => {
                                 text={
                                   loadingEventId === event.id
                                     ? "Loading..."
-                                    : "Book Now"
+                                    : "View More"
                                 }
                                 onClick={() => {
                                   setLoadingEventId(event.id);
