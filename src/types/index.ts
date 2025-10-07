@@ -135,6 +135,7 @@ export interface UpcomingEvent {
   title: string;
   shortDesc: string;
   date: string;
+  endDate?: string | null;
   speaker: string;
 }
 

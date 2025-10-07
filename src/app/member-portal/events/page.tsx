@@ -7,18 +7,18 @@ import {
   MapPin, 
   ExternalLink, 
   Search,
-  Bookmark,
-  Share2,
   Trash2
 } from "lucide-react";
 import { api } from "@/utils/api";
 import { toast } from "react-hot-toast";
+import { formatDateRange } from "@/utils/helper";
 
 interface Event {
   id: string;
   title: string;
   description: string;
   date: string;
+  endDate?: string | null;
   time: string;
   location: string;
 }
@@ -106,7 +106,7 @@ const EventsPage = () => {
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                           <div className="flex items-center gap-2">
                             <Calendar className="h-4 w-4 text-muted-foreground" />
-                            <span className="text-sm text-foreground">{new Date(event.date).toLocaleDateString()}</span>
+                            <span className="text-sm text-foreground">{formatDateRange(event.date, event.endDate)}</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Clock className="h-4 w-4 text-muted-foreground" />

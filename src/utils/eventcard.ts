@@ -1,11 +1,12 @@
 import { EventCardProps } from "@/types";
+import { formatDateRange } from "./helper";
 
 export function parseEventProps(props: EventCardProps) {
   if (props.event) {
     const event = props.event;
     return {
       image: event.coverImage || event.posterUrl || "/assets/images/small_logo.png",
-      date: formatEventDate(event.date),
+      date: formatDateRange(event.date, event.endDate),
       title: event.title,
       summary: event.description || "",
       doctor: (event.agenda && event.agenda.length > 0 ? event.agenda[0].speaker : "") || "",

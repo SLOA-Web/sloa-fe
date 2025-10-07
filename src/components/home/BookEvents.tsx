@@ -9,15 +9,17 @@ import { handleApiError } from "@/utils/errorHandler";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { formatDateRange } from "@/utils/helper";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Helper function to format date for display
-const formatEventDate = (dateString: string) => {
-  const date = new Date(dateString);
+// Helper function to format date for display - handles multi-day events
+const formatEventDate = (startDate: string, endDate?: string | null) => {
+  const dateRange = formatDateRange(startDate, endDate);
+  const date = new Date(startDate);
   const day = date.getDate().toString().padStart(2, '0');
   const month = date.toLocaleDateString('en-US', { month: 'short' });
-  return { day, month };
+  return { day, month, dateRange };
 };
 
 // Helper function to generate consistent colors for events
@@ -171,7 +173,7 @@ const BookEvents: React.FC = () => {
                 return (
                   <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-8 w-full justify-center items-center">
                     {events.map((event, idx) => {
-                      const { day, month } = formatEventDate(event.date);
+                      const { day, month, dateRange } = formatEventDate(event.date, event.endDate);
                       const backgroundColor = getEventColor(idx);
 
                       return (
@@ -196,7 +198,10 @@ const BookEvents: React.FC = () => {
                           <article className="flex flex-1 flex-col lg:flex-row min-w-0 justify-between items-center gap-4">
                             <div className="flex flex-col min-w-0">
                               <p className="text-[24px] font-roboto">{event.title}</p>
-                              <p className="text-[16px] font-thin font-poppins text-[#39604B] mb-4">
+                              <p className="text-[16px] font-thin font-poppins text-[#39604B] mb-2">
+                                {dateRange}
+                              </p>
+                              <p className="text-[14px] font-thin font-poppins text-[#39604B] mb-4">
                                 By {event.speaker || 'SLOA'}
                               </p>
                               <p className="text-[12px] font-poppins mb-3">

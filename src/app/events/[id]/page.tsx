@@ -9,7 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Attendee, EventApiType } from "@/types";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/context/AuthContext";
-import { formatDate, formatTime } from "@/utils/helper";
+import { formatDate, formatDateRange, formatTime } from "@/utils/helper";
 // Removed react-icons dependency
 
 if (typeof window !== "undefined") {
@@ -247,6 +247,13 @@ export default function EventDetailPage() {
   };
 
   const handleRegisterClick = () => {
+    // If external registration URL exists, redirect to it
+    if (event?.externalRegistrationUrl) {
+      window.open(event.externalRegistrationUrl, "_blank");
+      return;
+    }
+    
+    // Otherwise, use internal registration
     if (!user) {
       window.location.href = "/login";
       return;
@@ -323,7 +330,7 @@ export default function EventDetailPage() {
                     d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 0V6a2 2 0 012-2h4a2 2 0 012 2v1m-6 0h8m-8 0v10a2 2 0 002 2h4a2 2 0 002-2V7m-8 0H6a2 2 0 00-2 2v10a2 2 0 002 2h1m5-10V9a2 2 0 00-2-2H8a2 2 0 00-2 2v8a2 2 0 002 2h2v-6"
                   />
                 </svg>
-                <span>{event.date ? formatDate(event.date) : "-"}</span>
+                <span>{formatDateRange(event.date, event.endDate)}</span>
               </div>
               {event.time && event.time !== "1970-01-01T00:00:00.000Z" && (
                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
@@ -617,6 +624,33 @@ export default function EventDetailPage() {
                   (() => {
                     let buttonText = "";
                     let isBtnLoading = registerLoading || checkingRegistration;
+                    
+                    // If external registration URL exists, show external registration button
+                    if (event.externalRegistrationUrl) {
+                      return (
+                        <button
+                          className="btn btn-lg btn-primary w-full shadow hover:shadow-md transition-all flex items-center justify-center gap-2"
+                          onClick={handleRegisterClick}
+                        >
+                          Register Now
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </button>
+                      );
+                    }
+                    
+                    // Internal registration
                     if (checkingRegistration) {
                       buttonText = "Loading...";
                     } else if (registerLoading) {
@@ -875,6 +909,33 @@ export default function EventDetailPage() {
                   (() => {
                     let buttonText = "";
                     let isBtnLoading = registerLoading || checkingRegistration;
+                    
+                    // If external registration URL exists, show external registration button
+                    if (event.externalRegistrationUrl) {
+                      return (
+                        <button
+                          className="btn btn-lg btn-primary w-full shadow hover:shadow-md transition-all flex items-center justify-center gap-2"
+                          onClick={handleRegisterClick}
+                        >
+                          Register Now
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                            />
+                          </svg>
+                        </button>
+                      );
+                    }
+                    
+                    // Internal registration
                     if (checkingRegistration) {
                       buttonText = "Loading...";
                     } else if (registerLoading) {
