@@ -131,12 +131,13 @@ export interface User {
 // New API response types for upcoming events
 export interface UpcomingEvent {
   id: string;
-  image: string;
+  image: string | null;
   title: string;
   shortDesc: string;
-  date: string;
+  date?: string; // Fallback for backward compatibility
+  startDate?: string; // Primary date field from API
   endDate?: string | null;
-  speaker: string;
+  speaker: string | null;
 }
 
 export interface UpcomingEventsResponse {
