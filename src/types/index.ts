@@ -7,13 +7,13 @@ export interface HeroSlide {
 
 export interface EventCardProps {
   event?: EventApiType;
-  image?: string;
+  image?: string | null;
   date?: string;
   title?: string;
   summary?: string;
   doctor?: string;
   shortDesc?: string;
-  speaker?: string;
+  speaker?: string | null;
   onReadMore?: () => void;
   state?: string;
   loading?: boolean;
