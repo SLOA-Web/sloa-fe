@@ -7,13 +7,13 @@ export interface HeroSlide {
 
 export interface EventCardProps {
   event?: EventApiType;
-  image?: string;
+  image?: string | null;
   date?: string;
   title?: string;
   summary?: string;
   doctor?: string;
   shortDesc?: string;
-  speaker?: string;
+  speaker?: string | null;
   onReadMore?: () => void;
   state?: string;
   loading?: boolean;
@@ -61,6 +61,7 @@ export interface EventApiType {
   externalRegistrationUrl?: string | null;
   criteria?: unknown;
   isRegistrationOpen: boolean;
+  providesFood?: boolean;
   maxCapacity?: number;
   registrationDeadline?: string;
   createdBy?: string;
@@ -131,11 +132,13 @@ export interface User {
 // New API response types for upcoming events
 export interface UpcomingEvent {
   id: string;
-  image: string;
+  image: string | null;
   title: string;
   shortDesc: string;
-  date: string;
-  speaker: string;
+  date?: string; // Fallback for backward compatibility
+  startDate?: string; // Primary date field from API
+  endDate?: string | null;
+  speaker: string | null;
 }
 
 export interface UpcomingEventsResponse {

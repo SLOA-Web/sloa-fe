@@ -9,20 +9,34 @@ import { handleApiError } from "@/utils/errorHandler";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { formatDateRange } from "@/utils/helper";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Helper function to format date for display
-const formatEventDate = (dateString: string) => {
-  const date = new Date(dateString);
-  const day = date.getDate().toString().padStart(2, '0');
-  const month = date.toLocaleDateString('en-US', { month: 'short' });
-  return { day, month };
+// Helper function to format date for display - handles multi-day events
+const formatEventDate = (startDate: string, endDate?: string | null) => {
+  const dateRange = formatDateRange(startDate, endDate);
+  const startDateObj = new Date(startDate);
+  const startDay = startDateObj.getDate().toString().padStart(2, "0");
+  const month = startDateObj.toLocaleDateString("en-US", { month: "short" });
+  
+  // Check if it's a multi-day event
+  let displayDay = startDay;
+  if (endDate) {
+    const endDateObj = new Date(endDate);
+    const endDay = endDateObj.getDate().toString().padStart(2, "0");
+    // Only show range if different days
+    if (startDay !== endDay) {
+      displayDay = `${startDay}-${endDay}`;
+    }
+  }
+  
+  return { day: displayDay, month, dateRange };
 };
 
 // Helper function to generate consistent colors for events
 const getEventColor = (index: number) => {
-  const colors = ['#39604B', '#587565', '#122D1E', '#D47045'];
+  const colors = ["#39604B", "#587565", "#122D1E", "#D47045"];
   return colors[index % colors.length];
 };
 
@@ -42,7 +56,9 @@ const BookEvents: React.FC = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const data: UpcomingEventsResponse = await api.get("/api/v1/events/upcoming/brief");
+        const data: UpcomingEventsResponse = await api.get(
+          "/api/v1/events/upcoming/brief"
+        );
         setEvents(data.events || []);
       } catch (err: unknown) {
         const errorMessage = handleApiError(err, router);
@@ -99,10 +115,15 @@ const BookEvents: React.FC = () => {
 
   // Animate cards - runs when events data changes
   useEffect(() => {
-    if (!loading && events.length > 0 && sectionRef.current && cardsRef.current.length > 0) {
+    if (
+      !loading &&
+      events.length > 0 &&
+      sectionRef.current &&
+      cardsRef.current.length > 0
+    ) {
       // Clear any existing animations on these elements
       gsap.set(cardsRef.current, { clearProps: "all" });
-      
+
       gsap.fromTo(
         cardsRef.current,
         { autoAlpha: 0, y: 60 },
@@ -123,8 +144,13 @@ const BookEvents: React.FC = () => {
     }
   }, [loading, events]);
 
+  console.log("Events:", events);
+
   return (
-    <section className="min-h-screen py-12 lg:py-24 overflow-x-hidden" ref={sectionRef}>
+    <section
+      className="min-h-screen py-12 lg:py-24 overflow-x-hidden"
+      ref={sectionRef}
+    >
       <header>
         <SectionHeader text="Upcoming Events" />
       </header>
@@ -142,7 +168,10 @@ const BookEvents: React.FC = () => {
                 return (
                   <div className="flex flex-col gap-8 items-center justify-center w-full">
                     {[...Array(4)].map((_, idx) => (
-                      <div key={idx} className="flex flex-col lg:flex-row items-center bg-white rounded-lg shadow-custom p-4 gap-4 animate-pulse w-full max-w-xl">
+                      <div
+                        key={idx}
+                        className="flex flex-col lg:flex-row items-center bg-white rounded-lg shadow-custom p-4 gap-4 animate-pulse w-full max-w-xl"
+                      >
                         <div className="w-36 h-20 bg-gray-200 rounded"></div>
                         <div className="flex-1 space-y-3">
                           <div className="h-6 bg-gray-200 rounded w-3/4"></div>
@@ -157,21 +186,28 @@ const BookEvents: React.FC = () => {
               } else if (error) {
                 return (
                   <div className="text-center py-12 flex flex-col items-center justify-center w-full">
-                    <div className="text-red-500 mb-4">Failed to load events</div>
+                    <div className="text-red-500 mb-4">
+                      Failed to load events
+                    </div>
                     <p className="text-muted-foreground">{error}</p>
                   </div>
                 );
               } else if (events.length === 0) {
                 return (
                   <div className="text-center py-12 flex flex-col items-center justify-center w-full">
-                    <p className="text-muted-foreground">No upcoming events found.</p>
+                    <p className="text-muted-foreground">
+                      No upcoming events found.
+                    </p>
                   </div>
                 );
               } else {
                 return (
                   <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-8 w-full justify-center items-center">
                     {events.map((event, idx) => {
-                      const { day, month } = formatEventDate(event.date);
+                      const { day, month, dateRange } = formatEventDate(
+                        event.startDate || event.date || "",
+                        event.endDate
+                      );
                       const backgroundColor = getEventColor(idx);
 
                       return (
@@ -187,25 +223,39 @@ const BookEvents: React.FC = () => {
                               className="flex flex-row lg:flex-col items-center justify-center text-[32px] text-white font-semibold rounded px-4 py-2 pb-3 w-full h-full"
                               style={{ backgroundColor }}
                             >
-                              <time dateTime={event.date} className="flex flex-row lg:flex-col items-center justify-center w-full h-full text-center">
+                              <time
+                                dateTime={event.startDate || event.date}
+                                className="flex flex-row lg:flex-col items-center justify-center w-full h-full text-center"
+                              >
                                 <div>{day}</div>
-                                <div className="ml-2 lg:ml-0 lg:mt-1">{month}</div>
+                                <div className="ml-2 lg:ml-0 lg:mt-1">
+                                  {month}
+                                </div>
                               </time>
                             </div>
                           </aside>
                           <article className="flex flex-1 flex-col lg:flex-row min-w-0 justify-between items-center gap-4">
                             <div className="flex flex-col min-w-0">
-                              <p className="text-[24px] font-roboto">{event.title}</p>
-                              <p className="text-[16px] font-thin font-poppins text-[#39604B] mb-4">
-                                By {event.speaker || 'SLOA'}
+                              <p className="text-[24px] font-roboto">
+                                {event.title}
+                              </p>
+                              <p className="text-[16px] font-thin font-poppins text-[#39604B] mb-2">
+                                {dateRange}
+                              </p>
+                              <p className="text-[14px] font-thin font-poppins text-[#39604B] mb-4">
+                                By {event.speaker || "SLOA"}
                               </p>
                               <p className="text-[12px] font-poppins mb-3">
                                 {event.shortDesc}
                               </p>
                             </div>
                             <div className="w-full lg:w-44 flex-shrink-0">
-                              <CustomButton 
-                                text={loadingEventId === event.id ? "Loading..." : "Book Now"}
+                              <CustomButton
+                                text={
+                                  loadingEventId === event.id
+                                    ? "Loading..."
+                                    : "View More"
+                                }
                                 onClick={() => {
                                   setLoadingEventId(event.id);
                                   setTimeout(() => {
@@ -221,7 +271,7 @@ const BookEvents: React.FC = () => {
                     <CustomButton
                       text="view more events"
                       className="w-fit mx-auto my-12 hidden lg:block"
-                      onClick={() => router.push('/events')}
+                      onClick={() => router.push("/events")}
                     />
                   </ul>
                 );
@@ -231,7 +281,7 @@ const BookEvents: React.FC = () => {
             <CustomButton
               text="view more events"
               className="w-fit mx-auto my-12 lg:hidden"
-              onClick={() => router.push('/event')}
+              onClick={() => router.push("/event")}
             />
           </section>
           <aside

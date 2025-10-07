@@ -173,7 +173,7 @@ const EventCard: React.FC<EventCardProps> = (props) => {
           <div className="flex justify-end">
             <CustomButton
               onClick={onReadMore}
-              text={loading ? "Redirecting..." : "Book Now"}
+              text={loading ? "Redirecting..." : "View More"}
               className="border-none px-0 py-0"
               hideIcon={!!loading}
             />
