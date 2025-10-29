@@ -90,10 +90,6 @@ export default function EventDetailPage() {
     fetchUserRegistrations();
   }, [user, params.id]);
 
-  // FloatingDiv type for animation
-  interface FloatingDiv extends HTMLDivElement {
-    _floatingApplied?: boolean;
-  }
 
   useEffect(() => {
     if (!event) return;
@@ -174,17 +170,6 @@ export default function EventDetailPage() {
           }
         },
       });
-      const contentEl = contentRef.current as FloatingDiv | null;
-      if (contentEl && !contentEl._floatingApplied) {
-        gsap.to(contentEl, {
-          y: "-=6",
-          duration: 3.5,
-          repeat: -1,
-          yoyo: true,
-          ease: "sine.inOut",
-        });
-        contentEl._floatingApplied = true;
-      }
       const imageEl = imageRef.current;
       if (imageEl) {
         imageEl.addEventListener("mouseenter", () => {
@@ -1016,6 +1001,73 @@ export default function EventDetailPage() {
                     </span>
                   </div>
                 )}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Event Documents Section */}
+        {event.documents && event.documents.length > 0 && (
+          <section className="py-8 md:py-12">
+            <div className="max-w-4xl mx-auto px-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-6 md:mb-8">
+                Event Documents
+              </h2>
+              <div className="space-y-4">
+                {event.documents.map((document, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 hover:shadow-md transition-shadow"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="p-2 bg-primary/10 rounded-lg">
+                        <svg
+                          className="w-6 h-6 text-primary"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="font-medium text-foreground">
+                          {document.originalName || document.name}
+                        </h3>
+                        <p className="text-sm text-muted-foreground">
+                          {(document.size / 1024 / 1024).toFixed(2)} MB •
+                          Uploaded {new Date(document.uploadedAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <a
+                      href={document.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center space-x-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      <span className="text-sm font-medium">Download</span>
+                    </a>
+                  </div>
+                ))}
               </div>
             </div>
           </section>

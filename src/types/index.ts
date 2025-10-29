@@ -62,6 +62,13 @@ export interface EventApiType {
   criteria?: unknown;
   isRegistrationOpen: boolean;
   providesFood?: boolean;
+  documents?: {
+    name: string;
+    url: string;
+    uploadedAt: string;
+    size: number;
+    originalName: string;
+  }[];
   maxCapacity?: number;
   registrationDeadline?: string;
   createdBy?: string;
