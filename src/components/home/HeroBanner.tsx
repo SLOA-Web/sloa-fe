@@ -314,11 +314,7 @@ const HeroBanner = () => {
                 </div>
               );
             } else if (eventError) {
-              return (
-                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
-                  <p className="text-sm text-red-500 text-center">Failed to load upcoming event</p>
-                </div>
-              );
+              return null;
             } else if (upcomingEvent) {
               return (
                 <EventCard
@@ -328,11 +324,7 @@ const HeroBanner = () => {
                 />
               );
             } else {
-              return (
-                <div className="bg-white overflow-hidden shadow-sm flex flex-col items-center w-full max-w-xs min-h-[380px] max-h-[380px] text-black justify-center p-4">
-                  <p className="text-sm text-muted-foreground text-center">No upcoming events</p>
-                </div>
-              );
+              return null;
             }
           })()}
         </div>
