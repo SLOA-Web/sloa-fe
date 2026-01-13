@@ -414,15 +414,14 @@ export default function EventDetailPage() {
             <div className="w-full flex justify-center lg:justify-start mb-8 lg:mb-0 col-span-1">
               <div
                 ref={imageRef}
-                className="w-full max-w-md aspect-[4/5] overflow-hidden shadow-lg bg-white flex items-center justify-center"
+                className="w-full max-w-md overflow-hidden shadow-lg flex items-center justify-center"
               >
                 <Image
                   src={(event.posterUrl || event.coverImage) as string}
                   alt={event.title || "Event poster"}
                   width={400}
                   height={500}
-                  className="object-cover object-center w-full h-full"
-                  style={{ width: "100%", height: "100%" }}
+                  className="object-contain w-full h-auto max-h-[600px]"
                   priority
                 />
               </div>
