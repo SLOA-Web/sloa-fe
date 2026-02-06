@@ -626,13 +626,12 @@ export default function EventDetailPage() {
               )}
 
               {/* Action Buttons */}
-              <div
-                ref={buttonsRef}
-                className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
-              >
-                {event.isRegistrationOpen ? (
-                  // Registration open: show register/unregister button
-                  (() => {
+              {event.isRegistrationOpen && (
+                <div
+                  ref={buttonsRef}
+                  className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
+                >
+                  {(() => {
                     let buttonText = "";
                     let isBtnLoading = registerLoading || checkingRegistration;
                     
@@ -685,33 +684,25 @@ export default function EventDetailPage() {
                         {buttonText}
                       </button>
                     );
-                  })()
-                ) : (
-                  // Registration closed: show disabled button
-                  <button
-                    className="btn btn-lg w-full shadow bg-gray-200 text-gray-600 cursor-not-allowed"
-                    disabled
-                  >
-                    Registration Closed
-                  </button>
-                )}
-                {/* Success Message */}
-                {registerSuccess && (
-                  <div className="w-full mt-2 flex justify-center">
-                    <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
-                      {registerSuccess}
-                    </span>
-                  </div>
-                )}
-                {/* Error Message */}
-                {registerError && (
-                  <div className="w-full mt-2 flex justify-center">
-                    <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
-                      {registerError}
-                    </span>
-                  </div>
-                )}
-              </div>
+                  })()}
+                  {/* Success Message */}
+                  {registerSuccess && (
+                    <div className="w-full mt-2 flex justify-center">
+                      <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
+                        {registerSuccess}
+                      </span>
+                    </div>
+                  )}
+                  {/* Error Message */}
+                  {registerError && (
+                    <div className="w-full mt-2 flex justify-center">
+                      <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
+                        {registerError}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </section>
         ) : (
@@ -915,13 +906,12 @@ export default function EventDetailPage() {
               )}
 
               {/* Action Buttons */}
-              <div
-                ref={buttonsRef}
-                className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
-              >
-                {event.isRegistrationOpen ? (
-                  // Registration open: show register/unregister button
-                  (() => {
+              {event.isRegistrationOpen && (
+                <div
+                  ref={buttonsRef}
+                  className="pt-6 sm:pt-8 flex flex-col gap-3 sm:gap-4 justify-center items-center"
+                >
+                  {(() => {
                     let buttonText = "";
                     let isBtnLoading = registerLoading || checkingRegistration;
                     
@@ -974,33 +964,25 @@ export default function EventDetailPage() {
                         {buttonText}
                       </button>
                     );
-                  })()
-                ) : (
-                  // Registration closed: show disabled button
-                  <button
-                    className="btn btn-lg w-full shadow bg-gray-200 text-gray-600 cursor-not-allowed"
-                    disabled
-                  >
-                    Registration Closed
-                  </button>
-                )}
-                {/* Success Message */}
-                {registerSuccess && (
-                  <div className="w-full mt-2 flex justify-center">
-                    <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
-                      {registerSuccess}
-                    </span>
-                  </div>
-                )}
-                {/* Error Message */}
-                {registerError && (
-                  <div className="w-full mt-2 flex justify-center">
-                    <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
-                      {registerError}
-                    </span>
-                  </div>
-                )}
-              </div>
+                  })()}
+                  {/* Success Message */}
+                  {registerSuccess && (
+                    <div className="w-full mt-2 flex justify-center">
+                      <span className="bg-green-100 text-green-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-green-200">
+                        {registerSuccess}
+                      </span>
+                    </div>
+                  )}
+                  {/* Error Message */}
+                  {registerError && (
+                    <div className="w-full mt-2 flex justify-center">
+                      <span className="bg-red-100 text-red-700 px-2 sm:px-4 py-1 sm:py-2 rounded shadow text-xs sm:text-sm font-medium border border-red-200">
+                        {registerError}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </section>
         )}
