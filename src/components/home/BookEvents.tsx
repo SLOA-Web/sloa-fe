@@ -291,7 +291,7 @@ const BookEvents: React.FC = () => {
             <CustomButton
               text="view more events"
               className="w-fit mx-auto my-12 lg:hidden"
-              onClick={() => router.push("/event")}
+              onClick={() => router.push("/events")}
             />
           </section>
           <aside
