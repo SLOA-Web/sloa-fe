@@ -60,7 +60,7 @@ export default function SaveTheDatePopup() {
         {/* Image */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://github.com/user-attachments/assets/e0120764-5b2e-429b-9b70-574a0b4c56f9"
+          src="https://xfqwvmtittfhjvhkdoic.supabase.co/storage/v1/object/public/events/SLOA_Annual_Session_Poster.jpeg"
           alt="Save the Date – SLOA Annual Conference, 12th–14th November 2026 at The Grand Kandyan Hotel. Fostering Inclusion & Collaboration."
           className="w-full h-auto rounded-xl shadow-2xl block"
           loading="eager"
