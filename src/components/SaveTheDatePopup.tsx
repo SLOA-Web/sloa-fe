@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { X } from "lucide-react";
 
 const POPUP_STORAGE_KEY = "sloa_save_the_date_2026_dismissed";
@@ -15,10 +15,10 @@ export default function SaveTheDatePopup() {
     }
   }, []);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     sessionStorage.setItem(POPUP_STORAGE_KEY, "true");
     setIsVisible(false);
-  };
+  }, []);
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
@@ -35,7 +35,7 @@ export default function SaveTheDatePopup() {
     };
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isVisible]);
+  }, [isVisible, handleClose]);
 
   if (!isVisible) return null;
 
