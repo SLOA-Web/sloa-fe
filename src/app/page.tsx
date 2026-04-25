@@ -1,5 +1,6 @@
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import HeroBanner from "../components/home/HeroBanner";
+import AnnualSession from "../components/home/AnnualSession";
 import { Suspense, lazy } from "react";
 
 const RecentEvents = lazy(() => import("../components/home/RecentEvents"));
@@ -36,6 +37,7 @@ export default function Home() {
   return (
     <>
       <HeroBanner />
+      <AnnualSession />
       <Suspense fallback={<LoadingSpinner />}>
         <RecentEvents />
         <BecomeAMember />

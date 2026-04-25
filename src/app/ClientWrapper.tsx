@@ -2,7 +2,6 @@
 import useLenis from "@/hook/useLenis";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
-import SaveTheDatePopup from "@/components/SaveTheDatePopup";
 
 export default function ClientWrapper({
   children,
@@ -29,10 +28,5 @@ export default function ClientWrapper({
     return () => clearTimeout(timer);
   }, [pathname, lenis]);
 
-  return (
-    <>
-      <SaveTheDatePopup />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }
