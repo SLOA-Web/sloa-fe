@@ -72,6 +72,9 @@ const ResourcesPage = () => {
   };
 
   useEffect(() => {
+    // fetchResources only calls setState after an await (standard data-fetching
+    // pattern); the linter's static analysis can't see past the await here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchResources();
   }, []);
 
