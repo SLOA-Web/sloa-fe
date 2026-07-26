@@ -12,11 +12,19 @@ gsap.registerPlugin(ScrollTrigger);
 const BenefitsList: React.FC = () => {
   const [activeIdx, setActiveIdx] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
+  const [prevActiveIdx, setPrevActiveIdx] = useState(activeIdx);
   const sectionRef = useRef<HTMLElement>(null);
   const titleRef = useRef<HTMLSpanElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLButtonElement[]>([]);
   const rightContentRef = useRef<HTMLDivElement>(null);
+
+  // Adjust loading state during render when the active benefit changes
+  // (avoids an extra synchronous setState-in-effect render pass).
+  if (activeIdx !== prevActiveIdx) {
+    setPrevActiveIdx(activeIdx);
+    setIsLoading(true);
+  }
 
   // Update image height based on right-side content
   useEffect(() => {
@@ -24,7 +32,6 @@ const BenefitsList: React.FC = () => {
       const rightHeight = rightContentRef.current.offsetHeight;
       imageRef.current.style.height = `${rightHeight}px`;
     }
-    setIsLoading(true);
   }, [activeIdx]);
 
   useEffect(() => {

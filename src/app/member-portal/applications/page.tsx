@@ -141,6 +141,11 @@ const MembershipsPage = () => {
   }, [router]);
 
   useEffect(() => {
+    // fetchMembership only sets state after its internal `await`, but the
+    // linter's interprocedural analysis can't see through this reference to
+    // an outer-scope callback; this is the standard "fetch data in an
+    // effect" pattern from https://react.dev/learn/you-might-not-need-an-effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchMembership();
   }, [fetchMembership]);
 

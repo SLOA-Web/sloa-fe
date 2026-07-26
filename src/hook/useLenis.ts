@@ -1,12 +1,12 @@
 "use client";
 
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type RefObject } from "react";
 import Lenis from "@studio-freight/lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-export default function useLenis(): Lenis | null {
+export default function useLenis(): RefObject<Lenis | null> {
   const lenisRef = useRef<Lenis | null>(null);
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -62,5 +62,5 @@ export default function useLenis(): Lenis | null {
     };
   }, []);
 
-  return lenisRef.current;
+  return lenisRef;
 }

@@ -14,7 +14,6 @@ interface PublicationPageProps {
 }
 
 // PortableText components for rich content rendering
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const portableTextComponents = {
   block: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
