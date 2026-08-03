@@ -307,6 +307,7 @@ export const NAVBAR = [
   { title: "About Us", href: "/about" },
   { title: "Events", href: "/events" },
   { title: "Contact", href: "/contact" },
+  { title: "Congress", href: "/congress" },
   { title: "Membership", href: "/membership" },
 ];
 
