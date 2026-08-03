@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import SectionHeader from "@/components/SectionHeader";
 
 import { getRecentEvents } from "@/libs/sanity.api";
@@ -45,8 +45,9 @@ const RecentEvents: React.FC = () => {
     fetchSanityEvents();
   }, []); 
 
-  const autoplay = useRef(
-    Autoplay({ delay: 2500, stopOnInteraction: true, playOnInit: true })
+  const autoplayPlugin = useMemo(
+    () => Autoplay({ delay: 2500, stopOnInteraction: true, playOnInit: true }),
+    []
   );
 
   useEffect(() => {
@@ -91,7 +92,7 @@ const RecentEvents: React.FC = () => {
             <Carousel
               setApi={setCarouselApi}
               opts={{ align: "start", loop: events.length > 1 }}
-              plugins={isMdScreen ? [autoplay.current] : []}
+              plugins={isMdScreen ? [autoplayPlugin] : []}
               className="w-full"
             >
               <CarouselContent className="-ml-4 md:-ml-6 lg:-ml-8">

@@ -108,6 +108,9 @@ const Carousel = React.forwardRef<
         return;
       }
 
+      // Vendored shadcn/ui primitive: initial sync call mirrors the
+      // upstream embla-carousel-react integration pattern.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       onSelect(api);
       api.on("reInit", onSelect);
       api.on("select", onSelect);

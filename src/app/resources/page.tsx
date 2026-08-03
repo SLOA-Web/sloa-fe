@@ -16,7 +16,6 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 const ResourcesPage = () => {
   const [resources, setResources] = useState<Resource[]>([]);
-  const [filteredResources, setFilteredResources] = useState<Resource[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -49,7 +48,6 @@ const ResourcesPage = () => {
     try {
       const data = await api.get("/api/v1/resources/");
       setResources(data as Resource[]);
-      setFilteredResources(data as Resource[]);
     } catch (err: unknown) {
       console.error("Error fetching resources:", err);
       setError("Failed to fetch resources.");
@@ -74,6 +72,9 @@ const ResourcesPage = () => {
   };
 
   useEffect(() => {
+    // fetchResources only calls setState after an await (standard data-fetching
+    // pattern); the linter's static analysis can't see past the await here.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchResources();
   }, []);
 
@@ -91,6 +92,17 @@ const ResourcesPage = () => {
       });
     }
   }, [loading]);
+
+  const filteredResources = useMemo(() => {
+    return resources.filter((resource) => {
+      const matchesSearch =
+        resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        resource.shortDesc?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "all" || resource.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [resources, searchTerm, selectedCategory]);
 
   useEffect(() => {
     // Animate cards on filteredResources change
@@ -114,18 +126,6 @@ const ResourcesPage = () => {
       });
     }
   }, [loading, filteredResources]);
-
-  useEffect(() => {
-    const filtered = resources.filter((resource) => {
-      const matchesSearch =
-        resource.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        resource.shortDesc?.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesCategory =
-        selectedCategory === "all" || resource.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-    setFilteredResources(filtered);
-  }, [searchTerm, selectedCategory, resources]);
 
   const addToRefs = (el: HTMLElement | null) => {
     if (el && !cardsRef.current.includes(el)) {

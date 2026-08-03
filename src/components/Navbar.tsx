@@ -47,7 +47,15 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
+    // Mount flag is inherently a client-only signal (used to avoid SSR
+    // hydration mismatches below); it cannot be derived during render.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setHasMounted(true);
+  }, []);
+
+  const closeMobileMenu = useCallback(() => {
+    setIsMobileMenuOpen(false);
+    document.body.classList.remove("overflow-hidden");
   }, []);
 
   useEffect(() => {
@@ -92,18 +100,16 @@ const Navbar = () => {
     if (!hasMounted) return;
     if (prevPathRef.current !== pathname) {
       if (isMobileMenuOpen) {
+        // Synchronizing with an external system (route navigation): close
+        // the drawer that a previous render opened, in direct response to
+        // the router changing the pathname.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         closeMobileMenu();
       }
       // removed: setMobileDropdownOpen(null);
       prevPathRef.current = pathname;
     }
-  }, [pathname, hasMounted, isMobileMenuOpen]);
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-    // removed: setMobileDropdownOpen(null);
-    document.body.classList.remove("overflow-hidden");
-  };
+  }, [pathname, hasMounted, isMobileMenuOpen, closeMobileMenu]);
 
   const toggleMobileMenu = useCallback(() => {
     if (isMobileMenuOpen) {
@@ -112,7 +118,7 @@ const Navbar = () => {
       setIsMobileMenuOpen(true);
       document.body.classList.add("overflow-hidden");
     }
-  }, [isMobileMenuOpen]);
+  }, [isMobileMenuOpen, closeMobileMenu]);
 
   // Accessibility: close on Escape and focus handling when opening
   useEffect(() => {
@@ -131,7 +137,7 @@ const Navbar = () => {
       }, 50);
     }
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [isMobileMenuOpen, hasMounted]);
+  }, [isMobileMenuOpen, hasMounted, closeMobileMenu]);
 
   const isActiveLink = (item: NavbarItem) => {
     if (item.children) {

@@ -8,15 +8,15 @@ export default function ClientWrapper({
 }: {
   readonly children: React.ReactNode;
 }) {
-  const lenis = useLenis();
+  const lenisRef = useLenis();
 
   const pathname = usePathname();
   useEffect(() => {
     // Scroll to top on route change
     const scrollToTop = () => {
       // Use Lenis if available, fallback to window.scrollTo
-      if (lenis) {
-        lenis.scrollTo(0, { immediate: true });
+      if (lenisRef.current) {
+        lenisRef.current.scrollTo(0, { immediate: true });
       } else if (typeof window !== "undefined") {
         window.scrollTo(0, 0);
       }
@@ -26,7 +26,7 @@ export default function ClientWrapper({
     const timer = setTimeout(scrollToTop, 100);
 
     return () => clearTimeout(timer);
-  }, [pathname, lenis]);
+  }, [pathname, lenisRef]);
 
   return <>{children}</>;
 }
