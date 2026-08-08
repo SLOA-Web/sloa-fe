@@ -1065,5 +1065,3 @@ export default function EventDetailPage() {
     </div>
   );
 }
-
-export const runtime = "edge";
