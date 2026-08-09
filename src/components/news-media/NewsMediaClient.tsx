@@ -75,14 +75,20 @@ export default function NewsMediaClient({
   const [eventsLoading, setEventsLoading] = useState(false)
   const [pubsLoading, setPubsLoading] = useState(false)
 
-  // Reset to page 1 when filters change
-  useEffect(() => {
+  // Reset to page 1 when filters change (adjusted during render instead of
+  // via an effect, per https://react.dev/learn/you-might-not-need-an-effect)
+  const [prevEventFilterKey, setPrevEventFilterKey] = useState(`${debouncedEventSearch}|${selectedYear}`)
+  const eventFilterKey = `${debouncedEventSearch}|${selectedYear}`
+  if (eventFilterKey !== prevEventFilterKey) {
+    setPrevEventFilterKey(eventFilterKey)
     setEventPage(1)
-  }, [debouncedEventSearch, selectedYear])
-  
-  useEffect(() => {
+  }
+
+  const [prevPublicationFilterKey, setPrevPublicationFilterKey] = useState(debouncedPublicationSearch)
+  if (debouncedPublicationSearch !== prevPublicationFilterKey) {
+    setPrevPublicationFilterKey(debouncedPublicationSearch)
     setPublicationPage(1)
-  }, [debouncedPublicationSearch])
+  }
 
   // Fetch events when filters or page change
   useEffect(() => {

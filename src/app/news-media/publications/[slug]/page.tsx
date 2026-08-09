@@ -1,4 +1,3 @@
-export const runtime = 'edge';
 import { notFound } from 'next/navigation'
 import { Calendar, User, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
@@ -14,7 +13,6 @@ interface PublicationPageProps {
 }
 
 // PortableText components for rich content rendering
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const portableTextComponents = {
   block: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

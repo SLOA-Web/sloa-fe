@@ -10,21 +10,21 @@ import { Crown, ArrowRight, CheckCircle } from "lucide-react";
 
 function NoMembershipMessage() {
   const searchParams = useSearchParams();
-  const [showNoMembershipMessage, setShowNoMembershipMessage] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  const showNoMembershipMessage =
+    !dismissed && searchParams.get("message") === "no-membership";
 
   useEffect(() => {
-    const message = searchParams.get("message");
-    if (message === "no-membership") {
-      setShowNoMembershipMessage(true);
-      // Scroll to the message
-      setTimeout(() => {
-        const element = document.getElementById("no-membership-message");
-        if (element) {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      }, 100);
-    }
-  }, [searchParams]);
+    if (!showNoMembershipMessage) return;
+    // Scroll to the message
+    const timer = setTimeout(() => {
+      const element = document.getElementById("no-membership-message");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [showNoMembershipMessage]);
 
   if (!showNoMembershipMessage) {
     return null;
@@ -101,7 +101,7 @@ function NoMembershipMessage() {
                   <ArrowRight className="h-5 w-5" />
                 </button>
                 <button
-                  onClick={() => setShowNoMembershipMessage(false)}
+                  onClick={() => setDismissed(true)}
                   className="px-6 py-3 text-primary hover:text-primary/80 font-medium transition-colors"
                 >
                   Continue browsing

@@ -107,10 +107,10 @@ const ProfilePage = () => {
 
     if (user) {
       fetchUserProfile();
-    } else {
-      setLoading(false);
-      setError("User not authenticated.");
     }
+    // Note: `loading`/`error` values from useState above are intentionally
+    // unused (write-only) elsewhere in this component, so no state update is
+    // needed here when there's no authenticated user.
   }, [user]);
 
   const handleInputChange = (field: string, value: string) => {

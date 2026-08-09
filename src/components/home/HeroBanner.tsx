@@ -26,6 +26,7 @@ const HeroBanner = () => {
   const slidesData = useMemo(() => {
     return banners as (Banner | HeroSlide)[];
   }, [banners]);
+  const [prevSlidesLength, setPrevSlidesLength] = useState(slidesData.length);
 
   const nextSlide = useCallback(() => {
     if (!isAnimatingRef.current) {
@@ -176,18 +177,20 @@ const HeroBanner = () => {
     }
   }, [banners.length, nextSlide]);
 
+  // Adjust currentSlide during render when it falls out of bounds after
+  // slidesData shrinks (avoids an extra synchronous setState-in-effect render pass).
+  if (prevSlidesLength !== slidesData.length) {
+    setPrevSlidesLength(slidesData.length);
+    if (slidesData.length > 0 && currentSlide >= slidesData.length) {
+      setCurrentSlide(0);
+    }
+  }
+
   const currentSlideData = slidesData[currentSlide];
 
   const isBanner = (item: Banner | HeroSlide): item is Banner => {
     return (item as Banner).imageUrl !== undefined;
   };
-  
-  // Ensure currentSlide is within bounds when data changes
-  useEffect(() => {
-    if (slidesData.length > 0 && currentSlide >= slidesData.length) {
-      setCurrentSlide(0);
-    }
-  }, [slidesData.length, currentSlide]);
 
   return (
     <section

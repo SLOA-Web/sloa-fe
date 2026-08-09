@@ -170,6 +170,11 @@ const EventsSection: React.FC = () => {
   const lineRefs = useRef<Record<string, HTMLSpanElement | null>>({});
 
   useEffect(() => {
+    // fetchEvents only sets state after its internal `await`, but the
+    // linter's interprocedural analysis can't see through this reference to
+    // an outer-scope function; this is the standard "fetch data in an
+    // effect" pattern from https://react.dev/learn/you-might-not-need-an-effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
